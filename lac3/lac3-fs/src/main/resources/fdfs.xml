@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util.xsd
+		"
+	default-lazy-init="true">
+
+
+	<description>fdfs Configuration</description>
+	
+
+	<!-- 加载应用属性实例，可通过 @Value("#{FDFS['jdbc.driver']}") String jdbcDriver 
+		方式引用 -->
+	<util:properties id="FDFS" location="classpath*:fdfs.properties" local-override="true" />
+	
+	<!-- 启用注解 -->
+	<context:annotation-config />
+	<context:component-scan base-package="com.linkallcloud.comm.fs">
+		<!-- <context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/> -->
+	</context:component-scan>
+	
+	
+</beans>
