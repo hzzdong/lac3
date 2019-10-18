@@ -7,13 +7,13 @@ import java.util.UUID;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.linkallcloud.core.domain.Domain;
 
-public abstract class Dto<PK extends Serializable, T extends Domain<PK>> extends FaceDto<PK, T> {
+public abstract class Dto<T extends Domain> extends FaceDto<T> {
     private static final long serialVersionUID = -4583201108023551132L;
 
     /**
      * 实体编号（唯一标识）
      */
-    protected PK id;
+    protected Long id;
     protected String uuid;
 
     @JSONField(serialize = false, format = "yyyy-MM-dd HH:mm:ss")
@@ -24,7 +24,7 @@ public abstract class Dto<PK extends Serializable, T extends Domain<PK>> extends
     @JSONField(serialize = false, format = "yyyy-MM-dd HH:mm:ss")
     protected Date updateTime; // 更新时间
     @JSONField(serialize = false)
-    protected PK updateUserId;// 更新者id
+    protected Long updateUserId;// 更新者id
 
     protected int status; // 状态
 
@@ -40,11 +40,11 @@ public abstract class Dto<PK extends Serializable, T extends Domain<PK>> extends
         this.uuid = UUID.randomUUID().toString().replace("_", "");
     }
 
-    public PK getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(PK id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -93,11 +93,11 @@ public abstract class Dto<PK extends Serializable, T extends Domain<PK>> extends
     }
 
     @JSONField(serialize = false)
-    public PK getUpdateUserId() {
+    public Long getUpdateUserId() {
         return updateUserId;
     }
 
-    public void setUpdateUserId(PK updateUserId) {
+    public void setUpdateUserId(Long updateUserId) {
         this.updateUserId = updateUserId;
     }
 

@@ -4,8 +4,8 @@ import com.linkallcloud.core.domain.TreeDomain;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.manager.ITreeManager;
 
-public abstract class BaseTreeLContorller<T extends TreeDomain<Long>, S extends ITreeManager<Long, T>>
-		extends BaseTreeContorller<Long, T, S> {
+public abstract class BaseTreeLContorller<T extends TreeDomain, S extends ITreeManager<T>>
+		extends BaseTreeContorller<T, S> {
 
 	@SuppressWarnings("unchecked")
 	public BaseTreeLContorller() {

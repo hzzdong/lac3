@@ -1,18 +1,5 @@
 package com.linkallcloud.web.busilog;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.linkallcloud.web.utils.Controllers;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.alibaba.fastjson.JSON;
 import com.linkallcloud.core.aop.DomainDescription;
 import com.linkallcloud.core.aop.LacAspect;
@@ -26,8 +13,18 @@ import com.linkallcloud.core.lang.Stopwatch;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.manager.IWebBusiLogManager;
 import com.linkallcloud.core.www.utils.WebUtils;
+import com.linkallcloud.web.utils.Controllers;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-public abstract class BusiWebLogAspect<PK extends Serializable, T extends WebBusiLog<PK>, TS extends IWebBusiLogManager<PK, T>>
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.HashMap;
+
+public abstract class BusiWebLogAspect<T extends WebBusiLog, TS extends IWebBusiLogManager<T>>
         extends LacAspect {
     protected Mirror<T> logMirror;
 
@@ -43,16 +40,14 @@ public abstract class BusiWebLogAspect<PK extends Serializable, T extends WebBus
         }
     }
 
-    protected abstract IWebBusiLogManager<PK, T> logService();
+    protected abstract TS logService();
 
     /**
      * 保存系统操作日志
      *
-     * @param joinPoint
-     *            连接点
+     * @param joinPoint 连接点
      * @return 方法执行结果
-     * @throws Throwable
-     *             调用出错
+     * @throws Throwable 调用出错
      */
     public Object autoLog(ProceedingJoinPoint joinPoint) throws Throwable {
         Method method = getMethod(joinPoint);
@@ -74,6 +69,7 @@ public abstract class BusiWebLogAspect<PK extends Serializable, T extends WebBus
             operatelog.setOperateDesc(
                     dealStringTtemplate(true, logAnnot.desc(), joinPoint, method, new HashMap<String, Object>() {
                         private static final long serialVersionUID = 1L;
+
                         {
                             put("tid", tid);
                             put("visitor", visitor);
@@ -112,7 +108,7 @@ public abstract class BusiWebLogAspect<PK extends Serializable, T extends WebBus
 
     /**
      * 得到save方法是否是新增还是更新的标志
-     * 
+     *
      * @param joinPoint
      * @param method
      * @return save4NewTag ,是否save方法，若是的话1：新增；2：更新，其它0
@@ -121,12 +117,12 @@ public abstract class BusiWebLogAspect<PK extends Serializable, T extends WebBus
         int save4NewTag = 0;
         DomainDescription dd = getDomainDescription(joinPoint);
         if (dd != null && method.getName().startsWith("save")) {
-            IDomain<?> domain = null;
-            Mirror<?> domainMirror = null;
+            IDomain domain = null;
+            Mirror domainMirror = null;
             for (Object arg : joinPoint.getArgs()) {
                 domainMirror = Mirror.me(arg);
                 if (domainMirror.is(dd.getDomainClass())) {
-                    domain = (IDomain<?>) arg;
+                    domain = (IDomain) arg;
                     if (domain != null) {
                         Object fieldValue = domainMirror.getValue(domain, "id");
                         if (fieldValue == null) {
@@ -150,7 +146,7 @@ public abstract class BusiWebLogAspect<PK extends Serializable, T extends WebBus
     }
 
     private void autoDealLogs(String tid, T operatelog, long duration, ProceedingJoinPoint joinPoint, Method method,
-            WebLog logAnnot, Throwable e) {
+                              WebLog logAnnot, Throwable e) {
         Class<?> clzz = joinPoint.getTarget().getClass();
         if (clzz.getAnnotation(Controller.class) != null) {
             AppVisitor visitor = Controllers.getAppVisitor();
@@ -161,6 +157,7 @@ public abstract class BusiWebLogAspect<PK extends Serializable, T extends WebBus
                 operatelog.setOperateDesc(
                         dealStringTtemplate(true, null, joinPoint, method, new HashMap<String, Object>() {
                             private static final long serialVersionUID = 1L;
+
                             {
                                 put("tid", tid);
                                 put("visitor", visitor);

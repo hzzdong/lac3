@@ -1,19 +1,17 @@
 package com.linkallcloud.core.pagination;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.face.message.request.PageFaceRequest;
 import com.linkallcloud.core.query.Query;
 import com.linkallcloud.core.query.WebQuery;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 整合页面分页插件
  */
-public class Page<PK extends Serializable, E extends Domain<PK>> extends Query {
+public class Page<E> extends Query {
     private static final long serialVersionUID = -4341700839217438352L;
 
     private int draw;

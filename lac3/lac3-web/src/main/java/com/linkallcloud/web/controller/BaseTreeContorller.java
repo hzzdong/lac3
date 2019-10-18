@@ -1,29 +1,28 @@
 package com.linkallcloud.web.controller;
 
-import java.io.Serializable;
-import java.util.List;
-
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.linkallcloud.core.domain.TreeDomain;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.manager.ITreeManager;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-public abstract class BaseTreeContorller<PK extends Serializable, T extends TreeDomain<PK>, S extends ITreeManager<PK, T>>
-        extends BaseController<PK, T, S> {
+import java.util.List;
+
+public abstract class BaseTreeContorller<T extends TreeDomain, S extends ITreeManager<T>>
+        extends BaseController<T, S> {
 
     public BaseTreeContorller() {
         super();
     }
 
     @RequestMapping(value = "/loadTree", method = RequestMethod.GET)
-    public @ResponseBody Result<Object> loadTree(Trace t, AppVisitor av) {
+    public @ResponseBody
+    Result<Object> loadTree(Trace t, AppVisitor av) {
         List<Tree> tree = doLoadTree(t, av);
         return new Result<Object>(tree);
     }
@@ -34,8 +33,8 @@ public abstract class BaseTreeContorller<PK extends Serializable, T extends Tree
     }
 
     @Override
-    protected String doAdd(boolean prepare, PK parentId, String parentClass, Trace t, ModelMap modelMap,
-            AppVisitor av) {
+    protected String doAdd(boolean prepare, Long parentId, String parentClass, Trace t, ModelMap modelMap,
+                           AppVisitor av) {
         modelMap.put("parentId", parentId);
 
         if (prepare) {
@@ -51,8 +50,8 @@ public abstract class BaseTreeContorller<PK extends Serializable, T extends Tree
     }
 
     @Override
-    protected String doEdit(boolean prepare, PK parentId, String parentClass, PK id, String uuid, Trace t,
-            ModelMap modelMap, AppVisitor av) {
+    protected String doEdit(boolean prepare, Long parentId, String parentClass, Long id, String uuid, Trace t,
+                            ModelMap modelMap, AppVisitor av) {
         modelMap.put("id", id);
         modelMap.put("uuid", uuid);
 
@@ -68,7 +67,7 @@ public abstract class BaseTreeContorller<PK extends Serializable, T extends Tree
     }
 
     @Override
-    protected T doGet(PK parentId, String parentClass, PK id, String uuid, Trace t, AppVisitor av) {
+    protected T doGet(Long parentId, String parentClass, Long id, String uuid, Trace t, AppVisitor av) {
         T entity = null;
         if (id != null && uuid != null) {
             entity = manager().fetchByIdUuid(t, id, uuid);

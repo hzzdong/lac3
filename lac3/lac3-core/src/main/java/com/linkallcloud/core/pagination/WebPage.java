@@ -1,9 +1,5 @@
 package com.linkallcloud.core.pagination;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.dt.DtColumn;
@@ -11,6 +7,9 @@ import com.linkallcloud.core.dt.DtOrder;
 import com.linkallcloud.core.dt.DtSearch;
 import com.linkallcloud.core.query.Orderby;
 import com.linkallcloud.core.query.WebQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WebPage extends WebQuery {
     private static final long serialVersionUID = 2387079940133998932L;
@@ -48,8 +47,8 @@ public class WebPage extends WebQuery {
         this.length = length < 1 ? 1 : length;
     }
 
-    public <PK extends Serializable, E extends Domain<PK>> Page<PK, E> toPage() {
-        Page<PK, E> page = new Page<PK, E>();
+    public <E extends Domain> Page<E> toPage() {
+        Page<E> page = new Page<E>();
         WebQuery.copyWebQueryFields2Query(this, page);
         WebPage.copyWebPageFields2Page(this, page);
         return page;
@@ -77,8 +76,8 @@ public class WebPage extends WebQuery {
         dest.setOrderby(src.getWebOrderby());
     }
 
-    public static <PK extends Serializable, E extends Domain<PK>> void copyWebPageFields2Page(WebPage src,
-            Page<PK, E> dest) {
+    public static <E extends Domain> void copyWebPageFields2Page(WebPage src,
+                                                                 Page<E> dest) {
         if (src == null || dest == null) {
             return;
         }

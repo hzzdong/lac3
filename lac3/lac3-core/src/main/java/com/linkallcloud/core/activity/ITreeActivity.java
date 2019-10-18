@@ -1,12 +1,20 @@
-package com.linkallcloud.core.service;
+package com.linkallcloud.core.activity;
 
-import com.linkallcloud.core.domain.TreeDomain;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 
 import java.util.List;
 
-public interface ITreeService<T extends TreeDomain> extends IService<T> {
+public interface ITreeActivity<T> extends IActivity<T> {
+
+    /**
+     * @param t
+     * @param id
+     * @param uuid
+     * @param parentClass
+     * @return
+     */
+    T fetchByIdUuidJoinParent(Trace t, Long id, String uuid, String parentClass);
 
     /**
      * 获取树节点列表
@@ -35,14 +43,4 @@ public interface ITreeService<T extends TreeDomain> extends IService<T> {
      * @return
      */
     Boolean updateCode(Trace t, Long id, String code);
-
-    /**
-     * @param t
-     * @param id
-     * @param uuid
-     * @param parentClass
-     * @return
-     */
-    T fetchByIdUuidJoinParent(Trace t, Long id, String uuid, String parentClass);
-
 }

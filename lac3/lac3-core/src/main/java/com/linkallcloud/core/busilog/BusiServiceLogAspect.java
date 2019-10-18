@@ -1,24 +1,22 @@
 package com.linkallcloud.core.busilog;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
-
+import com.alibaba.dubbo.rpc.RpcContext;
+import com.alibaba.fastjson.JSON;
 import com.linkallcloud.core.aop.LacAspect;
 import com.linkallcloud.core.busilog.annotation.ServLog;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.laclog.ServiceBusiLog;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.lang.Stopwatch;
-import org.aspectj.lang.ProceedingJoinPoint;
-
-import com.alibaba.dubbo.rpc.RpcContext;
-import com.alibaba.fastjson.JSON;
 import com.linkallcloud.core.service.IService;
 import com.linkallcloud.core.service.IServiceBusiLogService;
+import org.aspectj.lang.ProceedingJoinPoint;
 
-public abstract class BusiServiceLogAspect<PK extends Serializable, T extends ServiceBusiLog<PK>, TS extends IServiceBusiLogService<PK, T>>
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.HashMap;
+
+public abstract class BusiServiceLogAspect<T extends ServiceBusiLog, TS extends IService<T>>
         extends LacAspect {
 
     protected Mirror<T> logMirror;
@@ -35,16 +33,14 @@ public abstract class BusiServiceLogAspect<PK extends Serializable, T extends Se
         }
     }
 
-    protected abstract IServiceBusiLogService<PK, T> logService();
+    protected abstract IServiceBusiLogService<T> logService();
 
     /**
      * 保存系统操作日志
      *
-     * @param joinPoint
-     *            连接点
+     * @param joinPoint 连接点
      * @return 方法执行结果
-     * @throws Throwable
-     *             调用出错
+     * @throws Throwable 调用出错
      */
     public Object autoLog(ProceedingJoinPoint joinPoint) throws Throwable {
         Method method = getMethod(joinPoint);
@@ -87,7 +83,7 @@ public abstract class BusiServiceLogAspect<PK extends Serializable, T extends Se
     }
 
     private void autoDealLogs(T operatelog, long duration, ProceedingJoinPoint joinPoint, Method method,
-            ServLog logAnnot, Throwable e) {
+                              ServLog logAnnot, Throwable e) {
         Class<?> clzz = joinPoint.getTarget().getClass();
         Mirror<?> cmirror = Mirror.me(clzz);
         if (cmirror.isOf(IService.class)) {
@@ -98,6 +94,7 @@ public abstract class BusiServiceLogAspect<PK extends Serializable, T extends Se
             operatelog.setOperateDesc(
                     dealStringTtemplate(false, logAnnot.desc(), joinPoint, method, new HashMap<String, Object>() {
                         private static final long serialVersionUID = 1L;
+
                         {
                             put("tid", tid);
                         }

@@ -6,8 +6,8 @@ import com.linkallcloud.core.log.Log;
 import com.linkallcloud.core.log.Logs;
 import com.linkallcloud.core.manager.IManager;
 
-public abstract class BaseSController<T extends Domain<String>, S extends IManager<String, T>>
-        extends BaseController<String, T, S> {
+public abstract class BaseSController<T extends Domain, S extends IManager<T>>
+        extends BaseController<T, S> {
 
     private Log log = Logs.get();
 

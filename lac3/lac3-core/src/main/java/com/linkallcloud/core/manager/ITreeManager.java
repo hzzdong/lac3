@@ -1,13 +1,12 @@
 package com.linkallcloud.core.manager;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.linkallcloud.core.domain.TreeDomain;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 
-public interface ITreeManager<PK extends Serializable, T extends TreeDomain<PK>> extends IManager<PK, T> {
+import java.util.List;
+
+public interface ITreeManager<T extends TreeDomain> extends IManager<T> {
 
 
     /**
@@ -17,7 +16,7 @@ public interface ITreeManager<PK extends Serializable, T extends TreeDomain<PK>>
      * @param parentClass
      * @return
      */
-    T fetchByIdUuidJoinParent(Trace t, PK id, String uuid, String parentClass);
+    T fetchByIdUuidJoinParent(Trace t, Long id, String uuid, String parentClass);
 
     /**
      * 获取树节点列表
@@ -45,6 +44,6 @@ public interface ITreeManager<PK extends Serializable, T extends TreeDomain<PK>>
      * @param code 系统编码
      * @return
      */
-    Boolean updateCode(Trace t, PK id, String code);
+    Boolean updateCode(Trace t, Long id, String code);
 
 }

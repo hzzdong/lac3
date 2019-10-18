@@ -4,8 +4,8 @@ import com.linkallcloud.core.domain.TreeDomain;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.manager.ITreeManager;
 
-public abstract class BaseLController4ParentTree<T extends TreeDomain<Long>, TS extends ITreeManager<Long, T>, P extends TreeDomain<Long>, PS extends ITreeManager<Long, P>>
-        extends BaseController4ParentTree<Long, T, TS, P, PS> {
+public abstract class BaseLController4ParentTree<T extends TreeDomain, TS extends ITreeManager<T>, P extends TreeDomain, PS extends ITreeManager<P>>
+        extends BaseController4ParentTree<T, TS, P, PS> {
 
     @SuppressWarnings("unchecked")
     public BaseLController4ParentTree() {

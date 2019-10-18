@@ -1,7 +1,6 @@
 package com.linkallcloud.core.service;
 
 import com.linkallcloud.core.activity.IActivity;
-import com.linkallcloud.core.busilog.annotation.ServLog;
 import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.lang.Mirror;
@@ -14,14 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseService<T extends Domain, A extends IActivity<T>> implements IService<T> {
+public abstract class BaseBusiLogService<T extends Domain, A extends IActivity<T>>
+        implements IService<T> {
 
     protected Log log = Logs.get();
 
     protected Mirror<T> mirror;
 
     @SuppressWarnings("unchecked")
-    public BaseService() {
+    public BaseBusiLogService() {
         super();
         try {
             mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
@@ -44,42 +44,36 @@ public abstract class BaseService<T extends Domain, A extends IActivity<T>> impl
         return activity().exist(t, entity, field, filedValue);
     }
 
-    @ServLog(db = true)
     @Transactional(readOnly = false)
     @Override
     public Long insert(Trace t, T entity) {
         return activity().insert(t, entity);
     }
 
-    @ServLog(db = true)
     @Transactional(readOnly = false)
     @Override
     public boolean update(Trace t, T entity) {
         return activity().update(t, entity);
     }
 
-    @ServLog(db = true, desc = "修改 [(${domainShowName})]([(${uuidIds})])的状态为([(${status})]), TID:[(${t.tid})]")
     @Transactional(readOnly = false)
     @Override
     public boolean updates(Trace t, int status, Map<String, Long> uuidIds) {
         return activity().updates(t, status, uuidIds);
     }
 
-    @ServLog(db = true, desc = "修改 [(${domainShowName})]([(${id})])的状态为([(${status})]), TID:[(${t.tid})]")
     @Transactional(readOnly = false)
     @Override
     public boolean updateStatus(Trace t, int status, Long id, String uuid) {
         return activity().updateStatus(t, status, id, uuid);
     }
 
-    @ServLog(db = true, desc = "删除 [(${domainShowName})]([(${id})]), TID:[(${t.tid})]")
     @Transactional(readOnly = false)
     @Override
     public boolean delete(Trace t, Long id, String uuid) {
         return activity().delete(t, id, uuid);
     }
 
-    @ServLog(db = true, desc = "删除 [(${domainShowName})]([(${uuidIds})]), TID:[(${t.tid})]")
     @Transactional(readOnly = false)
     @Override
     public boolean deletes(Trace t, Map<String, Long> uuidIdMap) {

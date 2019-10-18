@@ -5,19 +5,19 @@ import com.linkallcloud.core.domain.TreeDomain;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.manager.IManager;
 
-public abstract class BaseLController4Parent<T extends TreeDomain<Long>, TS extends IManager<Long, T>, P extends Domain<Long>, PS extends IManager<Long, P>>
-		extends BaseController4Parent<Long, T, TS, P, PS> {
+public abstract class BaseLController4Parent<T extends TreeDomain, TS extends IManager<T>, P extends Domain, PS extends IManager<P>>
+        extends BaseController4Parent<T, TS, P, PS> {
 
-	@SuppressWarnings("unchecked")
-	public BaseLController4Parent() {
-		super();
-		try {
-			mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
-		} catch (Throwable e) {
-			if (log.isWarnEnabled()) {
-				log.warn("!!!Fail to get TypeParams for self!", e);
-			}
-		}
-	}
+    @SuppressWarnings("unchecked")
+    public BaseLController4Parent() {
+        super();
+        try {
+            mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
+        } catch (Throwable e) {
+            if (log.isWarnEnabled()) {
+                log.warn("!!!Fail to get TypeParams for self!", e);
+            }
+        }
+    }
 
 }

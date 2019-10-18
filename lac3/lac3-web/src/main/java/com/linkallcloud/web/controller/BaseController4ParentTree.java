@@ -1,26 +1,24 @@
 package com.linkallcloud.web.controller;
 
-import java.io.Serializable;
-import java.util.List;
-
-import org.springframework.ui.ModelMap;
-
 import com.linkallcloud.core.domain.TreeDomain;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.manager.ITreeManager;
+import org.springframework.ui.ModelMap;
 
-public abstract class BaseController4ParentTree<PK extends Serializable, T extends TreeDomain<PK>, TS extends ITreeManager<PK, T>, P extends TreeDomain<PK>, PS extends ITreeManager<PK, P>>
-        extends BaseController4Parent<PK, T, TS, P, PS> {
+import java.util.List;
+
+public abstract class BaseController4ParentTree<T extends TreeDomain, TS extends ITreeManager<T>, P extends TreeDomain, PS extends ITreeManager<P>>
+        extends BaseController4Parent<T, TS, P, PS> {
 
     public BaseController4ParentTree() {
         super();
     }
 
     @Override
-    protected String doAdd4Parent(boolean prepare, PK parentId, String parentClass, Trace t, ModelMap modelMap,
-            AppVisitor av) {
+    protected String doAdd4Parent(boolean prepare, Long parentId, String parentClass, Trace t, ModelMap modelMap,
+                                  AppVisitor av) {
         modelMap.put("parentId", parentId);
         modelMap.put("parentClass", parentClass);
         if (prepare) {
@@ -34,8 +32,8 @@ public abstract class BaseController4ParentTree<PK extends Serializable, T exten
     }
 
     @Override
-    protected String doEdit4Parent(boolean prepare, PK parentId, String parentClass, PK id, String uuid, Trace t,
-            ModelMap modelMap, AppVisitor av) {
+    protected String doEdit4Parent(boolean prepare, Long parentId, String parentClass, Long id, String uuid, Trace t,
+                                   ModelMap modelMap, AppVisitor av) {
         modelMap.put("id", id);
         modelMap.put("uuid", uuid);
 
@@ -51,7 +49,7 @@ public abstract class BaseController4ParentTree<PK extends Serializable, T exten
     }
 
     @Override
-    protected T doGet4Parent(PK parentId, String parentClass, PK id, String uuid, Trace t, AppVisitor av) {
+    protected T doGet4Parent(Long parentId, String parentClass, Long id, String uuid, Trace t, AppVisitor av) {
         T entity = null;
         if (id != null && uuid != null) {
             // return manager().fetchByIdUuidJoinParent(t, id, uuid, parentClass);

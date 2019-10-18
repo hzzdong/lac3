@@ -1,12 +1,5 @@
 package com.linkallcloud.web.controller;
 
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
@@ -17,8 +10,10 @@ import com.linkallcloud.core.log.Logs;
 import com.linkallcloud.core.manager.IWebBusiLogManager;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.pagination.WebPage;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
 
-public abstract class BaseFullWebBusiLogController<T extends WebBusiLog<Long>, S extends IWebBusiLogManager<Long, T>> {
+public abstract class BaseFullWebBusiLogController<T extends WebBusiLog, S extends IWebBusiLogManager<T>> {
 
     private Log log = Logs.get();
 
@@ -44,7 +39,7 @@ public abstract class BaseFullWebBusiLogController<T extends WebBusiLog<Long>, S
 
     /**
      * 首页
-     * 
+     *
      * @return
      */
     protected String getMainPage() {
@@ -53,7 +48,7 @@ public abstract class BaseFullWebBusiLogController<T extends WebBusiLog<Long>, S
 
     /**
      * 编辑页面
-     * 
+     *
      * @return
      */
     protected String getWiewPage() {
@@ -66,31 +61,33 @@ public abstract class BaseFullWebBusiLogController<T extends WebBusiLog<Long>, S
     }
 
     @RequestMapping(value = "/page", method = RequestMethod.GET)
-    public @ResponseBody Result<Object> page(@RequestBody WebPage webPage, Trace t, AppVisitor av) {
-        Page<Long, T> page = doFindPage(webPage, t, av);
+    public @ResponseBody
+    Result<Object> page(@RequestBody WebPage webPage, Trace t, AppVisitor av) {
+        Page<T> page = doFindPage(webPage, t, av);
         return new Result<Object>(page);
     }
 
-    protected Page<Long, T> doFindPage(WebPage webPage, Trace t, AppVisitor av) {
+    protected Page<T> doFindPage(WebPage webPage, Trace t, AppVisitor av) {
         return manager().findPage(t, webPage.toPage());
     }
 
     @RequestMapping(value = "/view", method = RequestMethod.GET)
     public String view(@RequestParam(value = "id") Long id, @RequestParam(value = "uuid") String uuid, Trace t,
-            ModelMap modelMap) {
-        T entity = doGet(id, uuid, t);
+                       ModelMap modelMap) {
+        T entity = doGet(t, id, uuid);
         modelMap.put("entity", entity);
         return getWiewPage();
     }
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public @ResponseBody Result<Object> get(@RequestParam(value = "id", required = false) Long id,
-            @RequestParam(value = "uuid", required = false) String uuid, Trace t) {
-        T domain = doGet(id, uuid, t);
+    public @ResponseBody
+    Result<Object> get(@RequestParam(value = "id", required = false) Long id,
+                       @RequestParam(value = "uuid", required = false) String uuid, Trace t) {
+        T domain = doGet(t, id, uuid);
         return new Result<Object>(domain);
     }
 
-    protected T doGet(Long id, String uuid, Trace t) {
+    protected T doGet(Trace t, Long id, String uuid) {
         T entity = manager().fetchByIdUuid(t, id, uuid);
         return entity;
     }

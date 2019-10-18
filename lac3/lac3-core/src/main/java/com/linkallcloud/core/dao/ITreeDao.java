@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import com.linkallcloud.core.domain.TreeDomain;
 import com.linkallcloud.core.dto.Trace;
 
-public interface ITreeDao<PK extends Serializable, T extends TreeDomain<PK>> extends IDao<PK, T> {
+public interface ITreeDao<T extends TreeDomain> extends IDao<T> {
 
     /**
      * 根据 ID 查询
@@ -28,7 +28,7 @@ public interface ITreeDao<PK extends Serializable, T extends TreeDomain<PK>> ext
      * @param parentClass
      * @return
      */
-    T fetchByIdUuidJoinParent(@Param("t") Trace t, @Param("id") PK id, @Param("uuid") String uuid,
+    T fetchByIdUuidJoinParent(@Param("t") Trace t, @Param("id") Long id, @Param("uuid") String uuid,
             @Param("parentClass") String parentClass);
 
 }

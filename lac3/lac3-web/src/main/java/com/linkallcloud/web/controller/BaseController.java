@@ -1,7 +1,6 @@
 package com.linkallcloud.web.controller;
 
 import com.linkallcloud.core.busilog.annotation.WebLog;
-import com.linkallcloud.web.utils.Controllers;
 import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Result;
@@ -16,16 +15,16 @@ import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.pagination.WebPage;
 import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.core.query.rule.desc.StringRuleDescriptor;
+import com.linkallcloud.web.utils.Controllers;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseController<PK extends Serializable, T extends Domain<PK>, S extends IManager<PK, T>> {
+public abstract class BaseController<T extends Domain, S extends IManager<T>> {
     protected Log log = Logs.get();
 
     protected Mirror<T> mirror;
@@ -81,7 +80,7 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public String main(@RequestParam(value = "prepare", required = false) boolean prepare,
-                       @RequestParam(value = "parentId", required = false) PK parentId,
+                       @RequestParam(value = "parentId", required = false) Long parentId,
                        @RequestParam(value = "parentClass", required = false) String parentClass, Trace t, ModelMap modelMap,
                        AppVisitor av) {
         return doMain(prepare, parentId, parentClass, t, modelMap, av);
@@ -96,7 +95,7 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
      * @param av
      * @return
      */
-    protected String doMain(boolean prepare, PK parentId, String parentClass, Trace t, ModelMap modelMap,
+    protected String doMain(boolean prepare, Long parentId, String parentClass, Trace t, ModelMap modelMap,
                             AppVisitor av) {
         modelMap.put("parentId", parentId);
         modelMap.put("parentClass", parentClass);
@@ -106,23 +105,23 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
     @RequestMapping(value = "/page", method = RequestMethod.POST)
     public @ResponseBody
     Result<Object> page(@RequestBody WebPage webPage, Trace t, AppVisitor av) {
-        Page<PK, T> page = doFindPage(webPage, t, av);
+        Page<T> page = doFindPage(webPage, t, av);
         return new Result<Object>(page);
     }
 
-    protected Page<PK, T> doFindPage(WebPage webPage, Trace t, AppVisitor av) {
-        Page<PK, T> page = webPage.toPage();
+    protected Page<T> doFindPage(WebPage webPage, Trace t, AppVisitor av) {
+        Page<T> page = webPage.toPage();
         addAreaCnd2Page(page, av);
         return manager().findPage(t, page);
     }
 
     @RequestMapping(value = "/view", method = RequestMethod.GET)
-    public String view(@RequestParam(value = "id") PK id, @RequestParam(value = "uuid") String uuid, ModelMap modelMap,
+    public String view(@RequestParam(value = "id") Long id, @RequestParam(value = "uuid") String uuid, ModelMap modelMap,
                        Trace t, AppVisitor av) {
         return doView(id, uuid, modelMap, t, av);
     }
 
-    protected String doView(PK id, String uuid, ModelMap modelMap, Trace t, AppVisitor av) {
+    protected String doView(Long id, String uuid, ModelMap modelMap, Trace t, AppVisitor av) {
         modelMap.put("id", id);
         modelMap.put("uuid", uuid);
         return getViewPage();
@@ -139,13 +138,13 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
      */
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String add(@RequestParam(value = "prepare", required = false) boolean prepare,
-                      @RequestParam(value = "parentId", required = false) PK parentId,
+                      @RequestParam(value = "parentId", required = false) Long parentId,
                       @RequestParam(value = "parentClass", required = false) String parentClass, Trace t, ModelMap modelMap,
                       AppVisitor av) {
         return doAdd(prepare, parentId, parentClass, t, modelMap, av);
     }
 
-    protected String doAdd(boolean prepare, PK parentId, String parentClass, Trace t, ModelMap modelMap,
+    protected String doAdd(boolean prepare, Long parentId, String parentClass, Trace t, ModelMap modelMap,
                            AppVisitor av) {
         modelMap.put("parentId", parentId);
         modelMap.put("parentClass", parentClass);
@@ -158,15 +157,15 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public String edit(@RequestParam(value = "prepare", required = false) boolean prepare,
-                       @RequestParam(value = "parentId", required = false) PK parentId,
+                       @RequestParam(value = "parentId", required = false) Long parentId,
                        @RequestParam(value = "parentClass", required = false) String parentClass,
-                       @RequestParam(value = "id") PK id, @RequestParam(value = "uuid") String uuid, Trace t, ModelMap modelMap,
+                       @RequestParam(value = "id") Long id, @RequestParam(value = "uuid") String uuid, Trace t, ModelMap modelMap,
                        AppVisitor av) {
         return doEdit(prepare, parentId, parentClass, id, uuid, t, modelMap, av);
     }
 
-    protected String doEdit(@RequestParam(value = "prepare", required = false) boolean prepare, PK parentId,
-                            String parentClass, PK id, String uuid, Trace t, ModelMap modelMap, AppVisitor av) {
+    protected String doEdit(@RequestParam(value = "prepare", required = false) boolean prepare, Long parentId,
+                            String parentClass, Long id, String uuid, Trace t, ModelMap modelMap, AppVisitor av) {
         modelMap.put("id", id);
         modelMap.put("uuid", uuid);
 
@@ -180,15 +179,15 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     public @ResponseBody
-    Result<Object> get(@RequestParam(value = "parentId", required = false) PK parentId,
+    Result<Object> get(@RequestParam(value = "parentId", required = false) Long parentId,
                        @RequestParam(value = "parentClass", required = false) String parentClass,
-                       @RequestParam(value = "id", required = false) PK id,
+                       @RequestParam(value = "id", required = false) Long id,
                        @RequestParam(value = "uuid", required = false) String uuid, Trace t, AppVisitor av) {
         T domain = doGet(parentId, parentClass, id, uuid, t, av);
         return new Result<Object>(domain);
     }
 
-    protected T doGet(PK parentId, String parentClass, PK id, String uuid, Trace t, AppVisitor av) {
+    protected T doGet(Long parentId, String parentClass, Long id, String uuid, Trace t, AppVisitor av) {
         if (id != null && uuid != null) {
             return manager().fetchByIdUuid(t, id, uuid);
         } else {
@@ -212,7 +211,7 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
         if (entity.getId() != null && entity.getUuid() != null) {
             manager().update(t, entity);
         } else {
-            PK id = manager().insert(t, entity);
+            Long id = manager().insert(t, entity);
             entity.setId(id);
         }
         return entity;
@@ -228,7 +227,7 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
     @WebLog(db = true, desc = "用户([(${visitor.name})])删除了[(${domainShowName})]([(${id})]), TID:[(${t.tid})]")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public @ResponseBody
-    Result<Object> delete(@RequestParam(value = "id") PK id,
+    Result<Object> delete(@RequestParam(value = "id") Long id,
                           @RequestParam(value = "uuid") String uuid, Trace t, AppVisitor av) {
         if (!checkReferer(true)) {
             return new Result<Object>(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
@@ -237,7 +236,7 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
         return new Result<Object>(!ret, Exceptions.CODE_ERROR_DELETE, "删除对象失败");
     }
 
-    protected Boolean doDelete(PK id, String uuid, Trace t, AppVisitor av) {
+    protected Boolean doDelete(Long id, String uuid, Trace t, AppVisitor av) {
         return manager().delete(t, id, uuid);
     }
 
@@ -250,7 +249,7 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
     @WebLog(db = true, desc = "用户([(${visitor.name})])删除了[(${domainShowName})]([(${uuidIds})]), TID:[(${t.tid})]")
     @RequestMapping(value = "deletes", method = RequestMethod.POST)
     public @ResponseBody
-    Result<Object> deletes(@RequestBody Map<String, PK> uuidIds, Trace t, AppVisitor av) {
+    Result<Object> deletes(@RequestBody Map<String, Long> uuidIds, Trace t, AppVisitor av) {
         if (!checkReferer(true)) {
             return new Result<Object>(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
@@ -258,7 +257,7 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
         return new Result<Object>(!ret, Exceptions.CODE_ERROR_DELETE, "删除对象失败");
     }
 
-    protected Boolean doDeletes(Map<String, PK> uuidIds, Trace t, AppVisitor av) {
+    protected Boolean doDeletes(Map<String, Long> uuidIds, Trace t, AppVisitor av) {
         return manager().deletes(t, uuidIds);
     }
 
@@ -277,12 +276,12 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
     @RequestMapping(value = "/page4Select", method = RequestMethod.GET)
     public @ResponseBody
     Result<Object> page4Select(@RequestBody WebPage webPage, Trace t, AppVisitor av) {
-        Page<PK, T> page = doPage4Select(webPage, t, av);
+        Page<T> page = doPage4Select(webPage, t, av);
         return new Result<Object>(page);
     }
 
-    protected Page<PK, T> doPage4Select(WebPage webPage, Trace t, AppVisitor av) {
-        Page<PK, T> page = webPage.toPage();
+    protected Page<T> doPage4Select(WebPage webPage, Trace t, AppVisitor av) {
+        Page<T> page = webPage.toPage();
         addAreaCnd2Page(page, av);
         return manager().findPage4Select(t, page);
     }
@@ -292,7 +291,7 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
     @RequestMapping(value = "/changeStatus", method = RequestMethod.POST)
     public @ResponseBody
     Result<Object> changeStatus(@RequestParam(value = "status") int status,
-                                @RequestParam(value = "id") PK id, @RequestParam(value = "uuid") String uuid, Trace t) {
+                                @RequestParam(value = "id") Long id, @RequestParam(value = "uuid") String uuid, Trace t) {
         if (!checkReferer(true)) {
             return new Result<Object>(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
@@ -300,7 +299,7 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
         return new Result<Object>(!ret, Exceptions.CODE_ERROR_UPDATE, "更新对象状态失败");
     }
 
-    protected Boolean doChangeStatus(Trace t, PK id, String uuid, int status) {
+    protected Boolean doChangeStatus(Trace t, Long id, String uuid, int status) {
         return manager().updateStatus(t, status, id, uuid);
     }
 
@@ -310,7 +309,7 @@ public abstract class BaseController<PK extends Serializable, T extends Domain<P
      * @param page
      * @param av
      */
-    public void addAreaCnd2Page(Page<PK, T> page, AppVisitor av) {
+    public void addAreaCnd2Page(Page<T> page, AppVisitor av) {
         if (av != null) {
             if (av.getAreaId() == null) {
                 page.addRule(new Equal("level", 0));

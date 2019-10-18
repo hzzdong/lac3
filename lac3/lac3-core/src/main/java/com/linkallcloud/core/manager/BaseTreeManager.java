@@ -1,18 +1,17 @@
 package com.linkallcloud.core.manager;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.linkallcloud.core.domain.TreeDomain;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.service.ITreeService;
 
-public abstract class TreeDomainManager<PK extends Serializable, T extends TreeDomain<PK>, S extends ITreeService<PK, T>>
-        extends BaseManager<PK, T, S> implements ITreeManager<PK, T> {
+import java.util.List;
+
+public abstract class BaseTreeManager<T extends TreeDomain, S extends ITreeService<T>>
+        extends BaseManager<T, S> implements ITreeManager<T> {
 
     @Override
-    public T fetchByIdUuidJoinParent(Trace t, PK id, String uuid, String parentClass) {
+    public T fetchByIdUuidJoinParent(Trace t, Long id, String uuid, String parentClass) {
         return service().fetchByIdUuidJoinParent(t, id, uuid, parentClass);
     }
 
@@ -27,7 +26,7 @@ public abstract class TreeDomainManager<PK extends Serializable, T extends TreeD
     }
 
     @Override
-    public Boolean updateCode(Trace t, PK id, String code) {
+    public Boolean updateCode(Trace t, Long id, String code) {
         return service().updateCode(t, id, code);
     }
 

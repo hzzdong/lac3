@@ -4,12 +4,12 @@ import java.io.Serializable;
 
 import com.linkallcloud.core.dto.Tree;
 
-public abstract class TreeDomain<PK extends Serializable> extends Domain<PK> {
+public abstract class TreeDomain extends Domain  {
 	private static final long serialVersionUID = -938988291042654935L;
 
 	private String code;// 系统编码
 
-	private PK parentId;
+	private Long parentId;
 	private String parentClass;
 
 	private String govCode;
@@ -34,7 +34,7 @@ public abstract class TreeDomain<PK extends Serializable> extends Domain<PK> {
 		super();
 	}
 
-	public TreeDomain(PK parentId, String name, String govCode, int sort) {
+	public TreeDomain(Long parentId, String name, String govCode, int sort) {
 		super();
 		this.parentId = parentId;
 		this.name = name;
@@ -42,11 +42,11 @@ public abstract class TreeDomain<PK extends Serializable> extends Domain<PK> {
 		this.sort = sort;
 	}
 
-	public TreeDomain(PK id, String uuid) {
+	public TreeDomain(Long id, String uuid) {
 		super(id, uuid);
 	}
 
-	public TreeDomain(PK id) {
+	public TreeDomain(Long id) {
 		super(id);
 	}
 
@@ -54,7 +54,7 @@ public abstract class TreeDomain<PK extends Serializable> extends Domain<PK> {
 		return "-";
 	}
 
-	public void setParent(TreeDomain<PK> parent) {
+	public void setParent(TreeDomain parent) {
 		if (parent != null) {
 			this.setParentId(parent.getId());
 			this.setParentClass(parent.getClass().getSimpleName());
@@ -75,11 +75,11 @@ public abstract class TreeDomain<PK extends Serializable> extends Domain<PK> {
 		return false;
 	}
 
-	public PK getParentId() {
+	public Long getParentId() {
 		return parentId;
 	}
 
-	public void setParentId(PK parentId) {
+	public void setParentId(Long parentId) {
 		this.parentId = parentId;
 	}
 

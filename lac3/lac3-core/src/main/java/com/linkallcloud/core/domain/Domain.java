@@ -1,9 +1,7 @@
 package com.linkallcloud.core.domain;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.UUID;
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.linkallcloud.core.dto.born.DefaultDtoBorning;
 import com.linkallcloud.core.dto.born.DtoBorning;
 import com.linkallcloud.core.dto.born.DtoBorns;
@@ -13,10 +11,10 @@ import com.linkallcloud.core.log.Logs;
 import com.linkallcloud.core.vo.Vo;
 import org.springframework.beans.BeanUtils;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.annotation.JSONField;
+import java.util.Date;
+import java.util.UUID;
 
-public abstract class Domain<PK extends Serializable> implements IDomain<PK> {
+public abstract class Domain implements IDomain {
     private static final long serialVersionUID = 5910672863713144935L;
 
     @JSONField(serialize = false)
@@ -25,7 +23,7 @@ public abstract class Domain<PK extends Serializable> implements IDomain<PK> {
     /**
      * 实体编号（唯一标识）
      */
-    protected PK id;
+    protected Long id;
     protected String uuid;
 
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
@@ -45,13 +43,13 @@ public abstract class Domain<PK extends Serializable> implements IDomain<PK> {
         this.createTime = new Date();
     }
 
-    public Domain(PK id) {
+    public Domain(Long id) {
         this();
         this.id = id;
         this.uuid = generateUuid();
     }
 
-    public Domain(PK id, String uuid) {
+    public Domain(Long id, String uuid) {
         this();
         this.id = id;
         this.uuid = uuid;
@@ -75,18 +73,18 @@ public abstract class Domain<PK extends Serializable> implements IDomain<PK> {
 
     /**
      * Domain 转换成 Vo,根据提供的方法和构造参数，自动查找合适的静态构造方法或者构造器.
-     * 
+     *
      * @param domain
      * @param classV
      * @return
      */
-    public static <PK extends Serializable, E extends Domain<PK>, V extends Vo> V domain2Vo(E domain, Class<V> classV) {
-        return Domain.domain2Vo(domain, classV, null, new Object[] { domain });
+    public static <E extends Domain, V extends Vo> V domain2Vo(E domain, Class<V> classV) {
+        return Domain.domain2Vo(domain, classV, null, new Object[]{domain});
     }
 
     /**
      * Domain 转换成 Vo,根据提供的方法和构造参数，自动查找合适的静态构造方法或者构造器.
-     * 
+     *
      * @param domain
      * @param classV
      * @param methodName
@@ -94,8 +92,8 @@ public abstract class Domain<PK extends Serializable> implements IDomain<PK> {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <PK extends Serializable, E extends Domain<PK>, V extends Vo> V domain2Vo(E domain, Class<V> classV,
-            String methodName, Object[] methodArgs) {
+    public static <E extends Domain, V extends Vo> V domain2Vo(E domain, Class<V> classV,
+                                                               String methodName, Object[] methodArgs) {
         if (domain != null && classV != null) {
             if (matchDomainArg(methodArgs, domain)) {
                 Class<?>[] createArgTypes = Mirror.evalToTypes(methodArgs);
@@ -130,18 +128,18 @@ public abstract class Domain<PK extends Serializable> implements IDomain<PK> {
 
     /**
      * Vo 转换成 Domain,根据提供的方法和构造参数，自动查找合适的静态构造方法或者构造器.
-     * 
+     *
      * @param vo
      * @param classD
      * @return
      */
-    public static <PK extends Serializable, E extends Domain<PK>, V extends Vo> E vo2Domain(V vo, Class<E> classD) {
-        return Domain.vo2Domain(vo, classD, null, new Object[] { vo });
+    public static <E extends Domain, V extends Vo> E vo2Domain(V vo, Class<E> classD) {
+        return Domain.vo2Domain(vo, classD, null, new Object[]{vo});
     }
 
     /**
      * Vo 转换成 Domain,根据提供的方法和构造参数，自动查找合适的静态构造方法或者构造器.
-     * 
+     *
      * @param vo
      * @param classD
      * @param methodName
@@ -149,8 +147,8 @@ public abstract class Domain<PK extends Serializable> implements IDomain<PK> {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <PK extends Serializable, E extends Domain<PK>, V extends Vo> E vo2Domain(V vo, Class<E> classD,
-            String methodName, Object[] methodArgs) {
+    public static <E extends Domain, V extends Vo> E vo2Domain(V vo, Class<E> classD,
+                                                               String methodName, Object[] methodArgs) {
         if (vo != null && classD != null) {
             if (matchDomainArg(methodArgs, vo)) {
                 Class<?>[] createArgTypes = Mirror.evalToTypes(methodArgs);
@@ -177,7 +175,7 @@ public abstract class Domain<PK extends Serializable> implements IDomain<PK> {
 
     /**
      * 检查参数中是否匹配到参数obj
-     * 
+     *
      * @param args
      * @param obj
      * @return true or false
@@ -195,12 +193,12 @@ public abstract class Domain<PK extends Serializable> implements IDomain<PK> {
     }
 
     @Override
-    public PK getId() {
+    public Long getId() {
         return id;
     }
 
     @Override
-    public void setId(PK id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -261,7 +259,7 @@ public abstract class Domain<PK extends Serializable> implements IDomain<PK> {
         if (!getClass().equals(obj.getClass())) {
             return false;
         }
-        IDomain<PK> that = (IDomain<PK>) obj;
+        IDomain that = (IDomain) obj;
         return null == this.getId() ? false : this.getId().equals(that.getId());
     }
 

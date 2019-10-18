@@ -203,7 +203,7 @@ public class Controllers {
         modelMap.put("user", user);
     }
 
-    public static <PK extends Serializable, T extends Domain<PK>> Map<PK, T> getIdMap(List<T> entitys) {
+    public static <T extends Domain> Map<Long, T> getIdMap(List<T> entitys) {
         return entitys.stream().collect(Collectors.toMap(T::getId, Function.identity(), (key1, key2) -> key2));
     }
 

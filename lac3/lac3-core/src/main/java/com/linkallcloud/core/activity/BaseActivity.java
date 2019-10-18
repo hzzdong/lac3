@@ -1,39 +1,37 @@
-package com.linkallcloud.core.service;
+package com.linkallcloud.core.activity;
 
-import java.io.Serializable;
+import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.PageHelper;
+import com.linkallcloud.core.dao.IDao;
+import com.linkallcloud.core.domain.Domain;
+import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.exception.BizException;
+import com.linkallcloud.core.exception.Exceptions;
+import com.linkallcloud.core.lang.Mirror;
+import com.linkallcloud.core.lang.Strings;
+import com.linkallcloud.core.log.Log;
+import com.linkallcloud.core.log.Logs;
+import com.linkallcloud.core.pagination.Page;
+import com.linkallcloud.core.query.Query;
+import com.linkallcloud.core.query.rule.Equal;
+import com.linkallcloud.core.util.Domains;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.linkallcloud.core.dao.IDao;
-import com.linkallcloud.core.domain.Domain;
-import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.lang.Mirror;
-import com.linkallcloud.core.lang.Strings;
-import com.linkallcloud.core.log.Log;
-import com.linkallcloud.core.log.Logs;
-import com.linkallcloud.core.query.Query;
-import com.linkallcloud.core.query.rule.Equal;
-import com.linkallcloud.core.util.Domains;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.alibaba.fastjson.JSON;
-import com.github.pagehelper.PageHelper;
-import com.linkallcloud.core.pagination.Page;
-
-public abstract class BusiLogBaseService<PK extends Serializable, T extends Domain<PK>, M extends IDao<PK, T>>
-        implements IService<PK, T> {
+public abstract class BaseActivity<T extends Domain, D extends IDao<T>> implements IActivity<T> {
 
     protected Log log = Logs.get();
 
     protected Mirror<T> mirror;
 
     @SuppressWarnings("unchecked")
-    public BusiLogBaseService() {
+    public BaseActivity() {
         super();
         try {
-            mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[1]);
+            mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
         } catch (Throwable e) {
             if (log.isWarnEnabled()) {
                 log.warn("!!!Fail to get TypeParams for self!", e);
@@ -46,7 +44,7 @@ public abstract class BusiLogBaseService<PK extends Serializable, T extends Doma
         return (null == mirror) ? null : mirror.getType();
     }
 
-    public abstract M dao();
+    public abstract D dao();
 
     protected void beanValidator(T entity) {
         // TODO
@@ -69,14 +67,13 @@ public abstract class BusiLogBaseService<PK extends Serializable, T extends Doma
 
     /**
      * @param t
-     * @param isNew
      * @param entity
      * @param field
      * @param filedValue
      * @return
      * @
      */
-    protected boolean exist(Trace t, boolean isNew, T entity, String field, Object filedValue) {
+    public boolean exist(Trace t, T entity, String field, Object filedValue) {
         if (Strings.isBlank(field) || entity == null || filedValue == null) {
             return false;
         }
@@ -104,37 +101,26 @@ public abstract class BusiLogBaseService<PK extends Serializable, T extends Doma
         return false;
     }
 
-    @Transactional
     @Override
-    public PK insert(Trace t, T entity) {
+    public Long insert(Trace t, T entity) {
         if (entity == null) {
             log.error("T entity 不能为null。");
-            throw new RuntimeException("T entity 不能为null。");
+            throw new BizException(Exceptions.CODE_ERROR_ADD, "T entity 不能为null。");
         }
+
         beanValidator(entity);
-
-        // if(entity.getId().getClass().getSimpleName().equals("String")) {
-        // String idValue = (String) entity.getId();
-        // if (Strings.isBlank(idValue)) {
-        // entity.setId((PK)entity.generateUuid());
-        // }
-        // }
-
         before(t, true, entity);
-
         int rows = dao().insert(t, entity);
-
         after(t, true, entity);
 
         if (rows > 0) {
-            log.debug("insert 成功，tid：" + t.getTid() + ", id:" + entity.getId());
+            log.debugf("%s, insert 成功，tid：%s, id:%s", entity.getClass().getName(), t.getTid(), entity.getId());
         } else {
-            log.error("insert 失败，tid：" + t.getTid() + ", id:" + entity.getId());
+            log.debugf("%s, insert 失败，tid：%s, id:%s", entity.getClass().getName(), t.getTid(), entity.getId());
         }
         return entity.getId();
     }
 
-    @Transactional
     @Override
     public boolean update(Trace t, T entity) {
         beanValidator(entity);
@@ -143,24 +129,23 @@ public abstract class BusiLogBaseService<PK extends Serializable, T extends Doma
         int rows = dao().update(t, entity);
         after(t, false, entity);
         if (rows > 0) {
-            log.debug("update 成功，tid：" + t.getTid() + ", id:" + entity.getId());
+            log.debugf("%s, update 成功，tid：%s, id:%s", entity.getClass().getName(), t.getTid(), entity.getId());
         } else {
-            log.error("update 失败，tid：" + t.getTid() + ", id:" + entity.getId());
+            log.debugf("%s, update 失败，tid：%s, id:%s", entity.getClass().getName(), t.getTid(), entity.getId());
         }
         return retBool(rows);
     }
 
-    @Transactional
     @Override
-    public boolean updates(Trace t, int status, Map<String, PK> uuidIds) {
+    public boolean updates(Trace t, int status, Map<String, Long> uuidIds) {
         List<T> checkedEntities = findByUuidIds(t, uuidIds);
         if (checkedEntities != null && !checkedEntities.isEmpty() && checkedEntities.size() == uuidIds.size()) {
-            List<PK> ids = Domains.parseIds(uuidIds);
+            List<Long> ids = Domains.parseIds(uuidIds);
             int rows = dao().updates(t, status, ids);
             if (rows > 0) {
-                log.debug("updates 成功，tid：" + t.getTid() + ", ids:" + JSON.toJSONString(ids));
+                log.debugf("%s, update 成功，tid：%s, ids:%s", getDomainClass().getName(), t.getTid(), JSON.toJSONString(ids));
             } else {
-                log.error("updates 失败，tid：" + t.getTid() + ", ids:" + JSON.toJSONString(ids));
+                log.debugf("%s, update 失败，tid：%s, ids:%s", getDomainClass().getName(), t.getTid(), JSON.toJSONString(ids));
             }
             return retBool(rows);
         }
@@ -168,41 +153,38 @@ public abstract class BusiLogBaseService<PK extends Serializable, T extends Doma
         return false;
     }
 
-    @Transactional
     @Override
-    public boolean updateStatus(Trace t, int status, PK id, String uuid) {
+    public boolean updateStatus(Trace t, int status, Long id, String uuid) {
         int rows = dao().updateStatus(t, status, id, uuid);
         if (rows > 0) {
-            log.debug("updateStatus 成功，tid：" + t.getTid() + ", id:" + id);
+            log.debugf("%s, updateStatus 成功，tid：%s, id:%s", getDomainClass().getName(), t.getTid(), id);
         } else {
-            log.error("updateStatus 失败，tid：" + t.getTid() + ", id:" + id);
+            log.debugf("%s, updateStatus 失败，tid：%s, id:%s", getDomainClass().getName(), t.getTid(), id);
         }
         return retBool(rows);
     }
 
-    @Transactional
     @Override
-    public boolean delete(Trace t, PK id, String uuid) {
+    public boolean delete(Trace t, Long id, String uuid) {
         int rows = dao().delete(t, id, uuid);
         if (rows > 0) {
-            log.debug("delete 成功，tid：" + t.getTid() + ", id:" + id);
+            log.debugf("%s, delete 成功，tid：%s, id:%s", getDomainClass().getName(), t.getTid(), id);
         } else {
-            log.error("delete 失败，tid：" + t.getTid() + ", id:" + id);
+            log.debugf("%s, delete 失败，tid：%s, id:%s", getDomainClass().getName(), t.getTid(), id);
         }
         return retBool(rows);
     }
 
-    @Transactional
     @Override
-    public boolean deletes(Trace t, Map<String, PK> uuidIds) {
+    public boolean deletes(Trace t, Map<String, Long> uuidIds) {
         List<T> checkedEntities = findByUuidIds(t, uuidIds);
         if (checkedEntities != null && !checkedEntities.isEmpty() && checkedEntities.size() == uuidIds.size()) {
-            List<PK> ids = Domains.parseIds(uuidIds);
+            List<Long> ids = Domains.parseIds(uuidIds);
             int rows = dao().deletes(t, ids);
             if (rows > 0) {
-                log.debug("deletes 成功，tid：" + t.getTid() + ", ids:" + JSON.toJSONString(ids));
+                log.debugf("%s, deletes 成功，tid：%s, ids:%s", getDomainClass().getName(), t.getTid(), JSON.toJSONString(ids));
             } else {
-                log.error("deletes 失败，tid：" + t.getTid() + ", ids:" + JSON.toJSONString(ids));
+                log.debugf("%s, deletes 失败，tid：%s, ids:%s", getDomainClass().getName(), t.getTid(), JSON.toJSONString(ids));
             }
             return retBool(rows);
         }
@@ -211,23 +193,23 @@ public abstract class BusiLogBaseService<PK extends Serializable, T extends Doma
     }
 
     @Override
-    public T fetchById(Trace t, PK id) {
+    public T fetchById(Trace t, Long id) {
         return dao().fetchById(t, id);
     }
 
     @Override
-    public T fetchByIdUuid(Trace t, PK id, String uuid) {
+    public T fetchByIdUuid(Trace t, Long id, String uuid) {
         return dao().fetchByIdUuid(t, id, uuid);
     }
 
     @Override
-    public List<T> findByIds(Trace t, List<PK> idList) {
+    public List<T> findByIds(Trace t, List<Long> idList) {
         return dao().findByIds(t, idList);
     }
 
     @Override
-    public List<T> findByUuidIds(Trace t, Map<String, PK> uuidIdMap) {
-        List<PK> ids = Domains.parseIds(uuidIdMap);
+    public List<T> findByUuidIds(Trace t, Map<String, Long> uuidIdMap) {
+        List<Long> ids = Domains.parseIds(uuidIdMap);
         if (ids != null && ids.size() > 0) {
             List<T> entities = findByIds(t, ids);
             if (entities != null && !entities.isEmpty()) {
@@ -249,9 +231,13 @@ public abstract class BusiLogBaseService<PK extends Serializable, T extends Doma
     }
 
     @Override
-    public Page<PK, T> findPage(Trace t, Page<PK, T> page) {
-        page.checkPageParameters();
+    public <X> List<X> query(Trace t, Query query) {
+        return dao().query(t, query);
+    }
 
+    @Override
+    public Page<T> findPage(Trace t, Page<T> page) {
+        page.checkPageParameters();
         try {
             PageHelper.startPage(page.getPageNum(), page.getLength());
             List<T> list = dao().findPage(t, page);
@@ -268,11 +254,29 @@ public abstract class BusiLogBaseService<PK extends Serializable, T extends Doma
     }
 
     @Override
-    public Page<PK, T> findPage4Select(Trace t, Page<PK, T> page) {
+    public Page<T> findPage4Select(Trace t, Page<T> page) {
         page.checkPageParameters();
         try {
             PageHelper.startPage(page.getPageNum(), page.getLength());
             List<T> list = dao().findPage4Select(t, page);
+            if (list instanceof com.github.pagehelper.Page) {
+                page.setRecordsTotal(((com.github.pagehelper.Page<T>) list).getTotal());
+                page.checkPageParameters();
+                page.setRecordsFiltered(page.getRecordsTotal());
+                page.addDataAll(list);
+            }
+            return page;
+        } finally {
+            PageHelper.clearPage();
+        }
+    }
+
+    @Override
+    public <X> Page<X> queryPage(Trace t, Page<X> page) {
+        page.checkPageParameters();
+        try {
+            PageHelper.startPage(page.getPageNum(), page.getLength());
+            List<X> list = dao().queryPage(t, page);
             if (list instanceof com.github.pagehelper.Page) {
                 page.setRecordsTotal(((com.github.pagehelper.Page<T>) list).getTotal());
                 page.checkPageParameters();
@@ -294,5 +298,4 @@ public abstract class BusiLogBaseService<PK extends Serializable, T extends Doma
     protected boolean retBool(int result) {
         return result >= 1;
     }
-
 }

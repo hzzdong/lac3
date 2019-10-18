@@ -1,38 +1,23 @@
-package com.linkallcloud.core.service;
+package com.linkallcloud.core.activity;
 
 import com.linkallcloud.core.dao.ITreeDao;
 import com.linkallcloud.core.domain.TreeDomain;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.dto.Trees;
-import com.linkallcloud.core.lang.Mirror;
+import com.linkallcloud.core.exception.BaseRuntimeException;
+import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.query.Query;
 import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.core.util.Domains;
-import com.linkallcloud.core.exception.BaseRuntimeException;
-import com.linkallcloud.core.exception.Exceptions;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.io.Serializable;
 import java.util.List;
 
-public abstract class TreeDomainService<PK extends Serializable, T extends TreeDomain<PK>, M extends ITreeDao<PK, T>>
-        extends BaseService<PK, T, M> implements ITreeService<PK, T> {
-
-    @SuppressWarnings("unchecked")
-    public TreeDomainService() {
-        try {
-            mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[1]);
-        } catch (Throwable e) {
-            if (log.isWarnEnabled()) {
-                log.warn("!!!Fail to get TypeParams for self!", e);
-            }
-        }
-    }
+public abstract class BaseTreeActivity<T extends TreeDomain, D extends ITreeDao<T>> extends BaseActivity<T, D> implements ITreeActivity<T> {
 
     @Override
-    public T fetchByIdUuidJoinParent(Trace t, PK id, String uuid, String parentClass) {
+    public T fetchByIdUuidJoinParent(Trace t, Long id, String uuid, String parentClass) {
         return dao().fetchByIdUuidJoinParent(t, id, uuid, parentClass);
     }
 
@@ -60,6 +45,18 @@ public abstract class TreeDomainService<PK extends Serializable, T extends TreeD
         Trees.assembleDomain2Tree(root, list);
         return root;
     }
+
+    @Override
+    public Boolean updateCode(Trace t, Long id, String code) {
+        int rows = dao().updateCode(t, id, code);
+        if (rows > 0) {
+            log.debugf("%s, updateCode 成功，tid：%s, id:%s", getDomainClass().getName(), t.getTid(), id);
+        } else {
+            log.debugf("%s, updateCode 失败，tid：%s, id:%s", getDomainClass().getName(), t.getTid(), id);
+        }
+        return retBool(rows);
+    }
+
 
     @Override
     protected void before(Trace t, boolean isNew, T entity) {
@@ -122,7 +119,6 @@ public abstract class TreeDomainService<PK extends Serializable, T extends TreeD
     @Override
     protected void after(Trace t, boolean isNew, T entity) {
         super.after(t, isNew, entity);
-
         treeAfter(t, isNew, entity);
     }
 
@@ -141,17 +137,4 @@ public abstract class TreeDomainService<PK extends Serializable, T extends TreeD
             updateCode(t, entity.getId(), entity.getCode());
         }
     }
-
-    @Transactional
-    @Override
-    public Boolean updateCode(Trace t, PK id, String code) {
-        int rows = dao().updateCode(t, id, code);
-        if (rows > 0) {
-            log.debug("updateCode 成功，t：" + t.getTid() + ", id:" + id);
-        } else {
-            log.error("updateCode 失败，t：" + t.getTid() + ", id:" + id);
-        }
-        return retBool(rows);
-    }
-
 }

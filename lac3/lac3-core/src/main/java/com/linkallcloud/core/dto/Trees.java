@@ -1,17 +1,12 @@
 package com.linkallcloud.core.dto;
 
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import com.linkallcloud.core.domain.TreeDomain;
 import com.linkallcloud.core.lang.Strings;
+
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Trees {
 
@@ -63,12 +58,12 @@ public class Trees {
 
     /**
      * 把nodeList中的根节点作为直接子节点挂到parent上
-     * 
+     *
      * @param parent
      * @param nodeList
      */
-    public static <PK extends Serializable, T extends TreeDomain<PK>> void assembleDirectTreeNode(Tree parent,
-            List<T> nodeList, String idPreFix) {
+    public static <T extends TreeDomain> void assembleDirectTreeNode(Tree parent,
+                                                                     List<T> nodeList, String idPreFix) {
         if (parent == null) {
             parent = new Tree("0", null, "虚拟根节点");
         }
@@ -77,7 +72,7 @@ public class Trees {
             return;
         }
 
-        for (TreeDomain<PK> node : nodeList) {
+        for (TreeDomain node : nodeList) {
             Tree item = node.toTreeNode();
             item.setpId(parent.getId());
             if (!Strings.isBlank(idPreFix)) {
@@ -89,7 +84,7 @@ public class Trees {
 
     /**
      * 把children挂到parent下，并把parent加入children中。
-     * 
+     *
      * @param children
      * @param parent
      */
@@ -111,19 +106,19 @@ public class Trees {
 
     /**
      * 把nodeList挂成rootId的直接子节点
-     * 
+     *
      * @param rootId
      * @param nodeList
      * @param idPreFix
      * @return
      */
-    public static <PK extends Serializable, T extends TreeDomain<PK>> List<Tree>
-            assembleDirectTreeNodeList(String rootId, List<T> nodeList, String idPreFix) {
+    public static <T extends TreeDomain> List<Tree>
+    assembleDirectTreeNodeList(String rootId, List<T> nodeList, String idPreFix) {
         if (nodeList == null || nodeList.isEmpty()) {
             return null;
         }
         List<Tree> result = new ArrayList<Tree>();
-        for (TreeDomain<PK> node : nodeList) {
+        for (TreeDomain node : nodeList) {
             Tree item = node.toTreeNode();
             item.setpId(rootId);
             if (!Strings.isBlank(idPreFix)) {
@@ -137,45 +132,43 @@ public class Trees {
 
     /**
      * 把nodeList中节点挂成父子关系
-     * 
+     *
      * @param nodeList
      * @return
      */
-    public static <PK extends Serializable, T extends TreeDomain<PK>> List<Tree> assembleTreeList(List<T> nodeList) {
+    public static <T extends TreeDomain> List<Tree> assembleTreeList(List<T> nodeList) {
         return Trees.assembleTreeList(null, nodeList, -1);
     }
 
     /**
      * 把nodeList中的根节点挂到rootId上，其它正常挂成父子关系
-     * 
+     *
      * @param rootId
      * @param nodeList
      * @return
      */
-    public static <PK extends Serializable, T extends TreeDomain<PK>> List<Tree> assembleTreeList(String rootId,
-            List<T> nodeList) {
+    public static <T extends TreeDomain> List<Tree> assembleTreeList(String rootId,
+                                                                     List<T> nodeList) {
         return Trees.assembleTreeList(rootId, nodeList, -1);
     }
 
     /**
      * 把nodeList中的根节点挂到rootId上，其它正常挂成父子关系，支持自定义扩展字段。
-     * 
+     *
      * @param rootId
      * @param nodeList
-     * @param statusGe
-     *            忽略小于status的状态的节点。-1表示不过滤。
-     * @param extendsFields
-     *            扩展属性
+     * @param statusGe      忽略小于status的状态的节点。-1表示不过滤。
+     * @param extendsFields 扩展属性
      * @return
      */
-    public static <PK extends Serializable, T extends TreeDomain<PK>> List<Tree> assembleTreeList(String rootId,
-            List<T> nodeList, int statusGe, String[] extendsFields) {
+    public static <T extends TreeDomain> List<Tree> assembleTreeList(String rootId,
+                                                                     List<T> nodeList, int statusGe, String[] extendsFields) {
         if (nodeList == null || nodeList.isEmpty()) {
             return null;
         }
 
         List<Tree> result = new ArrayList<Tree>();
-        for (TreeDomain<PK> node : nodeList) {
+        for (TreeDomain node : nodeList) {
             if (statusGe == -1 || node.getStatus() >= statusGe) {
                 if (node.isTopParent()) {
                     Tree item = createTreeNode(rootId, node, extendsFields);
@@ -192,22 +185,21 @@ public class Trees {
 
     /**
      * 把nodeList中的根节点挂到rootId上，其它正常挂成父子关系
-     * 
+     *
      * @param rootId
      * @param nodeList
-     * @param statusGe
-     *            忽略小于status的状态的节点。-1表示不过滤。
+     * @param statusGe 忽略小于status的状态的节点。-1表示不过滤。
      * @return
      */
-    public static <PK extends Serializable, T extends TreeDomain<PK>> List<Tree> assembleTreeList(String rootId,
-            List<T> nodeList, int statusGe) {
+    public static <T extends TreeDomain> List<Tree> assembleTreeList(String rootId,
+                                                                     List<T> nodeList, int statusGe) {
         List<Tree> result = new ArrayList<Tree>();
 
         if (nodeList == null || nodeList.isEmpty()) {
             return result;
         }
 
-        for (TreeDomain<PK> node : nodeList) {
+        for (TreeDomain node : nodeList) {
             if (statusGe == -1 || node.getStatus() >= statusGe) {
                 if (node.isTopParent()) {
                     Tree item = node.toTreeNode();
@@ -225,7 +217,7 @@ public class Trees {
 
     /**
      * 从nodes中找出根节点
-     * 
+     *
      * @param nodes
      * @return
      */
@@ -263,7 +255,7 @@ public class Trees {
 
     /**
      * 过滤无效的树节点，目前主要功能是：过滤非根节点，但是父节点被禁用删除之类的节点
-     * 
+     *
      * @param nodes
      * @return
      */
@@ -290,17 +282,16 @@ public class Trees {
 
     /**
      * 把nodes检查父子关系，计算后与root挂起来，并把有效的树节点返回
-     * 
-     * @param root
-     *            若root不为null，这把nodes中的第一层节点挂到root下，并和root一起返回
-     * @param nodes
+     *
+     * @param root     若root不为null，这把nodes中的第一层节点挂到root下，并和root一起返回
+     * @param nodeList
      * @return
      */
-    public static <PK extends Serializable, T extends TreeDomain<PK>> List<Tree> assembleDomain2List(Tree root,
-            List<T> nodeList) {
+    public static <T extends TreeDomain> List<Tree> assembleDomain2List(Tree root,
+                                                                        List<T> nodeList) {
         CopyOnWriteArrayList<Tree> nodes = new CopyOnWriteArrayList<>();
         if (nodeList != null && !nodeList.isEmpty()) {
-            for (TreeDomain<PK> enode : nodeList) {
+            for (TreeDomain enode : nodeList) {
                 Tree tnode = enode.toTreeNode();
                 nodes.add(tnode);
             }
@@ -310,9 +301,8 @@ public class Trees {
 
     /**
      * 把nodes检查父子关系，计算后与root挂起来，并把有效的树节点返回
-     * 
-     * @param root
-     *            若root不为null，这把nodes中的第一层节点挂到root下，并和root一起返回
+     *
+     * @param root  若root不为null，这把nodes中的第一层节点挂到root下，并和root一起返回
      * @param nodes
      * @return
      */
@@ -323,7 +313,7 @@ public class Trees {
 
     /**
      * 把nodeList中的根节点挂到parent上，返回一颗树parent
-     * 
+     *
      * @param parent
      * @param nodes
      */
@@ -337,11 +327,10 @@ public class Trees {
 
     /**
      * 把nodeList中的根节点挂到parent上，返回一颗树parent
-     * 
+     *
      * @param parent
      * @param nodes
-     * @param statusGe
-     *            忽略小于status的状态的节点。-1表示不过滤。
+     * @param statusGe 忽略小于status的状态的节点。-1表示不过滤。
      */
     public static void assembleTree(Tree parent, CopyOnWriteArrayList<Tree> nodes, int statusGe) {
         if (parent == null) {
@@ -382,28 +371,27 @@ public class Trees {
 
     /**
      * 把nodeList中的根节点挂到parent上，返回一颗树
-     * 
+     *
      * @param parent
      * @param nodeList
      */
-    public static <PK extends Serializable, T extends TreeDomain<PK>> void assembleDomain2Tree(Tree parent,
-            Collection<T> nodeList) {
+    public static <T extends TreeDomain> void assembleDomain2Tree(Tree parent,
+                                                                  Collection<T> nodeList) {
         Trees.assembleDomain2Tree(parent, nodeList, -1);
     }
 
     /**
      * 把nodeList中的根节点挂到parent上，返回一颗树
-     * 
+     *
      * @param parent
      * @param nodeList
-     * @param statusGe
-     *            忽略小于status的状态的节点。-1表示不过滤。
+     * @param statusGe 忽略小于status的状态的节点。-1表示不过滤。
      */
-    public static <PK extends Serializable, T extends TreeDomain<PK>> void assembleDomain2Tree(Tree parent,
-            Collection<T> nodeList, int statusGe) {
+    public static <T extends TreeDomain> void assembleDomain2Tree(Tree parent,
+                                                                  Collection<T> nodeList, int statusGe) {
         CopyOnWriteArrayList<Tree> nodes = new CopyOnWriteArrayList<>();
         if (nodeList != null && !nodeList.isEmpty()) {
-            for (TreeDomain<PK> enode : nodeList) {
+            for (TreeDomain enode : nodeList) {
                 Tree tnode = enode.toTreeNode();
                 nodes.add(tnode);
             }
@@ -413,19 +401,17 @@ public class Trees {
 
     /**
      * 把nodeList中的根节点挂到parent上，返回一颗树，支持自定义字段。
-     * 
+     *
      * @param parent
      * @param nodeList
-     * @param statusGe
-     *            忽略小于status的状态的节点。-1表示不过滤。
-     * @param extendsFields
-     *            扩展属性
+     * @param statusGe      忽略小于status的状态的节点。-1表示不过滤。
+     * @param extendsFields 扩展属性
      */
-    public static <PK extends Serializable, T extends TreeDomain<PK>> void assembleDomain2Tree(Tree parent,
-            CopyOnWriteArrayList<T> nodeList, int statusGe, String[] extendsFields) {
+    public static <T extends TreeDomain> void assembleDomain2Tree(Tree parent,
+                                                                  CopyOnWriteArrayList<T> nodeList, int statusGe, String[] extendsFields) {
         CopyOnWriteArrayList<Tree> nodes = new CopyOnWriteArrayList<>();
         if (nodeList != null && !nodeList.isEmpty()) {
-            for (TreeDomain<PK> enode : nodeList) {
+            for (TreeDomain enode : nodeList) {
                 Tree tnode = Trees.createTreeNode(null, enode, extendsFields);
                 nodes.add(tnode);
             }
@@ -433,8 +419,8 @@ public class Trees {
         Trees.assembleTree(parent, nodes, statusGe);
     }
 
-    private static <PK extends Serializable> Tree createTreeNode(String parentId, TreeDomain<PK> node,
-            String[] extendsFields) {
+    private static <PK extends Serializable> Tree createTreeNode(String parentId, TreeDomain node,
+                                                                 String[] extendsFields) {
         Tree item = new Tree(node.getId().toString(), node.getUuid(),
                 Strings.isBlank(parentId) ? node.getParentId().toString() : parentId, node.getName(), node.getGovCode(),
                 String.valueOf(node.getType()), node.getStatus());
@@ -450,7 +436,7 @@ public class Trees {
 
     /**
      * 根据属性名获取属性值
-     * 
+     *
      * @param fieldName
      * @param object
      * @return
@@ -471,7 +457,7 @@ public class Trees {
 
     /**
      * 根据属性名获取属性元素，包括各种安全范围和所有父类
-     * 
+     *
      * @param fieldName
      * @param object
      * @return

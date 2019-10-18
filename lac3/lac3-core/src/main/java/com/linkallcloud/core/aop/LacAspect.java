@@ -194,12 +194,12 @@ public abstract class LacAspect {
         if (dd.getLogFields() != null && dd.getLogFields().length > 0) {
             descBuffer.append("(");
 
-            IDomain<?> domain = null;
+            IDomain domain = null;
             Mirror<?> domainMirror = null;
             for (Object arg : methodArgs) {
                 domainMirror = Mirror.me(arg);
                 if (domainMirror.is(dd.getDomainClass())) {
-                    domain = (IDomain<?>) arg;
+                    domain = (IDomain) arg;
                     break;
                 }
             }
@@ -240,12 +240,12 @@ public abstract class LacAspect {
         if (dd.getLogFields() != null && dd.getLogFields().length > 0) {
             descBuffer.append("(");
 
-            IDomain<?> domain = null;
+            IDomain domain = null;
             Mirror<?> domainMirror = null;
             for (Object arg : methodArgs) {
                 domainMirror = Mirror.me(arg);
                 if (domainMirror.is(dd.getDomainClass())) {
-                    domain = (IDomain<?>) arg;
+                    domain = (IDomain) arg;
                     break;
                 }
             }
@@ -280,9 +280,9 @@ public abstract class LacAspect {
     protected DomainDescription getDomainDescription(ProceedingJoinPoint joinPoint) {
         Class<?> clzz = joinPoint.getTarget().getClass();
         Mirror<?> cmirror = Mirror.me(clzz);
-        Class<? extends IDomain<?>> domainClass = null;
+        Class<? extends IDomain> domainClass = null;
         if (cmirror.isOf(IService.class)) {// service
-            IService<?, ? extends IDomain<?>> service = (IService<?, ? extends IDomain<?>>) joinPoint.getTarget();
+            IService<? extends IDomain> service = (IService<? extends IDomain>) joinPoint.getTarget();
             domainClass = service.getDomainClass();
         } else if (clzz.getAnnotation(Controller.class) != null) {// Controller
             Method method = null;
@@ -293,7 +293,7 @@ public abstract class LacAspect {
             }
             if (method != null) {
                 try {
-                    domainClass = (Class<? extends IDomain<?>>) method.invoke(joinPoint.getTarget());
+                    domainClass = (Class<? extends IDomain>) method.invoke(joinPoint.getTarget());
                 } catch (IllegalAccessException e) {
                 } catch (IllegalArgumentException e) {
                 } catch (InvocationTargetException e) {

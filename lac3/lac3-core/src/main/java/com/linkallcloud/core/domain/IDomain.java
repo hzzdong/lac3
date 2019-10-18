@@ -3,7 +3,7 @@ package com.linkallcloud.core.domain;
 import java.io.Serializable;
 import java.util.Date;
 
-public interface IDomain<PK extends Serializable> extends Serializable {
+public interface IDomain extends Serializable {
 
 	/**
 	 * 状态
@@ -11,8 +11,8 @@ public interface IDomain<PK extends Serializable> extends Serializable {
 	public static final int STATUS_NORMAL = 0;// 0:正常
 	public static final int STATUS_DELETE = 9;// 删除
 
-	PK getId();
-	void setId(PK id);
+	Long getId();
+	void setId(Long id);
 
 	String getUuid();
 	void setUuid(String uuid);

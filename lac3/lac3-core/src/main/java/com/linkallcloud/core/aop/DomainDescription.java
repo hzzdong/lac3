@@ -5,7 +5,7 @@ import com.linkallcloud.core.lang.Strings;
 
 public class DomainDescription {
 
-	private Class<? extends IDomain<?>> domainClass;
+	private Class<? extends IDomain> domainClass;
 
 	private String showName;
 
@@ -15,14 +15,14 @@ public class DomainDescription {
 		super();
 	}
 
-	public DomainDescription(Class<? extends IDomain<?>> domainClass, String showName, String[] logFields) {
+	public DomainDescription(Class<? extends IDomain> domainClass, String showName, String[] logFields) {
 		super();
 		this.domainClass = domainClass;
 		this.showName = showName;
 		this.logFields = logFields;
 	}
 
-	public DomainDescription(Class<? extends IDomain<?>> domainClass, String showName, String logFieldsStr) {
+	public DomainDescription(Class<? extends IDomain> domainClass, String showName, String logFieldsStr) {
 		super();
 		this.domainClass = domainClass;
 		this.showName = showName;
@@ -30,11 +30,11 @@ public class DomainDescription {
 				: Strings.trimAll(logFieldsStr).split(",");
 	}
 
-	public Class<? extends IDomain<?>> getDomainClass() {
+	public Class<? extends IDomain> getDomainClass() {
 		return domainClass;
 	}
 
-	public void setDomainClass(Class<? extends IDomain<?>> domainClass) {
+	public void setDomainClass(Class<? extends IDomain> domainClass) {
 		this.domainClass = domainClass;
 	}
 

@@ -1,17 +1,14 @@
 package com.linkallcloud.core.dto;
 
-import java.io.Serializable;
-
-import com.linkallcloud.core.vo.Vo;
-import org.springframework.beans.BeanUtils;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.linkallcloud.core.domain.IDomain;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.log.Log;
 import com.linkallcloud.core.log.Logs;
+import com.linkallcloud.core.vo.Vo;
+import org.springframework.beans.BeanUtils;
 
-public abstract class FaceDto<PK extends Serializable, T extends IDomain<PK>> extends Vo {
+public abstract class FaceDto<T extends IDomain> extends Vo {
     private static final long serialVersionUID = 1779659772871707621L;
 
     private static Log log = Logs.get();
@@ -65,7 +62,7 @@ public abstract class FaceDto<PK extends Serializable, T extends IDomain<PK>> ex
 
     /**
      * 功能同构造器，把Domain转换成DTO
-     * 
+     *
      * @param domain
      */
     @SuppressWarnings("unchecked")
@@ -84,7 +81,7 @@ public abstract class FaceDto<PK extends Serializable, T extends IDomain<PK>> ex
 
     /**
      * DTO 转换成 Domain
-     * 
+     *
      * @return Domain
      */
     public T toDomain() {
