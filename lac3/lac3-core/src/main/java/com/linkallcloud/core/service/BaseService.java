@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class BaseService<T extends Domain, A extends IActivity<T>> implements IService<T> {
-
     protected Log log = Logs.get();
 
     protected Mirror<T> mirror;
