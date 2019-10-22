@@ -73,6 +73,7 @@ public abstract class BaseActivity<T extends Domain, D extends IDao<T>> implemen
      * @return
      * @
      */
+    @Override
     public boolean exist(Trace t, T entity, String field, Object filedValue) {
         if (Strings.isBlank(field) || entity == null || filedValue == null) {
             return false;

@@ -32,7 +32,7 @@ public abstract class BusiWebLogAspect<T extends WebBusiLog, TS extends IWebBusi
     public BusiWebLogAspect() {
         super();
         try {
-            logMirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[1]);
+            logMirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
         } catch (Throwable e) {
             if (log.isWarnEnabled()) {
                 log.warn("!!!Fail to get TypeParams for self!", e);

@@ -33,7 +33,7 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
     public BaseController() {
         super();
         try {
-            mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[1]);
+            mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
         } catch (Throwable e) {
             if (log.isWarnEnabled()) {
                 log.warn("!!!Fail to get TypeParams for self!", e);

@@ -16,6 +16,10 @@ import java.util.List;
 
 public abstract class BaseTreeActivity<T extends TreeDomain, D extends ITreeDao<T>> extends BaseActivity<T, D> implements ITreeActivity<T> {
 
+    public BaseTreeActivity() {
+        super();
+    }
+
     @Override
     public T fetchByIdUuidJoinParent(Trace t, Long id, String uuid, String parentClass) {
         return dao().fetchByIdUuidJoinParent(t, id, uuid, parentClass);

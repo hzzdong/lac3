@@ -9,6 +9,9 @@ import java.util.List;
 
 public abstract class BaseTreeManager<T extends TreeDomain, S extends ITreeService<T>>
         extends BaseManager<T, S> implements ITreeManager<T> {
+    public BaseTreeManager() {
+        super();
+    }
 
     @Override
     public T fetchByIdUuidJoinParent(Trace t, Long id, String uuid, String parentClass) {

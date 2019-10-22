@@ -2,6 +2,9 @@ package com.linkallcloud.core.manager;
 
 import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.lang.Mirror;
+import com.linkallcloud.core.log.Log;
+import com.linkallcloud.core.log.Logs;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.Query;
 import com.linkallcloud.core.service.IService;
@@ -17,6 +20,27 @@ import java.util.Map;
  */
 public abstract class BaseManager<T extends Domain, S extends IService<T>>
         implements IManager<T> {
+
+    protected Log log = Logs.get();
+
+    protected Mirror<T> mirror;
+
+    @SuppressWarnings("unchecked")
+    public BaseManager() {
+        super();
+        try {
+            mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
+        } catch (Throwable e) {
+            if (log.isWarnEnabled()) {
+                log.warn("!!!Fail to get TypeParams for self!", e);
+            }
+        }
+    }
+
+    @Override
+    public Class<T> getDomainClass() {
+        return (null == mirror) ? null : mirror.getType();
+    }
 
     protected abstract S service();
 
