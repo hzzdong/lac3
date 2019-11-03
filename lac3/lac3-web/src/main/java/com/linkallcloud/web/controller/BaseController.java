@@ -303,6 +303,21 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
         return manager().updateStatus(t, status, id, uuid);
     }
 
+    @WebLog(db = true, desc = "用户([(${visitor.name})])更改了[(${domainShowName})]([(${uuidIds})])的状态为([(${status})]), TID:[(${t.tid})]")
+    @RequestMapping(value = "/changeStatuss", method = RequestMethod.POST)
+    public @ResponseBody
+    Result<Object> changeStatuss(@RequestParam(value = "status") int status, @RequestBody Map<String, Long> uuidIds, Trace t) {
+        if (!checkReferer(true)) {
+            return new Result<Object>(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
+        }
+        Boolean ret = doChangeStatuss(t, uuidIds, status);
+        return new Result<Object>(!ret, Exceptions.CODE_ERROR_UPDATE, "更新对象状态失败");
+    }
+
+    protected Boolean doChangeStatuss(Trace t, Map<String, Long> uuidIds, int status) {
+        return manager().updates(t, status, uuidIds);
+    }
+
     /**
      * fd：把登录用户的area信息作为查询条件加入page中
      *

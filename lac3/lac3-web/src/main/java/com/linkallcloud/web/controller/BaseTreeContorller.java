@@ -71,13 +71,16 @@ public abstract class BaseTreeContorller<T extends TreeDomain, S extends ITreeMa
         T entity = null;
         if (id != null && uuid != null) {
             entity = manager().fetchByIdUuid(t, id, uuid);
-            if (entity.getParentId() == null) {
-                // entity.setParentId(0L);
-            }
         } else {
             entity = mirror.born();
             // entity.setParentId(parentId == null ? 0 : parentId);
             entity.setParentId(parentId);
+        }
+        if (entity.getParentId() != null && entity.getParentId().longValue() > 0) {
+            T parent = manager().fetchById(t, entity.getParentId());
+            if (parent != null) {
+                entity.setParentName(parent.getName());
+            }
         }
         return entity;
     }
