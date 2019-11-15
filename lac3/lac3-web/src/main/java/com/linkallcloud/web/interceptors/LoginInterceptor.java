@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.linkallcloud.web.session.SessionUser;
 
-public class LoginInterceptor extends PermissionInterceptor {
+public abstract class LoginInterceptor extends PermissionInterceptor {
 
 	public LoginInterceptor() {
 		super();

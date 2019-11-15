@@ -1,10 +1,14 @@
 package com.linkallcloud.core.exception;
 
+import com.linkallcloud.core.dto.Result;
+import com.linkallcloud.core.lang.Strings;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.linkallcloud.core.dto.Result;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 public class Exceptions {
 
@@ -20,13 +24,13 @@ public class Exceptions {
     public static final String CODE_ERROR_CACHE = "9006";// 缓存异常
     public static final String CODE_ERROR_FILE = "9007";// 文件错误
     public static final String CODE_ERROR_IMAGE = "9008";// 图片错误
-    
+
     public static final String CODE_ERROR_DELETE = "9010";// DEL错误
     public static final String CODE_ERROR_ADD = "9011";// 新增错误
     public static final String CODE_ERROR_UPDATE = "9012";// 更新错误
     public static final String CODE_ERROR_SEARCH = "9013";// 查询错误
     public static final String CODE_ERROR_SYNC = "9014";// 同步错误
-    
+
     public static final String CODE_ERROR_TIMEOUT = "9020";// 超时错误
     public static final String CODE_ERROR_SESSION_TIMEOUT = "9021";// 会话超时错误
 
@@ -84,5 +88,30 @@ public class Exceptions {
         result.put("message", message);
         return result;
     }
+
+    public static void assertNotNull(Object parameter, String parameterName) {
+        if (parameter == null) {
+            throw new BizException(Exceptions.CODE_ERROR_PARAMETER, String.format("参数[%s]不能为空!", parameterName));
+        }
+    }
+
+    public static void assertNotEmpty(String parameter, String parameterName) {
+        if (Strings.isBlank(parameter)) {
+            throw new BizException(Exceptions.CODE_ERROR_PARAMETER, String.format("参数[%s]不能为空!", parameterName));
+        }
+    }
+
+    public static void assertNotEmpty(Object[] objArray, String objArrayName) {
+        if (ObjectUtils.isEmpty(objArray)) {
+            throw new BizException(Exceptions.CODE_ERROR_PARAMETER, String.format("参数[%s]不能为空!", objArrayName));
+        }
+    }
+
+    public static void assertNotEmpty(Collection<?> collection, String collectionName) {
+        if (CollectionUtils.isEmpty(collection)) {
+            throw new BizException(Exceptions.CODE_ERROR_PARAMETER, String.format("参数[%s]不能为空!", collectionName));
+        }
+    }
+
 
 }

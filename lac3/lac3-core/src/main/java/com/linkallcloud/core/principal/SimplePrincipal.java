@@ -6,10 +6,6 @@ import org.springframework.util.Assert;
  * Simplest implementation of a Principal. Provides no additional attributes beyond those in the Principal interface.
  * This is the closest representation of a principal in the SSO world.
  * 
- * 2011-6-14
- * 
- * @author <a href="mailto:hzzdong@gmail.com">ZhouDong</a>
- * 
  */
 public class SimplePrincipal implements Principal {
     private static final long serialVersionUID = 3248752885262404636L;

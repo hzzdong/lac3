@@ -12,8 +12,6 @@ public class Utils {
      * 
      * @param buffer
      * @param cs
-     * @param headWhiteSpace
-     * @param tailWhiteSpace
      */
     public static void append(StringBuffer buffer, CharSequence cs) {
         append(buffer, cs, false, false);
@@ -44,8 +42,6 @@ public class Utils {
      * 
      * @param buffer
      * @param cs
-     * @param headWhiteSpace
-     * @param tailWhiteSpace
      */
     public static void append(StringBuffer buffer, char cs) {
         append(buffer, cs, false, false);

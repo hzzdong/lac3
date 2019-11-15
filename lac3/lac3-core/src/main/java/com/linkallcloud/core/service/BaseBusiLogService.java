@@ -46,6 +46,18 @@ public abstract class BaseBusiLogService<T extends Domain, A extends IActivity<T
 
     @Transactional(readOnly = false)
     @Override
+    public T save(Trace t, T entity) {
+        if (entity.getId() == null) {
+            Long id = insert(t, entity);
+            entity.setId(id);
+        } else {
+            update(t, entity);
+        }
+        return entity;
+    }
+
+    @Transactional(readOnly = false)
+    @Override
     public Long insert(Trace t, T entity) {
         return activity().insert(t, entity);
     }

@@ -208,13 +208,7 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
     }
 
     protected T doSave(T entity, Trace t, AppVisitor av) {
-        if (entity.getId() != null && entity.getUuid() != null) {
-            manager().update(t, entity);
-        } else {
-            Long id = manager().insert(t, entity);
-            entity.setId(id);
-        }
-        return entity;
+        return manager().save(t, entity);
     }
 
     /**

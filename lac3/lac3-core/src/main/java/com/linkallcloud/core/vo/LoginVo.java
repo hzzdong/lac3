@@ -11,9 +11,10 @@ public class LoginVo extends Vo {
     private String password;
     private String userType;
     private Integer rememberMe;
-    private String vcode;
+    private String vcode;//validate code
+    private String lt;//login ticket
     private Client client;
-    
+    private String base; // base path
     private String pwdStrength;//密码强度
 
     public LoginVo() {
@@ -25,16 +26,16 @@ public class LoginVo extends Vo {
     }
 
     public String getUserType() {
-		return userType;
-	}
+        return userType;
+    }
 
-	public void setUserType(String userType) {
-		this.userType = userType;
-	}
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
 
-	public String getLoginName() {
+    public String getLoginName() {
         return loginName;
-    }  
+    }
 
     public void setLoginName(String loginName) {
         this.loginName = loginName;
@@ -81,4 +82,19 @@ public class LoginVo extends Vo {
         this.pwdStrength = pwdStrength;
     }
 
+    public String getLt() {
+        return lt;
+    }
+
+    public void setLt(String lt) {
+        this.lt = lt;
+    }
+
+    public String getBase() {
+        return base;
+    }
+
+    public void setBase(String base) {
+        this.base = base;
+    }
 }

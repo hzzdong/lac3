@@ -1,20 +1,5 @@
 package com.linkallcloud.web.interceptors;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.linkallcloud.web.perm.RequirePermissions;
-import com.linkallcloud.web.session.SessionUser;
-import com.linkallcloud.web.utils.Controllers;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.enums.Logical;
@@ -24,8 +9,21 @@ import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.log.Log;
 import com.linkallcloud.core.log.Logs;
 import com.linkallcloud.core.www.utils.WebUtils;
+import com.linkallcloud.web.perm.RequirePermissions;
+import com.linkallcloud.web.session.SessionUser;
+import com.linkallcloud.web.utils.Controllers;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-public class PermissionInterceptor extends HandlerInterceptorAdapter {
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+
+public abstract class PermissionInterceptor extends HandlerInterceptorAdapter {
     private static Log log = Logs.get();
 
     protected String login;
@@ -80,13 +78,15 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
         this.noPermission = Strings.isBlank(noPermission) ? "/pub/noPermission" : noPermission;
     }
 
+    protected abstract String getAppCode();
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         String uri = request.getRequestURI();
         if (needFiltered(uri)) {
             // 从session中获取登录者实体
-            SessionUser suser = (SessionUser) Controllers.getSessionUser(request);
+            SessionUser suser = (SessionUser) Controllers.getSessionUser(getAppCode(), request);
             if (null == suser) {
                 boolean isAjaxRequest = WebUtils.isAjax(request);
                 if (isAjaxRequest) {
@@ -97,6 +97,11 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
                 response.sendRedirect(getLoginUrl(request));// + getUserTypePv(request)
                 return false;
             } else {
+                String currentAppCode = Controllers.getCurrentAppKey();
+                String thisAppCode = getAppCode();
+                if (Strings.isBlank(currentAppCode) || !currentAppCode.equals(thisAppCode)) {
+                    Controllers.switchLogin2App(thisAppCode);
+                }
                 // 如果session中存在登录者实体，则继续
                 boolean canvisit = doCheckPermission(suser, request, response, handler);
                 if (!canvisit) {

@@ -1,7 +1,5 @@
 package com.linkallcloud.web.utils;
 
-import com.linkallcloud.sh.Encrypts;
-import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.exception.BaseException;
@@ -11,13 +9,14 @@ import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.util.Date8;
 import com.linkallcloud.core.util.HibernateValidator;
 import com.linkallcloud.core.www.ISessionUser;
+import com.linkallcloud.sh.Encrypts;
+import com.linkallcloud.web.session.SessionUser;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.Serializable;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -27,6 +26,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Controllers {
+    public static String CURRENT_APP_KEY = "_LAC_CURRENT_APP_KEY_";
 
     public static HttpServletRequest getHttpRequest() {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
@@ -38,18 +38,47 @@ public class Controllers {
         return Controllers.getSessionUser(request);
     }
 
+    public static ISessionUser getSessionUser(String appCode) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest();
+        return Controllers.getSessionUser(appCode, request);
+    }
+
     public static ISessionUser getSessionUser(HttpServletRequest request) {
         if (request != null) {
             HttpSession session = request.getSession();
             if (session != null) {
-                return (ISessionUser) session.getAttribute(ISessionUser.SESSION_USER_KEY);
+                String appCode = (String) session.getAttribute(Controllers.CURRENT_APP_KEY);
+                if (!Strings.isBlank(appCode)) {
+                    return (ISessionUser) session.getAttribute(appCode + ISessionUser.SESSION_USER_KEY);
+                }
             }
         }
         return null;
     }
 
-    public static void login(ISessionUser su) {
-        setSessionObject(ISessionUser.SESSION_USER_KEY, su);
+    public static ISessionUser getSessionUser(String appCode, HttpServletRequest request) {
+        if (request != null && !Strings.isBlank(appCode)) {
+            HttpSession session = request.getSession();
+            if (session != null) {
+                return (ISessionUser) session.getAttribute(appCode + ISessionUser.SESSION_USER_KEY);
+            }
+        }
+        return null;
+    }
+
+    public static void login(String appCode, ISessionUser su) {
+        setSessionObject(Controllers.CURRENT_APP_KEY, appCode);
+        setSessionObject(appCode + ISessionUser.SESSION_USER_KEY, su);
+    }
+
+    public static void switchLogin2App(String appCode) {
+        setSessionObject(Controllers.CURRENT_APP_KEY, appCode);
+    }
+
+
+    public static String getCurrentAppKey() {
+        return (String) Controllers.getSessionObject(Controllers.CURRENT_APP_KEY);
     }
 
     public static Object getSessionObject(String key) {

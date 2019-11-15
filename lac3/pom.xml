@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.linkallcloud</groupId>
 	<artifactId>lac3</artifactId>
-	<version>0.0.5</version>
+	<version>0.0.7.5</version>
 	<packaging>pom</packaging>
 
 	<distributionManagement>
@@ -397,6 +397,7 @@
 				<version>${servlet.version}</version>
 				<scope>provided</scope>
 			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 

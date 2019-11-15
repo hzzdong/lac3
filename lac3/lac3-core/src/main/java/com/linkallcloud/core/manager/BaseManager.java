@@ -45,6 +45,11 @@ public abstract class BaseManager<T extends Domain, S extends IService<T>>
     protected abstract S service();
 
     @Override
+    public T save(Trace t, T entity) {
+        return service().save(t, entity);
+    }
+
+    @Override
     public Long insert(Trace t, T entity) {
         return service().insert(t, entity);
     }

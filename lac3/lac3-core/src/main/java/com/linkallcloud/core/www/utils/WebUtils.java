@@ -1,27 +1,22 @@
 package com.linkallcloud.core.www.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.linkallcloud.core.lang.Strings;
+import com.linkallcloud.core.util.IConstants;
+import com.linkallcloud.core.www.UrlPattern;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.HandlerMethod;
+
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.method.HandlerMethod;
-
-import com.alibaba.fastjson.JSON;
-import com.linkallcloud.core.lang.Strings;
-import com.linkallcloud.core.util.IConstants;
+import java.util.*;
 
 public class WebUtils {
 
@@ -43,7 +38,7 @@ public class WebUtils {
 
     /**
      * 判断是否是Ajax请求
-     * 
+     *
      * @param req
      * @return boolean
      */
@@ -53,7 +48,7 @@ public class WebUtils {
 
     /**
      * 判断contentType是否json
-     * 
+     *
      * @param contentType
      * @return boolean
      */
@@ -63,7 +58,7 @@ public class WebUtils {
 
     /**
      * 判断contentType是否jsonRpc
-     * 
+     *
      * @param contentType
      * @return boolean
      */
@@ -73,7 +68,7 @@ public class WebUtils {
 
     /**
      * 判断是否json返回。 spring ajax 返回含有 ResponseBody 或者 RestController注解
-     * 
+     *
      * @param handlerMethod
      * @param request
      * @return 是否ajax请求
@@ -96,7 +91,7 @@ public class WebUtils {
 
     /**
      * 得到contentType
-     * 
+     *
      * @param req
      * @return boolean
      */
@@ -112,7 +107,7 @@ public class WebUtils {
 
     /**
      * 设置contentType
-     * 
+     *
      * @param resp
      * @param contentType
      */
@@ -123,13 +118,13 @@ public class WebUtils {
     /**
      * 获取用户真实IP地址，不使用request.getRemoteAddr();的原因是有可能用户使用了代理软件方式避免真实IP地址, 参考文章：
      * http://developer.51cto.com/art/201111/305181.htm
-     * 
+     * <p>
      * 可是，如果通过了多级反向代理的话，X-Forwarded-For的值并不止一个，而是一串IP值，究竟哪个才是真正的用户端的真实IP呢？ 答案是取X-Forwarded-For中第一个非unknown的有效IP字符串。
-     * 
+     * <p>
      * 如：X-Forwarded-For：192.168.1.110, 192.168.1.120, 192.168.1.130, 192.168.1.100
-     * 
+     * <p>
      * 用户真实IP为： 192.168.1.110
-     * 
+     *
      * @param request
      * @return
      */
@@ -235,7 +230,7 @@ public class WebUtils {
 
     /**
      * parse the server domain or ip address from http url
-     * 
+     *
      * @param url
      * @return Server
      */
@@ -256,7 +251,6 @@ public class WebUtils {
     }
 
     /**
-     * 
      * @param url
      * @param perameterName
      * @param perameterValue
@@ -275,7 +269,7 @@ public class WebUtils {
 
     /**
      * 得到把参数拼装成url的字符串
-     * 
+     *
      * @param request
      * @return uri
      */
@@ -310,7 +304,7 @@ public class WebUtils {
 
     /**
      * 取得带相同前缀的Request Parameters.
-     * 
+     * <p>
      * 返回的结果Parameter名已去除前缀.
      */
     public static Map<String, Object> getParametersStartingWith(HttpServletRequest request, String prefix) {
@@ -429,7 +423,6 @@ public class WebUtils {
     }
 
     /**
-     * 
      * @param request
      * @return
      */
@@ -443,6 +436,68 @@ public class WebUtils {
             url = uri.substring(ctx.length());
         }
         return url;
+    }
+
+
+    /**
+     * 不需要登录保护的资源？
+     *
+     * @param request
+     * @return boolean
+     */
+    public static boolean isNotProtectedResource(UrlPattern excludePattern, HttpServletRequest request) {
+        return isStaticResource(request) || isNotNeedLoginResource(request) || isProxyCallback(request) || isMatcherExclude(excludePattern, request);
+    }
+
+    public static boolean isMatcherExclude(UrlPattern excludePattern, HttpServletRequest request) {
+        return excludePattern.isMatcher(request.getServletPath());
+    }
+
+    /**
+     * 是否允许访问的请求（不用被过滤，可直接放行）
+     *
+     * @param request
+     * @return boolean
+     */
+    public static boolean isStaticResource(HttpServletRequest request) {
+        String sp = request.getServletPath().toLowerCase();
+        if (sp.indexOf("/static/") != -1 || sp.indexOf(".js") != -1 || sp.indexOf(".css") != -1 || sp.indexOf(".jpg") != -1
+                || sp.indexOf(".gif") != -1 || sp.indexOf(".png") != -1 || sp.indexOf(".jpeg") != -1
+                || sp.indexOf("/js/") != -1
+                || sp.indexOf("/css/") != -1
+                || sp.indexOf("/img/") != -1
+                || sp.indexOf("/image/") != -1
+                || sp.indexOf("/imgs/") != -1
+                || sp.indexOf("/images/") != -1) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param request
+     * @return
+     */
+    public static boolean isNotNeedLoginResource(HttpServletRequest request) {
+        String path = request.getServletPath();
+        if (path.indexOf("/nnl/") != -1 || path.indexOf("/imageValidate") != -1 || path.indexOf("/index.html") != -1) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Is this a request for the proxy callback listener?
+     *
+     * @param request
+     * @return boolean
+     */
+    public static boolean isProxyCallback(HttpServletRequest request) {
+        // Is this a request for the proxy callback listener? If so, pass it through
+        if (request.getParameter("pgtId") != null && request.getParameter("pgtIou") != null) {
+            return true;
+        }
+        return false;
     }
 
 }

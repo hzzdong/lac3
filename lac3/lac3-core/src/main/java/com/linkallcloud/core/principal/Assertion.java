@@ -5,9 +5,6 @@ import java.util.Map;
 
 /**
  * Interface to represent a successful response from the SSO Server.
- * 
- * 2011-6-14
- * 
  */
 public interface Assertion extends Serializable {
     /**

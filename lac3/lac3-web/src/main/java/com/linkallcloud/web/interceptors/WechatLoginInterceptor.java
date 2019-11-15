@@ -2,7 +2,7 @@ package com.linkallcloud.web.interceptors;
 
 import java.util.List;
 
-public class WechatLoginInterceptor extends LoginInterceptor {
+public abstract class WechatLoginInterceptor extends LoginInterceptor {
 
     public WechatLoginInterceptor() {
         super();

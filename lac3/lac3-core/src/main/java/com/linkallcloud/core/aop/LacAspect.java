@@ -151,9 +151,7 @@ public abstract class LacAspect {
         } else {
             DomainDescription dd = getDomainDescription(joinPoint);
             if (web) {
-                // 用户([(${visitor.name})])[# th:if=\"${entity.id!=null &&
-                // entity.id>0}\"]修改了[/][# th:if=\"${entity.id==null ||
-                // entity.id==0}\"]新增了[/]菜单([(${entity.name})]), TID:[(${tid})]
+                // 用户([(${visitor.name})])[# th:if=\"${entity.id!=null && entity.id>0}\"]修改了[/][# th:if=\"${entity.id==null || entity.id==0}\"]新增了[/]菜单([(${entity.name})]), TID:[(${tid})]
                 int saveTag = (int) values.get("saveTag");
                 if (saveTag == 1) {
                     return dealWebInsertOrUpdateLogDesc(true, (String) values.get("tid"),
