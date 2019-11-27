@@ -31,6 +31,7 @@ public interface IDomain extends Serializable {
 
 	int getStatus();
 	void setStatus(int status);
+	boolean isValid();
 
 	String generateUuid();
 

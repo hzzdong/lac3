@@ -243,6 +243,11 @@ public abstract class Domain implements IDomain {
     }
 
     @Override
+    public boolean isValid() {
+        return this.status == 0;
+    }
+
+    @Override
     public String generateUuid() {
         return UUID.randomUUID().toString().replace("-", "");
     }

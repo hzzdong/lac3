@@ -18,6 +18,7 @@ public class SessionUser implements ISessionUser {
     private String orgType;// 操作者所属的组织类型
 
     private String areaId; // 所在区域
+    private String areaCode;// 所在区域
     private String areaName;// 所在区域
     private int areaLevel; // 所在区域level
 
@@ -293,10 +294,16 @@ public class SessionUser implements ISessionUser {
         this.appName = appName;
     }
 
-    public void setAppInfo(String appId, String appUuid, String appName) {
+    public void setAppInfo(String appId, String appUuid, String appCode, String appName) {
         this.appId = appId;
         this.appUuid = appUuid;
+        this.appCode = appCode;
         this.appName = appName;
+    }
+
+    public void setAppInfo(String appId, String appCode) {
+        this.appId = appId;
+        this.appCode = appCode;
     }
 
     public void setPermissions(String[] menuPermissions, Long[] orgPermissions, Long[] areaPermissions) {
@@ -348,6 +355,14 @@ public class SessionUser implements ISessionUser {
 
     public void setAreaId(String areaId) {
         this.areaId = areaId;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
     }
 
     public String getAreaName() {

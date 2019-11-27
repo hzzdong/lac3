@@ -2,6 +2,7 @@ package com.linkallcloud.web.filter;
 
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.exception.BizException;
+import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.principal.Assertion;
 import com.linkallcloud.core.principal.Principal;
@@ -118,8 +119,15 @@ public abstract class AbstractPrincipalFilter extends LacCommonFilter {
      * @throws IOException
      */
     protected void gotoLogin(String loginUrl, HttpServletRequest request, HttpServletResponse hResponse) throws IOException {
+        if (!Strings.isBlank(loginUrl) && !loginUrl.startsWith("http")
+                && !loginUrl.startsWith(request.getContextPath())) {
+            loginUrl = request.getContextPath() + loginUrl;
+        }
         if (WebUtils.isAjax(request)) {
-            Result<String> result = new Result<>(loginUrl);
+            hResponse.setCharacterEncoding("UTF-8");
+            Result<Object> result = Exceptions.makeErrorResult(Exceptions.CODE_ERROR_SESSION_TIMEOUT, "会话超时");
+            result.setData(loginUrl);
+            // response.sendError(HttpStatus.UNAUTHORIZED.value(), "您已经太长时间没有操作,请刷新页面");
             WebUtils.out(hResponse, result);
         } else {
             hResponse.sendRedirect(loginUrl);
