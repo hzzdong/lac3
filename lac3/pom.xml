@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.linkallcloud</groupId>
 	<artifactId>lac3</artifactId>
-	<version>0.0.7.9</version>
+	<version>0.0.8.8</version>
 	<packaging>pom</packaging>
 
 	<distributionManagement>
@@ -91,7 +91,7 @@
 		<com.google.zxing.version>3.4.0</com.google.zxing.version>
 		<thumbnailator.version>0.4.8</thumbnailator.version>
 		<freemarker.version>2.3.29</freemarker.version>
-
+		<easypoi.version>2.4.0</easypoi.version>
 		<ant.version>1.10.7</ant.version>
 		<servlet.version>3.1.0</servlet.version>
 	</properties>

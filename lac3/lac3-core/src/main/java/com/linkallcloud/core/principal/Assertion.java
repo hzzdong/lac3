@@ -34,5 +34,6 @@ public interface Assertion extends Serializable {
      *            The service to proxy to.
      * @return the Proxy Ticket Id or null.
      */
-    String getProxyTicketFor(Service service);
+    //String getProxyTicketFor(Service service);
+    String getProxyGrantingTicketId();
 }

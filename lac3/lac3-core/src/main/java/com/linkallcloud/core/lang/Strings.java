@@ -13,28 +13,27 @@ import com.linkallcloud.core.lang.meta.Email;
 
 /**
  * 字符串操作的帮助函数
- *
  */
 public class Strings {
 
-    protected Strings() {}
+    protected Strings() {
+    }
 
     /**
      * 是中文字符吗?
      *
-     * @param c
-     *            待判定字符
+     * @param c 待判定字符
      * @return 判断结果
      */
     public static boolean isChineseCharacter(char c) {
         Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
         if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
-            || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
-            || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
-            || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B
-            || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
-            || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS
-            || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION) {
+                || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B
+                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
+                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS
+                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION) {
             return true;
         }
         return false;
@@ -43,8 +42,7 @@ public class Strings {
     /**
      * 判断字符是否为全角字符
      *
-     * @param c
-     *            字符
+     * @param c 字符
      * @return 判断结果
      */
     public static boolean isFullWidthCharacter(char c) {
@@ -70,8 +68,7 @@ public class Strings {
     /**
      * 转换成半角字符
      *
-     * @param c
-     *            待转换字符
+     * @param c 待转换字符
      * @return 转换后的字符
      */
     public static char toHalfWidthCharacter(char c) {
@@ -86,8 +83,7 @@ public class Strings {
     /**
      * 转换为半角字符串
      *
-     * @param str
-     *            待转换字符串
+     * @param str 待转换字符串
      * @return 转换后的字符串
      */
     public static String toHalfWidthString(CharSequence str) {
@@ -101,8 +97,7 @@ public class Strings {
     /**
      * 判断是否是全角字符串(所有字符都是全角)
      *
-     * @param str
-     *            被判断的字符串
+     * @param str 被判断的字符串
      * @return 判断结果
      */
     public static boolean isFullWidthString(CharSequence str) {
@@ -112,8 +107,7 @@ public class Strings {
     /**
      * 判断是否是半角字符串(所有字符都是半角)
      *
-     * @param str
-     *            被判断的字符串
+     * @param str 被判断的字符串
      * @return 判断结果
      */
     public static boolean isHalfWidthString(CharSequence str) {
@@ -123,8 +117,7 @@ public class Strings {
     /**
      * 计算字符串的字符长度(全角算2, 半角算1)
      *
-     * @param str
-     *            被计算的字符串
+     * @param str 被计算的字符串
      * @return 字符串的字符长度
      */
     public static int charLength(CharSequence str) {
@@ -138,10 +131,8 @@ public class Strings {
     /**
      * 复制字符串
      *
-     * @param cs
-     *            字符串
-     * @param num
-     *            数量
+     * @param cs  字符串
+     * @param num 数量
      * @return 新字符串
      */
     public static String dup(CharSequence cs, int num) {
@@ -156,10 +147,8 @@ public class Strings {
     /**
      * 复制字符
      *
-     * @param c
-     *            字符
-     * @param num
-     *            数量
+     * @param c   字符
+     * @param num 数量
      * @return 新字符串
      */
     public static String dup(char c, int num) {
@@ -174,8 +163,7 @@ public class Strings {
     /**
      * 将字符串首字母大写
      *
-     * @param s
-     *            字符串
+     * @param s 字符串
      * @return 首字母大写后的新字符串
      * @deprecated 推荐使用 {@link #upperFirst(CharSequence)}
      */
@@ -186,8 +174,7 @@ public class Strings {
     /**
      * 将字符串首字母小写
      *
-     * @param s
-     *            字符串
+     * @param s 字符串
      * @return 首字母小写后的新字符串
      */
     public static String lowerFirst(CharSequence s) {
@@ -200,15 +187,14 @@ public class Strings {
         if (Character.isLowerCase(c))
             return s.toString();
         return new StringBuilder(len).append(Character.toLowerCase(c))
-                                     .append(s.subSequence(1, len))
-                                     .toString();
+                .append(s.subSequence(1, len))
+                .toString();
     }
 
     /**
      * 将字符串首字母大写
      *
-     * @param s
-     *            字符串
+     * @param s 字符串
      * @return 首字母大写后的新字符串
      */
     public static String upperFirst(CharSequence s) {
@@ -221,17 +207,15 @@ public class Strings {
         if (Character.isUpperCase(c))
             return s.toString();
         return new StringBuilder(len).append(Character.toUpperCase(c))
-                                     .append(s.subSequence(1, len))
-                                     .toString();
+                .append(s.subSequence(1, len))
+                .toString();
     }
 
     /**
      * 检查两个字符串的忽略大小写后是否相等.
      *
-     * @param s1
-     *            字符串A
-     * @param s2
-     *            字符串B
+     * @param s1 字符串A
+     * @param s2 字符串B
      * @return true 如果两个字符串忽略大小写后相等,且两个字符串均不为null
      */
     public static boolean equalsIgnoreCase(String s1, String s2) {
@@ -241,10 +225,8 @@ public class Strings {
     /**
      * 检查两个字符串是否相等.
      *
-     * @param s1
-     *            字符串A
-     * @param s2
-     *            字符串B
+     * @param s1 字符串A
+     * @param s2 字符串B
      * @return true 如果两个字符串相等,且两个字符串均不为null
      */
     public static boolean equals(String s1, String s2) {
@@ -254,10 +236,8 @@ public class Strings {
     /**
      * 判断字符串是否以特殊字符开头
      *
-     * @param s
-     *            字符串
-     * @param c
-     *            特殊字符
+     * @param s 字符串
+     * @param c 特殊字符
      * @return 是否以特殊字符开头
      */
     public static boolean startsWithChar(String s, char c) {
@@ -267,10 +247,8 @@ public class Strings {
     /**
      * 判断字符串是否以特殊字符结尾
      *
-     * @param s
-     *            字符串
-     * @param c
-     *            特殊字符
+     * @param s 字符串
+     * @param c 特殊字符
      * @return 是否以特殊字符结尾
      */
     public static boolean endsWithChar(String s, char c) {
@@ -280,8 +258,7 @@ public class Strings {
     /**
      * 如果此字符串为 null 或者为空串（""），则返回 true
      *
-     * @param cs
-     *            字符串
+     * @param cs 字符串
      * @return 如果此字符串为 null 或者为空，则返回 true
      */
     public static boolean isEmpty(CharSequence cs) {
@@ -291,8 +268,7 @@ public class Strings {
     /**
      * 如果此字符串为 null 或者全为空白字符，则返回 true
      *
-     * @param cs
-     *            字符串
+     * @param cs 字符串
      * @return 如果此字符串为 null 或者全为空白字符，则返回 true
      */
     public static boolean isBlank(CharSequence cs) {
@@ -313,8 +289,7 @@ public class Strings {
     /**
      * 去掉字符串前后空白字符。空白字符的定义由Character.isWhitespace来判断
      *
-     * @param cs
-     *            字符串
+     * @param cs 字符串
      * @return 去掉了前后空白字符的新字符串
      */
     public static String trim(CharSequence cs) {
@@ -381,10 +356,8 @@ public class Strings {
     /**
      * 将给定字符串，变成 "xxx...xxx" 形式的字符串
      *
-     * @param str
-     *            字符串
-     * @param len
-     *            最大长度
+     * @param str 字符串
+     * @param len 最大长度
      * @return 紧凑的字符串
      */
     public static String brief(String str, int len) {
@@ -398,8 +371,7 @@ public class Strings {
     /**
      * 将字符串按半角逗号，拆分成数组，空元素将被忽略
      *
-     * @param s
-     *            字符串
+     * @param s 字符串
      * @return 字符串数组
      */
     public static String[] splitIgnoreBlank(String s) {
@@ -409,10 +381,8 @@ public class Strings {
     /**
      * 根据一个正则式，将字符串拆分成数组，空元素将被忽略
      *
-     * @param s
-     *            字符串
-     * @param regex
-     *            正则式
+     * @param s     字符串
+     * @param regex 正则式
      * @return 字符串数组
      */
     public static String[] splitIgnoreBlank(String s, String regex) {
@@ -431,10 +401,8 @@ public class Strings {
     /**
      * 将一个整数转换成最小长度为某一固定数值的十进制形式字符串
      *
-     * @param d
-     *            整数
-     * @param width
-     *            宽度
+     * @param d     整数
+     * @param width 宽度
      * @return 新字符串
      */
     public static String fillDigit(int d, int width) {
@@ -444,10 +412,8 @@ public class Strings {
     /**
      * 将一个整数转换成最小长度为某一固定数值的十六进制形式字符串
      *
-     * @param d
-     *            整数
-     * @param width
-     *            宽度
+     * @param d     整数
+     * @param width 宽度
      * @return 新字符串
      */
     public static String fillHex(int d, int width) {
@@ -457,10 +423,8 @@ public class Strings {
     /**
      * 将一个整数转换成最小长度为某一固定数值的二进制形式字符串
      *
-     * @param d
-     *            整数
-     * @param width
-     *            宽度
+     * @param d     整数
+     * @param width 宽度
      * @return 新字符串
      */
     public static String fillBinary(int d, int width) {
@@ -470,10 +434,8 @@ public class Strings {
     /**
      * 将一个整数转换成固定长度的十进制形式字符串
      *
-     * @param d
-     *            整数
-     * @param width
-     *            宽度
+     * @param d     整数
+     * @param width 宽度
      * @return 新字符串
      */
     public static String toDigit(int d, int width) {
@@ -483,10 +445,8 @@ public class Strings {
     /**
      * 将一个整数转换成固定长度的十六进制形式字符串
      *
-     * @param d
-     *            整数
-     * @param width
-     *            宽度
+     * @param d     整数
+     * @param width 宽度
      * @return 新字符串
      */
     public static String toHex(int d, int width) {
@@ -496,10 +456,8 @@ public class Strings {
     /**
      * 将一个整数转换成固定长度的二进制形式字符串
      *
-     * @param d
-     *            整数
-     * @param width
-     *            宽度
+     * @param d     整数
+     * @param width 宽度
      * @return 新字符串
      */
     public static String toBinary(int d, int width) {
@@ -509,12 +467,9 @@ public class Strings {
     /**
      * 保证字符串为一固定长度。超过长度，切除右侧字符，否则右侧填补字符。
      *
-     * @param s
-     *            字符串
-     * @param width
-     *            长度
-     * @param c
-     *            补字符
+     * @param s     字符串
+     * @param width 长度
+     * @param c     补字符
      * @return 修饰后的字符串
      */
     public static String cutRight(String s, int width, char c) {
@@ -531,12 +486,9 @@ public class Strings {
     /**
      * 保证字符串为一固定长度。超过长度，切除左侧字符，否则左侧填补字符。
      *
-     * @param s
-     *            字符串
-     * @param width
-     *            长度
-     * @param c
-     *            补字符
+     * @param s     字符串
+     * @param width 长度
+     * @param c     补字符
      * @return 修饰后的字符串
      */
     public static String cutLeft(String s, int width, char c) {
@@ -553,12 +505,9 @@ public class Strings {
     /**
      * 在字符串左侧填充一定数量的特殊字符
      *
-     * @param o
-     *            可被 toString 的对象
-     * @param width
-     *            字符数量
-     * @param c
-     *            字符
+     * @param o     可被 toString 的对象
+     * @param width 字符数量
+     * @param c     字符
      * @return 新字符串
      */
     public static String alignRight(Object o, int width, char c) {
@@ -574,12 +523,9 @@ public class Strings {
     /**
      * 在字符串右侧填充一定数量的特殊字符
      *
-     * @param o
-     *            可被 toString 的对象
-     * @param width
-     *            字符数量
-     * @param c
-     *            字符
+     * @param o     可被 toString 的对象
+     * @param width 字符数量
+     * @param c     字符
      * @return 新字符串
      */
     public static String alignLeft(Object o, int width, char c) {
@@ -595,12 +541,9 @@ public class Strings {
     /**
      * 测试此字符串是否被指定的左字符和右字符所包裹；如果该字符串左右两边有空白的时候，会首先忽略这些空白
      *
-     * @param cs
-     *            字符串
-     * @param lc
-     *            左字符
-     * @param rc
-     *            右字符
+     * @param cs 字符串
+     * @param lc 左字符
+     * @param rc 右字符
      * @return 字符串是被左字符和右字符包裹
      */
     public static boolean isQuoteByIgnoreBlank(CharSequence cs, char lc, char rc) {
@@ -628,12 +571,9 @@ public class Strings {
     /**
      * 测试此字符串是否被指定的左字符和右字符所包裹
      *
-     * @param cs
-     *            字符串
-     * @param lc
-     *            左字符
-     * @param rc
-     *            右字符
+     * @param cs 字符串
+     * @param lc 左字符
+     * @param rc 右字符
      * @return 字符串是被左字符和右字符包裹
      */
     public static boolean isQuoteBy(CharSequence cs, char lc, char rc) {
@@ -646,12 +586,9 @@ public class Strings {
     /**
      * 测试此字符串是否被指定的左字符串和右字符串所包裹
      *
-     * @param str
-     *            字符串
-     * @param l
-     *            左字符串
-     * @param r
-     *            右字符串
+     * @param str 字符串
+     * @param l   左字符串
+     * @param r   右字符串
      * @return 字符串是被左字符串和右字符串包裹
      */
     public static boolean isQuoteBy(String str, String l, String r) {
@@ -663,8 +600,7 @@ public class Strings {
     /**
      * 获得一个字符串集合中，最长串的长度
      *
-     * @param coll
-     *            字符串集合
+     * @param coll 字符串集合
      * @return 最大长度
      */
     public static int maxLength(Collection<? extends CharSequence> coll) {
@@ -679,8 +615,7 @@ public class Strings {
     /**
      * 获得一个字符串数组中，最长串的长度
      *
-     * @param array
-     *            字符串数组
+     * @param array 字符串数组
      * @return 最大长度
      */
     public static <T extends CharSequence> int maxLength(T[] array) {
@@ -695,8 +630,7 @@ public class Strings {
     /**
      * 对指定对象进行 toString 操作；如果该对象为 null ，则返回空串（""）
      *
-     * @param obj
-     *            指定的对象
+     * @param obj 指定的对象
      * @return 对指定对象进行 toString 操作；如果该对象为 null ，则返回空串（""）
      */
     public static String sNull(Object obj) {
@@ -706,10 +640,8 @@ public class Strings {
     /**
      * 对指定对象进行 toString 操作；如果该对象为 null ，则返回默认值
      *
-     * @param obj
-     *            指定的对象
-     * @param def
-     *            默认值
+     * @param obj 指定的对象
+     * @param def 默认值
      * @return 对指定对象进行 toString 操作；如果该对象为 null ，则返回默认值
      */
     public static String sNull(Object obj, String def) {
@@ -719,8 +651,7 @@ public class Strings {
     /**
      * 对指定对象进行 toString 操作；如果该对象为 null ，则返回空串（""）
      *
-     * @param obj
-     *            指定的对象
+     * @param obj 指定的对象
      * @return 对指定对象进行 toString 操作；如果该对象为 null ，则返回空串（""）
      */
     public static String sBlank(Object obj) {
@@ -730,10 +661,8 @@ public class Strings {
     /**
      * 对指定对象进行 toString 操作；如果该对象为 null 或者 toString 方法为空串（""），则返回默认值
      *
-     * @param obj
-     *            指定的对象
-     * @param def
-     *            默认值
+     * @param obj 指定的对象
+     * @param def 默认值
      * @return 对指定对象进行 toString 操作；如果该对象为 null 或者 toString 方法为空串（""），则返回默认值
      */
     public static String sBlank(Object obj, String def) {
@@ -752,8 +681,7 @@ public class Strings {
      * <li>removeFirst("A") => ""
      * </ul>
      *
-     * @param str
-     *            字符串
+     * @param str 字符串
      * @return 新字符串
      */
     public static String removeFirst(CharSequence str) {
@@ -775,10 +703,8 @@ public class Strings {
      * <li>removeFirst("A",'A') => ""
      * </ul>
      *
-     * @param str
-     *            字符串
-     * @param c
-     *            第一个个要被截取的字符
+     * @param str 字符串
+     * @param c   第一个个要被截取的字符
      * @return 新字符串
      */
     public static String removeFirst(String str, char c) {
@@ -788,10 +714,8 @@ public class Strings {
     /**
      * 判断一个字符串数组是否包括某一字符串
      *
-     * @param ss
-     *            字符串数组
-     * @param s
-     *            字符串
+     * @param ss 字符串数组
+     * @param s  字符串
      * @return 是否包含
      */
     public static boolean isin(String[] ss, String s) {
@@ -806,8 +730,7 @@ public class Strings {
     /**
      * 检查一个字符串是否为合法的电子邮件地址
      *
-     * @param input
-     *            需要检查的字符串
+     * @param input 需要检查的字符串
      * @return true 如果是有效的邮箱地址
      */
     public static final boolean isEmail(CharSequence input) {
@@ -816,23 +739,21 @@ public class Strings {
         try {
             new Email(input.toString());
             return true;
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
         return false;
     }
 
     /**
      * 将一个字符串由驼峰式命名变成分割符分隔单词
      * <p>
-     * 
+     *
      * <pre>
      *  lowerWord("helloWorld", '-') => "hello-world"
      * </pre>
      *
-     * @param cs
-     *            字符串
-     * @param c
-     *            分隔符
+     * @param cs 字符串
+     * @param c  分隔符
      * @return 转换后字符串
      */
     public static String lowerWord(CharSequence cs, char c) {
@@ -854,15 +775,13 @@ public class Strings {
     /**
      * 将一个字符串某一个字符后面的字母变成大写，比如
      * <p>
-     * 
+     *
      * <pre>
      *  upperWord("hello-world", '-') => "helloWorld"
      * </pre>
      *
-     * @param cs
-     *            字符串
-     * @param c
-     *            分隔符
+     * @param cs 字符串
+     * @param c  分隔符
      * @return 转换后字符串
      */
     public static String upperWord(CharSequence cs, char c) {
@@ -888,7 +807,7 @@ public class Strings {
     /**
      * 将一个字符串出现的HMTL元素进行转义，比如
      * <p>
-     * 
+     *
      * <pre>
      *  escapeHtml("&lt;script&gt;alert("hello world");&lt;/script&gt;") => "&amp;lt;script&amp;gt;alert(&amp;quot;hello world&amp;quot;);&amp;lt;/script&amp;gt;"
      * </pre>
@@ -902,8 +821,7 @@ public class Strings {
      * <li>" => &amp;quot;
      * </ul>
      *
-     * @param cs
-     *            字符串
+     * @param cs 字符串
      * @return 转换后字符串
      */
     public static String escapeHtml(CharSequence cs) {
@@ -913,23 +831,23 @@ public class Strings {
         StringBuilder sb = new StringBuilder();
         for (char c : cas) {
             switch (c) {
-            case '&':
-                sb.append("&amp;");
-                break;
-            case '<':
-                sb.append("&lt;");
-                break;
-            case '>':
-                sb.append("&gt;");
-                break;
-            case '\'':
-                sb.append("&#x27;");
-                break;
-            case '"':
-                sb.append("&quot;");
-                break;
-            default:
-                sb.append(c);
+                case '&':
+                    sb.append("&amp;");
+                    break;
+                case '<':
+                    sb.append("&lt;");
+                    break;
+                case '>':
+                    sb.append("&gt;");
+                    break;
+                case '\'':
+                    sb.append("&#x27;");
+                    break;
+                case '"':
+                    sb.append("&quot;");
+                    break;
+                default:
+                    sb.append(c);
             }
         }
         return sb.toString();
@@ -938,15 +856,13 @@ public class Strings {
     /**
      * 使用 UTF-8 编码将字符串编码为 byte 序列，并将结果存储到新的 byte 数组
      *
-     * @param cs
-     *            字符串
+     * @param cs 字符串
      * @return UTF-8编码后的 byte 数组
      */
     public static byte[] getBytesUTF8(CharSequence cs) {
         try {
             return cs.toString().getBytes(Encoding.UTF8);
-        }
-        catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             throw Lang.wrapThrow(e);
         }
     }
@@ -956,8 +872,7 @@ public class Strings {
     /**
      * 将数字转为十六进制字符串, 默认要使用2个字符(暂时没考虑负数)
      *
-     * @param n
-     *            数字
+     * @param n 数字
      * @return 十六进制字符串
      */
     public static String num2hex(int n) {
@@ -968,8 +883,7 @@ public class Strings {
     /**
      * 十六进制字符串转换为数字
      *
-     * @param hex
-     *            十六进制字符串
+     * @param hex 十六进制字符串
      * @return 十进制数字
      */
     public static int hex2num(String hex) {
@@ -979,10 +893,8 @@ public class Strings {
     /**
      * 使用给定的分隔符, 将一个数组拼接成字符串
      *
-     * @param sp
-     *            分隔符
-     * @param array
-     *            要拼接的数组
+     * @param sp    分隔符
+     * @param array 要拼接的数组
      * @return 拼接好的字符串
      */
     public static <T> String join2(String sp, T[] array) {
@@ -992,10 +904,8 @@ public class Strings {
     /**
      * 使用给定的分隔符, 将一个数组拼接成字符串
      *
-     * @param sp
-     *            分隔符
-     * @param array
-     *            要拼接的数组
+     * @param sp    分隔符
+     * @param array 要拼接的数组
      * @return 拼接好的字符串
      */
     @SuppressWarnings("unchecked")
@@ -1006,10 +916,8 @@ public class Strings {
     /**
      * 将一个字节数变成人类容易识别的显示字符串，比如 1.5M 等
      *
-     * @param size
-     *            字节数
-     * @param SZU
-     *            千的单位，可能为 1024 或者 1000
+     * @param size 字节数
+     * @param SZU  千的单位，可能为 1024 或者 1000
      * @return 人类容易阅读的字符串
      */
     private static String _formatSizeForRead(long size, double SZU) {
@@ -1045,10 +953,8 @@ public class Strings {
     /**
      * 改变字符编码集
      *
-     * @param cs
-     *            原字符串
-     * @param newCharset
-     *            指定的新编码集
+     * @param cs         原字符串
+     * @param newCharset 指定的新编码集
      * @return 新字符集编码的字符串
      */
     public static String changeCharset(CharSequence cs, Charset newCharset) {
@@ -1062,8 +968,7 @@ public class Strings {
     /**
      * 将字符串根据转移字符转移
      *
-     * @param str
-     *            字符串
+     * @param str 字符串
      * @return 转移后的字符串
      */
     public static String evalEscape(String str) {
@@ -1075,25 +980,25 @@ public class Strings {
             if (c == '\\') {
                 c = cs[++i];
                 switch (c) {
-                case 'n':
-                    sb.append('\n');
-                    break;
-                case 'r':
-                    sb.append('\r');
-                    break;
-                case 't':
-                    sb.append('\t');
-                    break;
-                case 'b':
-                    sb.append('\b');
-                    break;
-                case '\'':
-                case '"':
-                case '\\':
-                    sb.append(c);
-                    break;
-                default:
-                    throw Lang.makeThrow("evalEscape invalid char[%d] '%c'  : %s", i, c, str);
+                    case 'n':
+                        sb.append('\n');
+                        break;
+                    case 'r':
+                        sb.append('\r');
+                        break;
+                    case 't':
+                        sb.append('\t');
+                        break;
+                    case 'b':
+                        sb.append('\b');
+                        break;
+                    case '\'':
+                    case '"':
+                    case '\\':
+                        sb.append(c);
+                        break;
+                    default:
+                        throw Lang.makeThrow("evalEscape invalid char[%d] '%c'  : %s", i, c, str);
                 }
             }
             // 否则添加
@@ -1114,12 +1019,9 @@ public class Strings {
     /**
      * 将字符串按照某个或几个分隔符拆分。 其中，遇到字符串 "..." 或者 '...' 并不拆分
      *
-     * @param str
-     *            要被拆分的字符串
-     * @param keepQuote
-     *            是否保持引号
-     * @param seps
-     *            分隔符
+     * @param str       要被拆分的字符串
+     * @param keepQuote 是否保持引号
+     * @param seps      分隔符
      * @return 拆分后的数组
      */
     public static String[] split(String str, boolean keepQuote, boolean keepBlank, char... seps) {
@@ -1202,8 +1104,8 @@ public class Strings {
             return "null";
         try {
             return obj.toString();
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
         if (dft != null)
             return dft;
         return String.format("/*%s(toString FAILED)*/", obj.getClass().getName());
@@ -1224,12 +1126,9 @@ public class Strings {
     /**
      * 按长度截取字符串（尾部补足）
      *
-     * @param length
-     *            长度
-     * @param s
-     *            字符串内容
-     * @param supply
-     *            补足内容
+     * @param length 长度
+     * @param s      字符串内容
+     * @param supply 补足内容
      * @return 截断后的字符串
      */
     public static String cutStr(int length, String s, String supply) {
@@ -1245,15 +1144,13 @@ public class Strings {
     /**
      * 判断字符串是否为URL
      *
-     * @param s
-     *            字符串内容
+     * @param s 字符串内容
      * @return 判断结果
      */
     public static boolean isUrl(String s) {
         try {
             new java.net.URL(s);
-        }
-        catch (MalformedURLException e) {
+        } catch (MalformedURLException e) {
             return false;
         }
         return true;
@@ -1273,8 +1170,7 @@ public class Strings {
      * 判断字符串是否为身份证号码（18位中国）<br>
      * 出生日期只支持到到2999年
      *
-     * @param s
-     *            字符串内容
+     * @param s 字符串内容
      * @return 判断结果
      */
     public static boolean isCitizenId(String s) {
@@ -1286,8 +1182,7 @@ public class Strings {
     /**
      * 判断是否为手机号码（中国）
      *
-     * @param s
-     *            字符串内容
+     * @param s 字符串内容
      * @return 判断结果
      */
     public static boolean isMobile(String s) {
@@ -1299,8 +1194,7 @@ public class Strings {
     /**
      * 判断字符串是否为邮政编码（中国）
      *
-     * @param s
-     *            字符串内容
+     * @param s 字符串内容
      * @return 判断结果
      */
     public static boolean isZipCode(String s) {
@@ -1312,8 +1206,7 @@ public class Strings {
     /**
      * 判断字符串是否为货币
      *
-     * @param s
-     *            字符串内容
+     * @param s 字符串内容
      * @return 判断结果
      */
     public static boolean isMoney(String s) {
@@ -1325,8 +1218,7 @@ public class Strings {
     /**
      * 判断字符串是否是数字
      *
-     * @param s
-     *            字符串内容
+     * @param s 字符串内容
      * @return 判断结果
      */
     public static boolean isNumber(String s) {
@@ -1339,10 +1231,8 @@ public class Strings {
     /**
      * 通过正则表达式验证
      *
-     * @param pattern
-     *            正则模式
-     * @param value
-     *            值
+     * @param pattern 正则模式
+     * @param value   值
      * @return 判断结果
      */
     public static boolean isMactchRegex(Pattern pattern, String value) {
@@ -1352,10 +1242,8 @@ public class Strings {
     /**
      * 给定内容是否匹配正则
      *
-     * @param pattern
-     *            模式
-     * @param content
-     *            内容
+     * @param pattern 模式
+     * @param content 内容
      * @return 正则为null或者""则不检查，返回true，内容为null返回false
      */
     public static boolean isMatch(Pattern pattern, String content) {
@@ -1368,8 +1256,7 @@ public class Strings {
     /**
      * 判断字符串是否为邮箱
      *
-     * @param s
-     *            字符串内容
+     * @param s 字符串内容
      * @return 判断结果
      */
     public static boolean isEmail(String s) {
@@ -1381,8 +1268,7 @@ public class Strings {
     /**
      * 判断字符串是否为QQ号
      *
-     * @param s
-     *            字符串内容
+     * @param s 字符串内容
      * @return 判断结果
      */
     public static boolean isQQ(String s) {
@@ -1400,8 +1286,7 @@ public class Strings {
      * 第9位~第17位：主体标识码（组织机构代码）（共九位字符）<br>
      * 第18位：校验码​（共一位字符）<br>
      *
-     * @param s
-     *            字符串内容
+     * @param s 字符串内容
      * @return 判断结果
      */
     public static boolean isUSCC(String s) {
@@ -1414,8 +1299,7 @@ public class Strings {
      * 判断字符串是否为银联卡号<br>
      * 银联卡规则62开头，卡号为16-19位数字
      *
-     * @param s
-     *            字符串内容
+     * @param s 字符串内容
      * @return 判断结果
      */
     public static boolean isUnionPayCard(String s) {
@@ -1433,8 +1317,7 @@ public class Strings {
      * <li>removeLast("A") => ""
      * </ul>
      *
-     * @param str
-     *            字符串
+     * @param str 字符串
      * @return 新字符串
      */
     public static String removeLast(CharSequence str) {
@@ -1456,21 +1339,18 @@ public class Strings {
      * <li>removeLast("A",'A') => ""
      * </ul>
      *
-     * @param str
-     *            字符串
-     * @param c
-     *            最后一个个要被截取的字符
+     * @param str 字符串
+     * @param c   最后一个个要被截取的字符
      * @return 新字符串
      */
     public static String removeLast(String str, char c) {
         return (Strings.isEmpty(str) || !str.endsWith(c + "")) ? str : str.subSequence(0, str.length() - 1).toString();
     }
-    
+
     /**
      * 去掉字符串中的空白
-     * 
-     * @param cs
-     *            字符串
+     *
+     * @param cs 字符串
      * @return 新字符串
      */
     public static String trimAll(CharSequence cs) {
@@ -1494,9 +1374,9 @@ public class Strings {
 
     /**
      * 把字符串中的单词（非首字母为大写，认为是一个单词的开始）用“_”分割连接
-     * 
+     * <p>
      * 比如：PetStore --> pet_store
-     * 
+     *
      * @param source
      * @return string
      */
@@ -1518,10 +1398,10 @@ public class Strings {
         }
         return sb.toString();
     }
-    
+
     /**
      * 计算c在src中出现的次数
-     * 
+     *
      * @param cs
      * @param c
      * @return count
@@ -1538,13 +1418,13 @@ public class Strings {
         }
         return count;
     }
-    
+
     /**
      * 把s截取成length长度
-     * 
+     *
      * @param s
      * @param length
-     * @return 
+     * @return
      */
     public static String cut(String s, int length) {
         if (Lang.isEmpty(length) || Lang.isEmpty(s))
@@ -1553,6 +1433,26 @@ public class Strings {
             return s;
         else
             return s.substring(0, length);
+    }
+
+    /**
+     * 字符串数组合并
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public static String[] concatArray(String[] a, String[] b) {
+        if (a == null || a.length == 0) {
+            return b;
+        } else if (b == null || b.length == 0) {
+            return a;
+        } else {
+            String[] c = new String[a.length + b.length];
+            System.arraycopy(a, 0, c, 0, a.length);
+            System.arraycopy(b, 0, c, a.length, b.length);
+            return c;
+        }
     }
 
 }

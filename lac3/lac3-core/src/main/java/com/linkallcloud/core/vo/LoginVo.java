@@ -17,6 +17,12 @@ public class LoginVo extends Vo {
     private String base; // base path
     private String pwdStrength;//密码强度
 
+    private String from;//from app code
+    private String service;//app url
+    private String warn;
+    private String renew;
+    private String gateway;
+
     public LoginVo() {
         super();
     }
@@ -96,5 +102,45 @@ public class LoginVo extends Vo {
 
     public void setBase(String base) {
         this.base = base;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    public String getService() {
+        return service;
+    }
+
+    public void setService(String service) {
+        this.service = service;
+    }
+
+    public String getWarn() {
+        return warn;
+    }
+
+    public void setWarn(String warn) {
+        this.warn = warn;
+    }
+
+    public String getRenew() {
+        return renew;
+    }
+
+    public void setRenew(String renew) {
+        this.renew = renew;
+    }
+
+    public String getGateway() {
+        return gateway;
+    }
+
+    public void setGateway(String gateway) {
+        this.gateway = gateway;
     }
 }

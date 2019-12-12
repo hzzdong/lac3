@@ -1,6 +1,5 @@
 package com.linkallcloud.core.busilog;
 
-import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.fastjson.JSON;
 import com.linkallcloud.core.aop.LacAspect;
 import com.linkallcloud.core.busilog.annotation.ServLog;
@@ -8,15 +7,16 @@ import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.laclog.ServiceBusiLog;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.lang.Stopwatch;
+import com.linkallcloud.core.manager.IServiceBusiLogManager;
 import com.linkallcloud.core.service.IService;
-import com.linkallcloud.core.service.IServiceBusiLogService;
+import org.apache.dubbo.rpc.RpcContext;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 
-public abstract class BusiServiceLogAspect<T extends ServiceBusiLog, TS extends IService<T>>
+public abstract class BusiServiceLogAspect<T extends ServiceBusiLog, TS extends IServiceBusiLogManager<T>>
         extends LacAspect {
 
     protected Mirror<T> logMirror;
@@ -33,7 +33,7 @@ public abstract class BusiServiceLogAspect<T extends ServiceBusiLog, TS extends 
         }
     }
 
-    protected abstract IServiceBusiLogService<T> logService();
+    protected abstract TS logService();
 
     /**
      * 保存系统操作日志

@@ -34,7 +34,7 @@ public abstract class AbstractPrincipalFilter extends LacCommonFilter {
         SessionUser u = getLoginUser(getAppCode(), request);
         if (null == u) { // suser为空，表示初次登陆或者本地session超时
             // 若有sso, 并且sso未超时, principal为sso验证后的用户帐号
-            Principal principal = getSSOPrincipal(request);
+            Principal principal = getSSOPrincipal(getAppCode(), request);
             if (principal != null) {// SSO认证，且已经通过SSO认证，但是本地未登陆
                 SessionUser user = getSessionUserByPrincipal(principal);
                 if (null != user) {
@@ -64,20 +64,6 @@ public abstract class AbstractPrincipalFilter extends LacCommonFilter {
     protected abstract String getAppCode();
 
     protected abstract String getLoginUrl();
-
-    /**
-     * 得到SSO认证通过后设置的Principal。
-     *
-     * @param request
-     * @return Principal
-     */
-    private Principal getSSOPrincipal(HttpServletRequest request) {
-        Assertion as = (Assertion) Controllers.getSessionObject(Assertion.ASSERTION_KEY);
-        if (as != null) {
-            return as.getPrincipal();
-        }
-        return null;
-    }
 
     /**
      * 是否系统首页或者是本地登录的请求，用于非SSO认证过滤时的判断
@@ -110,28 +96,6 @@ public abstract class AbstractPrincipalFilter extends LacCommonFilter {
      */
     protected void loginUser(HttpServletRequest request, String appCode, SessionUser user) {
         Controllers.login(appCode, user);
-    }
-
-    /**
-     * @param loginUrl
-     * @param request
-     * @param hResponse
-     * @throws IOException
-     */
-    protected void gotoLogin(String loginUrl, HttpServletRequest request, HttpServletResponse hResponse) throws IOException {
-        if (!Strings.isBlank(loginUrl) && !loginUrl.startsWith("http")
-                && !loginUrl.startsWith(request.getContextPath())) {
-            loginUrl = request.getContextPath() + loginUrl;
-        }
-        if (WebUtils.isAjax(request)) {
-            hResponse.setCharacterEncoding("UTF-8");
-            Result<Object> result = Exceptions.makeErrorResult(Exceptions.CODE_ERROR_SESSION_TIMEOUT, "会话超时");
-            result.setData(loginUrl);
-            // response.sendError(HttpStatus.UNAUTHORIZED.value(), "您已经太长时间没有操作,请刷新页面");
-            WebUtils.out(hResponse, result);
-        } else {
-            hResponse.sendRedirect(loginUrl);
-        }
     }
 
     /*
