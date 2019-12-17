@@ -9,6 +9,7 @@ import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.lang.Stopwatch;
 import com.linkallcloud.core.manager.IServiceBusiLogManager;
 import com.linkallcloud.core.service.IService;
+import com.linkallcloud.core.service.IServiceBusiLogService;
 import org.apache.dubbo.rpc.RpcContext;
 import org.aspectj.lang.ProceedingJoinPoint;
 
@@ -16,7 +17,7 @@ import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 
-public abstract class BusiServiceLogAspect<T extends ServiceBusiLog, TS extends IServiceBusiLogManager<T>>
+public abstract class BusiServiceLogAspect<T extends ServiceBusiLog, TS extends IServiceBusiLogService<T>>
         extends LacAspect {
 
     protected Mirror<T> logMirror;
