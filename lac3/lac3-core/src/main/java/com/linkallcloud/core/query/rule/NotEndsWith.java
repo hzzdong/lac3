@@ -49,4 +49,15 @@ public class NotEndsWith extends EndsWith {
 		return " NOT LIKE ";
 	}
 
+	@Override
+	protected boolean compare(Object destValue) {
+		if (destValue != null) {
+			int len = ((String) destValue).length() - ((String) this.getValue()).length();
+			int idx = ((String) destValue).indexOf((String) this.getValue());
+			if (idx != -1 && idx == len) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

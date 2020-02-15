@@ -1,292 +1,306 @@
 package com.linkallcloud.core.dto;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.alibaba.fastjson.annotation.JSONField;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * TreeVO
  */
 public class Tree implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String id;
-	private String pId;
-	private String name;
-	@JSONField(name = "isParent")
-	private Boolean parent;
+    private String id;
+    private String pId;
+    private String name;
+    @JSONField(name = "isParent")
+    private Boolean parent;
 
-	private Boolean open;// open,closed
-	private Boolean checked;
-	private Boolean nocheck;
-	private Boolean chkDisabled;
+    private Boolean open;// open,closed
+    private Boolean checked;
+    private Boolean nocheck;
+    private Boolean chkDisabled;
 
-	private Map<String, Object> attributes;
+    private Map<String, Object> attributes;
 
-	private String icon;
-	private String iconOpen;
-	private String iconClose;
-	private String iconSkin;
+    private String icon;
+    private String iconOpen;
+    private String iconClose;
+    private String iconSkin;
 
-	private List<Tree> children;
+    private List<Tree> children;
 
-	private String uuid;
-	private String type;
-	private int status;
-	private String govCode;
-	private int level;
-	private int sort;
+    private String uuid;
+    private String type;
+    private int status;
+    private String govCode;
+    private int level;
+    private int sort;
 
-	public Tree() {
-		super();
-	}
+    private String value;
+    private String title;
 
-	public Tree(String id, String pId, String name) {
-		super();
-		this.id = id;
-		this.pId = pId;
-		this.name = name;
-	}
 
-	public Tree(String id, String pId, String name, String govCode) {
-		this(id, pId, name);
-		this.govCode = govCode;
-	}
+    public Tree() {
+        super();
+    }
 
-	public Tree(String id, String pId, String name, String govCode, String url) {
-		this(id, pId, name, govCode);
-		this.addAttribute("url", url);
-	}
+    public Tree(String id, String pId, String name) {
+        super();
+        this.id = id;
+        this.pId = pId;
+        this.name = name;
+    }
 
-	public Tree(String id, String pId, String name, String govCode, boolean open) {
-		this(id, pId, name, govCode);
-		this.open = open;
-	}
+    public Tree(String id, String pId, String name, String govCode) {
+        this(id, pId, name);
+        this.govCode = govCode;
+    }
 
-	public Tree(String id, String uuid, String pId, String name, String govCode, String type, int status) {
-		super();
-		this.id = id;
-		this.pId = pId;
-		this.name = name;
-		this.uuid = uuid;
-		this.type = type;
-		this.status = status;
-		this.govCode = govCode;
-	}
+    public Tree(String id, String pId, String name, String govCode, String url) {
+        this(id, pId, name, govCode);
+        this.addAttribute("url", url);
+    }
 
-	public static void sort(List<Tree> items) {
-		if (items != null && items.size() > 0) {
-			Collections.sort(items, new Comparator<Tree>() {
-				@Override
-				public int compare(Tree u1, Tree u2) {
-					int diff = u1.getSort() - u2.getSort();
-					if (diff > 0) {
-						return 1;
-					} else if (diff < 0) {
-						return -1;
-					}
-					return 0;
-				}
-			});
-		}
-	}
+    public Tree(String id, String pId, String name, String govCode, boolean open) {
+        this(id, pId, name, govCode);
+        this.open = open;
+    }
 
-	public void sort() {
-		if (this.children != null && this.children.size() > 0) {
-			Collections.sort(this.children, new Comparator<Tree>() {
-				@Override
-				public int compare(Tree u1, Tree u2) {
-					int diff = u1.getSort() - u2.getSort();
-					if (diff > 0) {
-						return 1;
-					} else if (diff < 0) {
-						return -1;
-					}
-					return 0;
-				}
-			});
-		}
-	}
+    public Tree(String id, String uuid, String pId, String name, String govCode, String type, int status) {
+        super();
+        this.id = id;
+        this.pId = pId;
+        this.name = name;
+        this.uuid = uuid;
+        this.type = type;
+        this.status = status;
+        this.govCode = govCode;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public static void sort(List<Tree> items) {
+        if (items != null && items.size() > 0) {
+            Collections.sort(items, new Comparator<Tree>() {
+                @Override
+                public int compare(Tree u1, Tree u2) {
+                    int diff = u1.getSort() - u2.getSort();
+                    if (diff > 0) {
+                        return 1;
+                    } else if (diff < 0) {
+                        return -1;
+                    }
+                    return 0;
+                }
+            });
+        }
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void sort() {
+        if (this.children != null && this.children.size() > 0) {
+            Collections.sort(this.children, new Comparator<Tree>() {
+                @Override
+                public int compare(Tree u1, Tree u2) {
+                    int diff = u1.getSort() - u2.getSort();
+                    if (diff > 0) {
+                        return 1;
+                    } else if (diff < 0) {
+                        return -1;
+                    }
+                    return 0;
+                }
+            });
+        }
+    }
 
-	public String getpId() {
-		return pId;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setpId(String pId) {
-		this.pId = pId;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public int getSort() {
-		return sort;
-	}
+    public String getpId() {
+        return pId;
+    }
 
-	public void setSort(int sort) {
-		this.sort = sort;
-	}
+    public void setpId(String pId) {
+        this.pId = pId;
+    }
 
-	public String getGovCode() {
-		return govCode;
-	}
+    public int getSort() {
+        return sort;
+    }
 
-	public void setGovCode(String govCode) {
-		this.govCode = govCode;
-	}
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
 
-	public int getLevel() {
-		return level;
-	}
+    public String getGovCode() {
+        return govCode;
+    }
 
-	public void setLevel(int level) {
-		this.level = level;
-	}
+    public void setGovCode(String govCode) {
+        this.govCode = govCode;
+    }
 
-	public String getUuid() {
-		return uuid;
-	}
+    public int getLevel() {
+        return level;
+    }
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getUuid() {
+        return uuid;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
-	public int getStatus() {
-		return status;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public int getStatus() {
+        return status;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
-	public Boolean getParent() {
-		return parent;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setParent(Boolean parent) {
-		this.parent = parent;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Boolean getOpen() {
-		return open;
-	}
+    public Boolean getParent() {
+        return parent;
+    }
 
-	public void setOpen(Boolean open) {
-		this.open = open;
-	}
+    public void setParent(Boolean parent) {
+        this.parent = parent;
+    }
 
-	public Boolean getChecked() {
-		return checked;
-	}
+    public Boolean getOpen() {
+        return open;
+    }
 
-	public void setChecked(Boolean checked) {
-		this.checked = checked;
-	}
+    public void setOpen(Boolean open) {
+        this.open = open;
+    }
 
-	public Map<String, Object> getAttributes() {
-		return attributes;
-	}
+    public Boolean getChecked() {
+        return checked;
+    }
 
-	public void setAttributes(Map<String, Object> attributes) {
-		this.attributes = attributes;
-	}
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
+    }
 
-	public void addAttribute(String name, Object value) {
-		if (this.attributes == null) {
-			this.attributes = new HashMap<String, Object>();
-		}
-		this.attributes.put(name, value);
-	}
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
 
-	public String getIcon() {
-		return icon;
-	}
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+    }
 
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
+    public void addAttribute(String name, Object value) {
+        if (this.attributes == null) {
+            this.attributes = new HashMap<String, Object>();
+        }
+        this.attributes.put(name, value);
+    }
 
-	public String getIconOpen() {
-		return iconOpen;
-	}
+    public String getIcon() {
+        return icon;
+    }
 
-	public void setIconOpen(String iconOpen) {
-		this.iconOpen = iconOpen;
-	}
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
-	public String getIconClose() {
-		return iconClose;
-	}
+    public String getIconOpen() {
+        return iconOpen;
+    }
 
-	public void setIconClose(String iconClose) {
-		this.iconClose = iconClose;
-	}
+    public void setIconOpen(String iconOpen) {
+        this.iconOpen = iconOpen;
+    }
 
-	public String getIconSkin() {
-		return iconSkin;
-	}
+    public String getIconClose() {
+        return iconClose;
+    }
 
-	public void setIconSkin(String iconSkin) {
-		this.iconSkin = iconSkin;
-	}
+    public void setIconClose(String iconClose) {
+        this.iconClose = iconClose;
+    }
 
-	public List<Tree> getChildren() {
-		return children;
-	}
+    public String getIconSkin() {
+        return iconSkin;
+    }
 
-	public void setChildren(List<Tree> children) {
-		this.children = children;
-	}
+    public void setIconSkin(String iconSkin) {
+        this.iconSkin = iconSkin;
+    }
 
-	public void addChild(Tree child) {
-		if (children == null) {
-			children = new ArrayList<Tree>();
-		}
-		children.add(child);
-		child.setpId(this.id);
-	}
+    public List<Tree> getChildren() {
+        return children;
+    }
 
-	public Boolean getNocheck() {
-		return nocheck;
-	}
+    public void setChildren(List<Tree> children) {
+        this.children = children;
+    }
 
-	public void setNocheck(Boolean nocheck) {
-		this.nocheck = nocheck;
-	}
+    public void addChild(Tree child) {
+        if (children == null) {
+            children = new ArrayList<Tree>();
+        }
+        children.add(child);
+        child.setpId(this.id);
+    }
 
-	public Boolean getChkDisabled() {
-		return chkDisabled;
-	}
+    public Boolean getNocheck() {
+        return nocheck;
+    }
 
-	public void setChkDisabled(Boolean chkDisabled) {
-		this.chkDisabled = chkDisabled;
-	}
+    public void setNocheck(Boolean nocheck) {
+        this.nocheck = nocheck;
+    }
 
+    public Boolean getChkDisabled() {
+        return chkDisabled;
+    }
+
+    public void setChkDisabled(Boolean chkDisabled) {
+        this.chkDisabled = chkDisabled;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

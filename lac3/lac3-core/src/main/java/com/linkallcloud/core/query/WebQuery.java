@@ -7,6 +7,8 @@ import java.util.List;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.query.Query.GroupOperator;
+import com.linkallcloud.core.query.rule.CompareRule;
+import com.linkallcloud.core.query.rule.QueryRule;
 import com.linkallcloud.core.query.rule.desc.StringRuleDescriptor;
 
 public class WebQuery implements Serializable {
@@ -111,6 +113,56 @@ public class WebQuery implements Serializable {
 			return Strings.join2(",", orderbys);
 		}
 		return null;
+	}
+
+	/**
+	 * 是否存在名称是fieldName的rule
+	 *
+	 * @param fieldName
+	 * @return boolean
+	 */
+	public boolean hasRule4Field(String fieldName) {
+		if (getCnds() != null && !getCnds().isEmpty()) {
+			for (StringRuleDescriptor rd : getCnds()) {
+				if (rd.getField().equals(fieldName)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 得到名称是fieldName的rule
+	 *
+	 * @param fieldName
+	 * @return boolean
+	 */
+	public StringRuleDescriptor getRule4Field(String fieldName) {
+		if (getCnds() != null && !getCnds().isEmpty()) {
+			for (StringRuleDescriptor rd : getCnds()) {
+				if (rd.getField().equals(fieldName)) {
+					return rd;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 重新设置名称是fieldName的rule的值
+	 *
+	 * @param fieldName
+	 * @param value
+	 */
+	public void resetRule4Field(String fieldName, String value) {
+		if (getCnds() != null && !getCnds().isEmpty()) {
+			for (StringRuleDescriptor rd : getCnds()) {
+				if (rd.getField().equals(fieldName)) {
+					rd.setData(value);
+				}
+			}
+		}
 	}
 
 }

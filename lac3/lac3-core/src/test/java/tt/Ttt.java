@@ -20,7 +20,13 @@ public class Ttt {
         System.out.println(Lang.sha256("password"));
         
         testPBKDF2();
+        testSHA1();
+    }
 
+    public static void testSHA1(){
+        System.out.println("passwd sha256 is " + Lang.sha256("passwd") );
+        System.out.println("df@tt1992 sha256 is " + Lang.sha256("Df@tt1992") );
+        System.out.println("2wsx@WSX sha256 is " + Lang.sha256("2wsx@WSX") );
     }
     
     private static final String myPlainPassword = "TheCorrectPassword";

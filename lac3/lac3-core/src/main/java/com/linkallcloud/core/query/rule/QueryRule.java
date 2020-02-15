@@ -1,13 +1,14 @@
 package com.linkallcloud.core.query.rule;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.linkallcloud.core.castor.Castors;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.query.Expression;
 import com.linkallcloud.core.query.Operator;
 import com.linkallcloud.core.query.QueryHelper;
 import com.linkallcloud.core.query.rule.desc.IRuleDescriptor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class QueryRule implements Expression {
     private static final long serialVersionUID = -4551477168517876211L;
@@ -27,7 +28,6 @@ public abstract class QueryRule implements Expression {
     }
 
     /**
-     * 
      * @param field
      * @param op
      */
@@ -38,10 +38,8 @@ public abstract class QueryRule implements Expression {
     }
 
     /**
-     * 
      * @param field
      * @param op
-     * @param data
      */
     public QueryRule(String field, String op) {
         super();
@@ -71,8 +69,7 @@ public abstract class QueryRule implements Expression {
     }
 
     /**
-     * @param field
-     *            the field to set
+     * @param field the field to set
      */
     public void setField(String field) {
         this.field = field;
@@ -86,8 +83,7 @@ public abstract class QueryRule implements Expression {
     }
 
     /**
-     * @param op
-     *            the op to set
+     * @param op the op to set
      */
     public void setOp(Operator op) {
         this.op = op;
@@ -102,8 +98,16 @@ public abstract class QueryRule implements Expression {
     }
 
     /**
+     * 解析目标值（destValue）是否满足本QueryRule
+     *
+     * @param destValue
+     * @return
+     */
+    public abstract boolean parse(Object destValue);
+
+    /**
      * 根据提供的aliasFieldName，往where对象中append sql，args。
-     * 
+     *
      * @param where
      * @param aliasFieldName
      */
@@ -111,9 +115,8 @@ public abstract class QueryRule implements Expression {
 
     /**
      * 根据字段中信息，返回字段名称
-     * 
-     * @param jdbcMappingField
-     *            若 true 按照JDBC默认规则简单处理， false 不处理
+     *
+     * @param jdbcMappingField 若 true 按照JDBC默认规则简单处理， false 不处理
      */
     protected String getAliasFieldName(boolean jdbcMappingField) {
         String aliasFieldName = this.field.replaceAll("#", "\\.");
@@ -127,7 +130,7 @@ public abstract class QueryRule implements Expression {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.linkallcloud.dao.query.QueryExpression#toSmartHqlQuery(com.linkallcloud. dao.query.Where)
      */
     @Override
@@ -179,7 +182,7 @@ public abstract class QueryRule implements Expression {
             String joinAliaField = aliasFieldName.substring(dollorIndex + 1);// shops.name
             int dotIndex = joinAliaField.indexOf(".");
             String field = (dotIndex == -1) ? joinAliaField : joinAliaField.substring(0, dotIndex);// shops; shops.name
-                                                                                                   // -> shops
+            // -> shops
             String alias = "_" + field.toLowerCase();
             String newAlias = where.checkUniqueAlias(alias, field, parentAlias);// _shops (or others)
             if (dotIndex == -1) {// shops应该没有这样的查询条件吧?自动加上.id->shops.id

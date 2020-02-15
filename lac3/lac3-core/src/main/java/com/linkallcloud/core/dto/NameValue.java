@@ -1,33 +1,49 @@
 package com.linkallcloud.core.dto;
 
-public class NameValue {
+import java.io.Serializable;
 
-	private String key;
-	private String value;
+public class NameValue implements Serializable {
 
-	public NameValue(String key, String value) {
-		this.key = key;
-		this.value = value;
-	}
+    private String key;
+    private String value;
+    private String title;
 
-	public String toString() {
-		return key + "=" + value;
-	}
+    public NameValue(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
 
-	public String getKey() {
-		return key;
-	}
+    public NameValue(String key, String value, String title) {
+        this.key = key;
+        this.value = value;
+        this.title = title;
+    }
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    public String toString() {
+        return key + "=" + value;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getKey() {
+        return key;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

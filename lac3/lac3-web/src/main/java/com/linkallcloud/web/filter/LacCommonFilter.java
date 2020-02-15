@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class LacCommonFilter implements Filter {
-    private static Log log = Logs.get();
+    protected static Log log = Logs.get();
 
     // 不过滤的uri
     protected List<String> notFilterResources = Lang.list("/static/", "/js/", "/css/", "/images/", "/img/", ".jpg", ".png",
@@ -191,7 +191,7 @@ public abstract class LacCommonFilter implements Filter {
      * @param hResponse
      * @throws IOException
      */
-    protected void gotoLogin(String loginUrl, HttpServletRequest request, HttpServletResponse hResponse) throws IOException {
+    protected void toLogin(String loginUrl, HttpServletRequest request, HttpServletResponse hResponse) throws IOException {
         if (!Strings.isBlank(loginUrl) && !loginUrl.startsWith("http")
                 && !loginUrl.startsWith(request.getContextPath())) {
             loginUrl = request.getContextPath() + loginUrl;

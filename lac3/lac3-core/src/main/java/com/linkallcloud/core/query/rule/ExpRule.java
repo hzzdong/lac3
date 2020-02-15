@@ -5,14 +5,13 @@ import com.linkallcloud.core.query.QueryHelper;
 import com.linkallcloud.core.query.rule.desc.IRuleDescriptor;
 
 public abstract class ExpRule extends QueryRule {
-	private static final long serialVersionUID = 5806462863294410868L;
+    private static final long serialVersionUID = 5806462863294410868L;
 
-	public ExpRule() {
+    public ExpRule() {
         super();
     }
 
     /**
-     * 
      * @param rd
      */
     public ExpRule(IRuleDescriptor rd) {
@@ -28,15 +27,15 @@ public abstract class ExpRule extends QueryRule {
     }
 
     /*
-     * 
+     *
      * 输出sql的Where对象:sql and args
-     * 
+     *
      * @param where
-     * 
+     *
      * @param jdbcMappingField 若 true 按照JDBC默认规则简单处理， false 不处理
-     * 
+     *
      * (non-Javadoc)
-     * 
+     *
      * @see com.linkallcloud.dao.query.QueryExpression#toWhere(com.linkallcloud.dao.query.Where, boolean)
      */
     @Override
@@ -50,7 +49,7 @@ public abstract class ExpRule extends QueryRule {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.linkallcloud.dao.query.QueryExpression#toWhere4Hql(com.linkallcloud.dao.query.Where)
      */
     @Override
@@ -60,7 +59,7 @@ public abstract class ExpRule extends QueryRule {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.linkallcloud.dao.query.rule.QueryRule#appendSimpleRule(com.linkallcloud.dao.query.Where, java.lang.String)
      */
     protected void appendSimpleRule(QueryHelper where, String aliasFieldName) {

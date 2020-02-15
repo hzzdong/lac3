@@ -44,4 +44,11 @@ public class LessEqual extends CompareRule {
 		return "<=";
 	}
 
+	@Override
+	protected boolean compare(Object destValue) {
+		if (destValue instanceof Comparable && this.getValue() instanceof Comparable) {
+			return ((Comparable) destValue).compareTo((Comparable) this.getValue()) <= 0;
+		}
+		return false;
+	}
 }

@@ -4,54 +4,59 @@ import com.linkallcloud.core.query.Operator;
 import com.linkallcloud.core.query.rule.desc.IRuleDescriptor;
 
 public class Contains extends CompareRule {
-	private static final long serialVersionUID = 6542092848078539869L;
+    private static final long serialVersionUID = 6542092848078539869L;
 
-	public Contains() {
-		super();
-	}
+    public Contains() {
+        super();
+    }
 
-	/**
-	 * @param rd
-	 */
-	public Contains(IRuleDescriptor rd) {
-		super(rd);
-	}
+    /**
+     * @param rd
+     */
+    public Contains(IRuleDescriptor rd) {
+        super(rd);
+    }
 
-	/**
-	 * @param field
-	 * @param data
-	 */
-	public Contains(String field, Object data) {
-		super(field, Operator.cn, data);
-	}
+    @Override
+    protected boolean compare(Object destValue) {
+        return ((String) destValue).indexOf((String) this.getValue()) >= 0;
+    }
 
-	/**
-	 * @param field
-	 * @param data
-	 * @param fieldType
-	 */
-	public Contains(String field, String data, Class<?> fieldType) {
-		super(field, Operator.cn, data, fieldType);
-	}
+    /**
+     * @param field
+     * @param data
+     */
+    public Contains(String field, Object data) {
+        super(field, Operator.cn, data);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.linkallcloud.dao.query.QueryRule#getOperater()
-	 */
-	@Override
-	public String getOperater() {
-		return " LIKE ";
-	}
+    /**
+     * @param field
+     * @param data
+     * @param fieldType
+     */
+    public Contains(String field, String data, Class<?> fieldType) {
+        super(field, Operator.cn, data, fieldType);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.linkallcloud.dao.query.rule.CompareRule#getCompareValue()
-	 */
-	@Override
-	public Object getCompareValue() {
-		return "%" + getValue() + "%";
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.linkallcloud.dao.query.QueryRule#getOperater()
+     */
+    @Override
+    public String getOperater() {
+        return " LIKE ";
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.linkallcloud.dao.query.rule.CompareRule#getCompareValue()
+     */
+    @Override
+    public Object getCompareValue() {
+        return "%" + getValue() + "%";
+    }
 
 }

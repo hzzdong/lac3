@@ -89,6 +89,24 @@ public abstract class CompareRule extends QueryRule {
         this.value = value;
     }
 
+    /**
+     * 解析目标值（destValue）是否满足本QueryRule
+     *
+     * @param destValue
+     * @return
+     */
+    @Override
+    public boolean parse(Object destValue) {
+        if (this.getValue().getClass().equals(destValue.getClass())) {
+            return compare(destValue);
+        } else {
+            Object v = Castors.me().castTo(destValue, this.getValue().getClass());
+            return compare(destValue);
+        }
+    }
+
+    protected abstract boolean compare(Object destValue);
+
     /*
      * 输出sql的Where对象:sql and args
      * 

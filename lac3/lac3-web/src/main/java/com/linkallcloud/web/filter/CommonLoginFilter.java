@@ -34,7 +34,7 @@ public abstract class CommonLoginFilter extends LacCommonFilter {
                 chain.doFilter(request, response);
                 return;
             } else {
-                gotoLogin(getLoginUrl(), request, response);
+                toLogin(getLoginUrl(), request, response);
                 return;
             }
         } else {
