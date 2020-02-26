@@ -164,6 +164,16 @@ public class Domains {
         return ids;
     }
 
+    public static <T extends Domain> List<String> getUuids(List<T> doms) {
+        List<String> ids = new ArrayList<String>();
+        if (doms != null && !doms.isEmpty()) {
+            for (T dom : doms) {
+                ids.add(dom.getUuid());
+            }
+        }
+        return ids;
+    }
+
     public static <T extends Domain> Map<Long, T> getIdMap(List<T> entitys) {
         return entitys.stream().collect(Collectors.toMap(T::getId, Function.identity(), (key1, key2) -> key2));
     }
