@@ -168,9 +168,16 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
                             String parentClass, Long id, String uuid, Trace t, ModelMap modelMap, AppVisitor av) {
         modelMap.put("id", id);
         modelMap.put("uuid", uuid);
+        modelMap.put("parentId", parentId);
+        modelMap.put("parentClass", parentClass);
 
         if (prepare) {
-            T entity = manager().fetchByIdUuid(t, id, uuid);
+            T entity = null;
+            if (id != null && !Strings.isBlank(uuid)) {
+                entity = manager().fetchByIdUuid(t, id, uuid);
+            } else {
+                entity = mirror.born();
+            }
             modelMap.put("entity", entity);
         }
 

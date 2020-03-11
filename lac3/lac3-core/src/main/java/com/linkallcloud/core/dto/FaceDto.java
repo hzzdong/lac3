@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 public abstract class FaceDto<T extends IDomain> extends Vo {
     private static final long serialVersionUID = 1779659772871707621L;
 
+    @JSONField(serialize = false)
     private static Log log = Logs.get();
 
     @JSONField(serialize = false)
@@ -22,7 +23,7 @@ public abstract class FaceDto<T extends IDomain> extends Vo {
     @SuppressWarnings("unchecked")
     public FaceDto() {
         try {
-            mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[1]);
+            mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
         } catch (Throwable e) {
             log.warn("!!!Fail to get TypeParams for self!", e);
         }

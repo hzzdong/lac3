@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
-import java.net.URLEncoder;
+import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.util.*;
 
@@ -238,6 +238,10 @@ public class WebUtils {
         if (Strings.isBlank(url) || !url.startsWith(IConstants.HTTP)) {
             return null;
         } else {
+            try {
+                url = URLDecoder.decode(url, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+            }
             String tmp = url.startsWith(IConstants.HTTPS) ? url.substring(IConstants.HTTPS_REQUEST_FREFIX.length())
                     : url.substring(IConstants.HTTP_REQUEST_FREFIX.length());
             int idx = tmp.indexOf(IConstants.COLON);
@@ -257,14 +261,9 @@ public class WebUtils {
      * @return url
      * @throws UnsupportedEncodingException
      */
-    public static String urlAppend(String url, String perameterName, String perameterValue)
+    public static UrlPattern urlAppend(String url, String perameterName, String perameterValue)
             throws UnsupportedEncodingException {
-        if (url.indexOf("?") == -1) {
-            url += "?";
-        } else {
-            url += "&";
-        }
-        return url + perameterName + "=" + URLEncoder.encode(perameterValue, "UTF-8");
+        return new UrlPattern(url).append(perameterName, perameterValue);
     }
 
     /**
