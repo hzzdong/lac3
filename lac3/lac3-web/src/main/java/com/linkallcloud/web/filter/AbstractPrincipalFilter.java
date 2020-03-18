@@ -35,17 +35,23 @@ public abstract class AbstractPrincipalFilter extends LacCommonFilter {
             // 若有sso, 并且sso未超时, principal为sso验证后的用户帐号
             Principal principal = getSSOPrincipal(getAppCode(), request);
             if (principal != null) {// SSO认证，且已经通过SSO认证，但是本地未登陆
-                loginUser(request, getAppCode(), getSessionUserByPrincipal(principal));
-                chain.doFilter(request, response);
-                return;
+                SessionUser psu = getSessionUserByPrincipal(principal);
+                if (psu != null) {
+                    loginUser(request, getAppCode(), psu);
+                    chain.doFilter(request, response);
+                    return;
+                }
             }
 
             //若有token
             String token = getLacToken(request);
             if (!Strings.isBlank(token)) {
-                loginUser(request, getAppCode(), getSessionUserByToken(token));
-                chain.doFilter(request, response);
-                return;
+                SessionUser tsu = getSessionUserByToken(token);
+                if (tsu != null) {
+                    loginUser(request, getAppCode(), tsu);
+                    chain.doFilter(request, response);
+                    return;
+                }
             }
 
             //无有效登录凭证
@@ -78,17 +84,22 @@ public abstract class AbstractPrincipalFilter extends LacCommonFilter {
         String token = request.getParameter("token");
         log.info("################  paream token:" + token);
 
-        if (Strings.isBlank(token)) {
+        if (Strings.isBlank(token) || "undefined".equals(token) || "null".equals(token)) {
             token = request.getHeader("token");
             try {
-                if (!Strings.isBlank(token)) {
+                if (!Strings.isBlank(token) && !"undefined".equals(token) && !"null".equals(token)) {
                     token = URLDecoder.decode(token, "UTF8");
                 }
             } catch (UnsupportedEncodingException e1) {
             }
             log.info("################ header token:" + token);
         }
-        return token;
+
+        if (!Strings.isBlank(token) && !"undefined".equals(token) && !"null".equals(token)) {
+            return token;
+        } else {
+            return null;
+        }
     }
 
 

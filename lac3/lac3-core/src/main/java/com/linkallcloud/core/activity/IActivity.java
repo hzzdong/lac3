@@ -28,6 +28,15 @@ public interface IActivity<T> {
     boolean exist(Trace t, T entity, String field, Object filedValue);
 
     /**
+     * entity是否已经存在
+     * @param t
+     * @param entity
+     * @param query
+     * @return
+     */
+    boolean exist(Trace t, T entity, Query query);
+
+    /**
      * 插入一条记录
      *
      * @param t      trace，含业务流水ID

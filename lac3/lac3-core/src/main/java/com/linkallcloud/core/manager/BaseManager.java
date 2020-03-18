@@ -120,6 +120,11 @@ public abstract class BaseManager<T extends Domain, S extends IService<T>>
     }
 
     @Override
+    public boolean exist(Trace t, T entity, Query query) {
+        return service().exist(t, entity, query);
+    }
+
+    @Override
     public <X> List<X> query(Trace t, Query query) {
         return service().query(t, query);
     }

@@ -413,7 +413,6 @@ public class Query implements Expression {
      * 输出查询条件到cndsMap
      *
      * @param cndsMap
-     * @param mapUnderscoreToCamelCase
      */
     public void outputQueryParameters(Map<String, Object> cndsMap) {
         if (this.hasQueryConditons()) {

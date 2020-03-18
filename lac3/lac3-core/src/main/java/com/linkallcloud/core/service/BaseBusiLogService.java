@@ -44,6 +44,11 @@ public abstract class BaseBusiLogService<T extends Domain, A extends IActivity<T
         return activity().exist(t, entity, field, filedValue);
     }
 
+    @Override
+    public boolean exist(Trace t, T entity, Query query) {
+        return activity().exist(t, entity, query);
+    }
+
     @Transactional(readOnly = false)
     @Override
     public T save(Trace t, T entity) {

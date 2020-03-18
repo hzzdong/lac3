@@ -84,6 +84,26 @@ public abstract class BaseActivity<T extends Domain, D extends IDao<T>> implemen
         // query.put(field, filedValue);
         // query.put(field + "_exact_match", true);// 精确匹配标志，在sql中处理
 
+//        List<T> dbEntities = this.find(t, query);
+//
+//        if (entity.getId() == null) {// 新增
+//            if (dbEntities != null && dbEntities.size() > 0) {
+//                return true;
+//            }
+//        } else {// 修改
+//            if (dbEntities != null && dbEntities.size() > 1) {
+//                return true;
+//            } else if (dbEntities != null && dbEntities.size() == 1) {
+//                if (!dbEntities.get(0).getId().equals(entity.getId())) {
+//                    return true;
+//                }
+//            }
+//        }
+        return exist(t, entity, query);
+    }
+
+    @Override
+    public boolean exist(Trace t, T entity, Query query) {
         List<T> dbEntities = this.find(t, query);
 
         if (entity.getId() == null) {// 新增

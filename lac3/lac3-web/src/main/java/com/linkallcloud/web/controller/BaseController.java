@@ -164,7 +164,7 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
         return doEdit(prepare, parentId, parentClass, id, uuid, t, modelMap, av);
     }
 
-    protected String doEdit(@RequestParam(value = "prepare", required = false) boolean prepare, Long parentId,
+    protected String doEdit(boolean prepare, Long parentId,
                             String parentClass, Long id, String uuid, Trace t, ModelMap modelMap, AppVisitor av) {
         modelMap.put("id", id);
         modelMap.put("uuid", uuid);

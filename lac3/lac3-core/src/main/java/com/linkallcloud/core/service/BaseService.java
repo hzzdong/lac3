@@ -43,6 +43,11 @@ public abstract class BaseService<T extends Domain, A extends IActivity<T>> impl
         return activity().exist(t, entity, field, filedValue);
     }
 
+    @Override
+    public boolean exist(Trace t, T entity, Query query) {
+        return activity().exist(t, entity, query);
+    }
+
     @ServLog(db = true)
     @Transactional(readOnly = false)
     @Override
