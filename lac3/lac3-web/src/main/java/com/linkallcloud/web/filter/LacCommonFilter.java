@@ -24,7 +24,7 @@ public abstract class LacCommonFilter implements Filter {
 
     // 不过滤的uri
     protected List<String> notFilterResources = Lang.list("/static/", "/js/", "/css/", "/images/", "/img/", ".jpg", ".png",
-            ".jpeg", ".js", ".css", "/imageValidate", "/verifyCode", "/exit", "/nnl/", "/unsupport", "/error", "/pub/");
+            ".jpeg", ".js", ".css", "/login", "/imageValidate", "/verifyCode", "/exit", "/nnl/", "/unsupport", "/error", "/pub/");
 
     // 需要过滤的uri
     protected List<String> filterResources = null;

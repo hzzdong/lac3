@@ -1,6 +1,7 @@
 package com.linkallcloud.web.face.processor;
 
 import com.linkallcloud.core.castor.Castors;
+import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.sh.sm.MsgException;
 import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.session.SessionUser;
@@ -66,7 +67,7 @@ public abstract class RequestProcessor<T> implements IRequestProcessor {
             Type[] argTypes = method.getGenericParameterTypes();
             Object[] args = joinPoint.getArgs();
             boolean findT = false;
-            SessionUser suser = null;
+            ISessionUser suser = null;
             int suserIdx = -1;
             int appVisitorIdx = -1;
             int tIdx = -1;
@@ -89,7 +90,7 @@ public abstract class RequestProcessor<T> implements IRequestProcessor {
                         }
 
                         if (faceAnno.login()) {// 需要登录校验
-                            suser = doCheckLogin(rmReq, faceAnno);
+                            suser = doCheckLogin(rmReq, faceAnno, hsr);
                         }
                         beanValidator(rmReq);
                         args[i] = rmReq;
@@ -133,7 +134,7 @@ public abstract class RequestProcessor<T> implements IRequestProcessor {
         return Castors.me().castTo(content, (Class<T>) type.getClass());
     }
 
-    protected SessionUser doCheckLogin(T request, Face faceAnno) throws BaseException {
+    protected ISessionUser doCheckLogin(T request, Face faceAnno, HttpServletRequest hsr) throws BaseException {
         return null;
     }
 

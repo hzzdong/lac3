@@ -2,14 +2,17 @@ package com.linkallcloud.web.face.processor;
 
 import java.lang.reflect.Type;
 
+import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.core.exception.BaseException;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class OriginalProcessor extends RequestProcessor<String> {
 
     @Override
-    protected SessionUser doCheckLogin(String request, Face faceAnno) throws BaseException {
+    protected ISessionUser doCheckLogin(String request, Face faceAnno, HttpServletRequest hsr) throws BaseException {
         return null;
     }
 
