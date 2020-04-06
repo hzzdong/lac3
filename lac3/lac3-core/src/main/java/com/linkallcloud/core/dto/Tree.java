@@ -9,7 +9,7 @@ import java.util.*;
  * TreeVO
  */
 public class Tree implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7776064286477356232L;
 
     private String id;
     private String pId;
@@ -37,6 +37,8 @@ public class Tree implements Serializable {
     private String govCode;
     private int level;
     private int sort;
+
+    private String remark;
 
     private String value;
     private String title;
@@ -302,5 +304,13 @@ public class Tree implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

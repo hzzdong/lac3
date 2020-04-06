@@ -168,6 +168,7 @@ public abstract class TreeDomain extends Domain  {
 				this.getParentId() == null ? null : this.getParentId().toString(), this.getName(), this.getGovCode(),
 				String.valueOf(this.getType()), this.getStatus());
 		node.setSort(this.getSort());
+		node.setRemark(this.getRemark());
 		node.addAttribute("url", this.getUrl());
 		node.addAttribute("alias", getAlias());
 		node.addAttribute("level", getLevel());
