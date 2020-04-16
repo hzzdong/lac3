@@ -1,14 +1,26 @@
 package com.linkallcloud.core.dto;
 
 import com.linkallcloud.core.domain.TreeDomain;
+import com.linkallcloud.core.exception.BizException;
 import com.linkallcloud.core.lang.Strings;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 public class Trees {
+
+    /**
+     * 创建一个虚拟根节点
+     *
+     * @param name
+     * @return
+     */
+    public static Tree vroot(String name) {
+        return new Tree("v-root", null, name);
+    }
 
     public static List<Tree> tree2List(Tree tree) {
         List<Tree> result = new ArrayList<Tree>();
@@ -311,6 +323,28 @@ public class Trees {
         return Trees.tree2List(root);
     }
 
+
+    /**
+     * 从nodeList中找出唯一根节点root，若不唯一则创建一个虚拟根节点root，然后把其它节点按树形挂载到root下，返回root
+     *
+     * @param nodes
+     */
+    public static Tree assembleTree(List<Tree> nodes) {
+        if (nodes == null) {
+            throw new BizException("nodes不能为空");
+        }
+        Tree root = Trees.vroot("虚拟根节点");
+        List<Tree> children = null;
+        List<Tree> roots = Trees.findRootNodes(nodes);
+        if (roots != null && !roots.isEmpty() && roots.size() == 1) {
+            root = roots.get(0);
+            final String rootId = root.getId();
+            children = nodes.stream().filter(s -> !s.getId().toString().equals(rootId)).collect(Collectors.toList());
+        }
+        Trees.assembleTree(root, children == null ? nodes : children);
+        return root;
+    }
+
     /**
      * 把nodeList中的根节点挂到parent上，返回一颗树parent
      *
@@ -318,6 +352,9 @@ public class Trees {
      * @param nodes
      */
     public static void assembleTree(Tree parent, List<Tree> nodes) {
+        if (parent == null) {
+            throw new BizException("parent不能为空");
+        }
         if (nodes != null && !nodes.isEmpty()) {
             CopyOnWriteArrayList<Tree> nodes2 = new CopyOnWriteArrayList<Tree>(nodes);
             Trees.assembleTree(parent, nodes2, -1);
@@ -334,14 +371,14 @@ public class Trees {
      */
     public static void assembleTree(Tree parent, CopyOnWriteArrayList<Tree> nodes, int statusGe) {
         if (parent == null) {
-            parent = new Tree("0", null, "虚拟根节点");
+            throw new BizException("parent不能为空");
         }
 
         if (nodes == null || nodes.isEmpty()) {
             return;
         }
 
-        if (parent.getId() == null || parent.getpId() == null) {// 根节点
+        if (Strings.isBlank(parent.getId()) || "v-root".equals(parent.getId()) || "v-root".equals(parent.getType())) {// 虚拟根节点
             List<Tree> roots = Trees.findRootNodes(nodes);
             if (roots != null && !roots.isEmpty()) {
                 for (Tree pnode : roots) {
@@ -377,7 +414,12 @@ public class Trees {
      */
     public static <T extends TreeDomain> void assembleDomain2Tree(Tree parent,
                                                                   Collection<T> nodeList) {
-        Trees.assembleDomain2Tree(parent, nodeList, -1);
+        if (parent == null) {
+            throw new BizException("parent参数不能为空");
+        }
+        if (nodeList != null && !nodeList.isEmpty()) {
+            Trees.assembleDomain2Tree(parent, nodeList, -1);
+        }
     }
 
     /**
@@ -389,14 +431,19 @@ public class Trees {
      */
     public static <T extends TreeDomain> void assembleDomain2Tree(Tree parent,
                                                                   Collection<T> nodeList, int statusGe) {
-        CopyOnWriteArrayList<Tree> nodes = new CopyOnWriteArrayList<>();
-        if (nodeList != null && !nodeList.isEmpty()) {
-            for (TreeDomain enode : nodeList) {
-                Tree tnode = enode.toTreeNode();
-                nodes.add(tnode);
-            }
+        if (parent == null) {
+            throw new BizException("parent参数不能为空");
         }
-        Trees.assembleTree(parent, nodes, statusGe);
+        if (nodeList != null && !nodeList.isEmpty()) {
+            CopyOnWriteArrayList<Tree> nodes = new CopyOnWriteArrayList<>();
+            if (nodeList != null && !nodeList.isEmpty()) {
+                for (TreeDomain enode : nodeList) {
+                    Tree tnode = enode.toTreeNode();
+                    nodes.add(tnode);
+                }
+            }
+            Trees.assembleTree(parent, nodes, statusGe);
+        }
     }
 
     /**
