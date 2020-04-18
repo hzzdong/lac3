@@ -1,5 +1,6 @@
 package com.linkallcloud.web.session;
 
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.www.ISessionUser;
 
@@ -10,22 +11,14 @@ import java.util.List;
 public class SessionUser implements ISessionUser {
     private static final long serialVersionUID = -1668176164184665560L;
 
-    private String companyId;
-    private String companyName;
+    private Sid company;
+    private Sid org;// 操作者所属的组织ID
 
-    private String orgId;// 操作者所属的组织ID
-    private String orgName;
-    private String orgType;// 操作者所属的组织类型
-
-    private String areaId; // 所在区域
-    private String areaCode;// 所在区域
-    private String areaName;// 所在区域
+    private Sid area; // 所在区域
     private int areaLevel; // 所在区域level
 
-    private String id;
-    private String uuid;
+    private Sid sid;
     private String loginName;
-    private String name;
     private String nickName;
     private String userType;// 用户类型
     private boolean admin;// 是否管理员
@@ -40,10 +33,7 @@ public class SessionUser implements ISessionUser {
     private List<Object> extendFields;
 
     // 以下是等到到具体某app相关权限信息
-    private String appId;// 当前登录的app
-    private String appUuid;
-    private String appCode;
-    private String appName;
+    private Sid app;// 当前登录的app
     private String[] menuPermissions;
     private Long[] orgPermissions;
     private Long[] areaPermissions;
@@ -53,98 +43,150 @@ public class SessionUser implements ISessionUser {
     public SessionUser() {
     }
 
-    public SessionUser(String id, String uuid, String loginName, String name, String userType) {
-        this.id = id;
-        this.uuid = uuid;
+    public SessionUser(Long id, String uuid, String loginName, String name, String userType) {
+        this.sid = new Sid(id, uuid, loginName, name);
         this.loginName = loginName;
-        this.name = name;
         this.userType = userType;
     }
 
-    public SessionUser(String id, String uuid, String loginName, String name, String userType, String companyId,
-                       String companyName, String orgId, String orgName, String orgType) {
+    public SessionUser(Long id, String uuid, String loginName, String name, String userType, Long companyId,
+                       String companyUuid, String companyName, Long orgId, String orgUuid, String orgName) {
         this(id, uuid, loginName, name, userType);
-        this.companyId = companyId;
-        this.companyName = companyName;
-        this.orgId = orgId;
-        this.orgName = orgName;
-        this.orgType = orgType;
+        this.company = new Sid(companyId, companyUuid, companyName);
+        this.org = new Sid(orgId, orgUuid, orgName);
     }
 
-    public void setInfo(String userType, String loginName, String userName, String userId, String companyId,
-                        String companyName) {
+    public void setInfo(String userType, String loginName, String userName, String userUuid, Long userId, Long companyId,
+                        String companyUuid, String companyName) {
         this.userType = userType;
         this.loginName = loginName;
-        this.name = userName;
-        this.id = userId;
-        this.companyId = companyId;
-        this.companyName = companyName;
+        if (this.sid == null) {
+            this.sid = new Sid(userId, userUuid, userName);
+        }
+        this.company = new Sid(companyId, companyUuid, companyName);
+    }
+
+    public List<Object> getExtendFields() {
+        return extendFields;
+    }
+
+    public void setExtendFields(List<Object> extendFields) {
+        this.extendFields = extendFields;
+    }
+
+    public void addExtendField(Object fieldObj) {
+        if (this.extendFields == null) {
+            this.extendFields = new ArrayList<Object>();
+        }
+        this.extendFields.add(fieldObj);
+    }
+
+    public void setAppInfo(Long appId, String appUuid, String appCode, String appName) {
+        this.app = new Sid(appId, appUuid, appCode, appName);
+    }
+
+    public void setPermissions(String[] menuPermissions, Long[] orgPermissions, Long[] areaPermissions) {
+        this.menuPermissions = menuPermissions;
+        this.orgPermissions = orgPermissions;
+        this.areaPermissions = areaPermissions;
     }
 
     @Override
-    public String getCompanyId() {
-        return companyId;
+    public Sid getCompany() {
+        return company;
+    }
+
+    public Long companyId() {
+        return company == null ? null : company.getId();
+    }
+
+    public String companyUuid() {
+        return company == null ? null : company.getUuid();
+    }
+
+    public String companyName() {
+        return company == null ? null : company.getName();
+    }
+
+    public void setCompany(Sid company) {
+        this.company = company;
     }
 
     @Override
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
+    public Sid getOrg() {
+        return org;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public Long orgId() {
+        return org == null ? null : org.getId();
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public String orgUuid() {
+        return org == null ? null : org.getUuid();
     }
 
-    @Override
-    public String getOrgId() {
-        return orgId;
+    public String orgName() {
+        return org == null ? null : org.getName();
     }
 
-    @Override
-    public void setOrgId(String orgId) {
-        this.orgId = orgId;
-    }
-
-    public String getOrgName() {
-        return orgName;
-    }
-
-    public void setOrgName(String orgName) {
-        this.orgName = orgName;
+    public void setOrg(Sid org) {
+        this.org = org;
     }
 
     @Override
-    public String getOrgType() {
-        return orgType;
+    public Sid getArea() {
+        return area;
+    }
+
+    public Long areaId() {
+        return area == null ? null : area.getId();
+    }
+
+    public String areaUuid() {
+        return area == null ? null : area.getUuid();
+    }
+
+    public String areaCode() {
+        return area == null ? null : area.getCode();
+    }
+
+    public String areaName() {
+        return area == null ? null : area.getName();
+    }
+
+    public void setArea(Sid area) {
+        this.area = area;
     }
 
     @Override
-    public void setOrgType(String orgType) {
-        this.orgType = orgType;
+    public int getAreaLevel() {
+        return areaLevel;
+    }
+
+    public void setAreaLevel(int areaLevel) {
+        this.areaLevel = areaLevel;
     }
 
     @Override
-    public String getId() {
-        return id;
+    public Sid getSid() {
+        return sid;
+    }
+
+    public Long id() {
+        return sid == null ? null : sid.getId();
+    }
+
+    public String uuid() {
+        return sid == null ? null : sid.getUuid();
+    }
+
+    public String name() {
+        return sid == null ? null : sid.getName();
     }
 
     @Override
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getUuid() {
-        return uuid;
-    }
-
-    @Override
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setSid(Sid id) {
+        this.sid = id;
     }
 
     @Override
@@ -158,13 +200,13 @@ public class SessionUser implements ISessionUser {
     }
 
     @Override
-    public String getName() {
-        return name;
+    public String getNickName() {
+        return nickName;
     }
 
     @Override
-    public void setName(String name) {
-        this.name = name;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     @Override
@@ -175,16 +217,6 @@ public class SessionUser implements ISessionUser {
     @Override
     public void setUserType(String userType) {
         this.userType = userType;
-    }
-
-    @Override
-    public String getNickName() {
-        return nickName;
-    }
-
-    @Override
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
     }
 
     @Override
@@ -247,69 +279,30 @@ public class SessionUser implements ISessionUser {
         this.loginWay = loginWay;
     }
 
-    public List<Object> getExtendFields() {
-        return extendFields;
+    @Override
+    public Sid getApp() {
+        return app;
     }
 
-    public void setExtendFields(List<Object> extendFields) {
-        this.extendFields = extendFields;
+    public Long appId() {
+        return app == null ? null : app.getId();
     }
 
-    public void addExtendField(Object fieldObj) {
-        if (this.extendFields == null) {
-            this.extendFields = new ArrayList<Object>();
-        }
-        this.extendFields.add(fieldObj);
+    public String appUuid() {
+        return app == null ? null : app.getUuid();
     }
 
-    public String getAppId() {
-        return appId;
+    public String appCode() {
+        return app == null ? null : app.getCode();
     }
 
-    public void setAppId(String appId) {
-        this.appId = appId;
+    public String appName() {
+        return app == null ? null : app.getName();
     }
 
-    public String getAppUuid() {
-        return appUuid;
-    }
 
-    public void setAppUuid(String appUuid) {
-        this.appUuid = appUuid;
-    }
-
-    public String getAppCode() {
-        return appCode;
-    }
-
-    public void setAppCode(String appCode) {
-        this.appCode = appCode;
-    }
-
-    public String getAppName() {
-        return appName;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
-
-    public void setAppInfo(String appId, String appUuid, String appCode, String appName) {
-        this.appId = appId;
-        this.appUuid = appUuid;
-        this.appCode = appCode;
-        this.appName = appName;
-    }
-
-    public void setAppInfo(String appId, String appCode) {
-        this.appId = appId;
-        this.appCode = appCode;
-    }
-
-    public void setPermissions(String[] menuPermissions, Long[] orgPermissions, Long[] areaPermissions) {
-        this.menuPermissions = menuPermissions;
-        this.orgPermissions = orgPermissions;
-        this.areaPermissions = areaPermissions;
+    public void setApp(Sid app) {
+        this.app = app;
     }
 
     public String[] getMenuPermissions() {
@@ -349,42 +342,9 @@ public class SessionUser implements ISessionUser {
         return false;
     }
 
-    public String getAreaId() {
-        return areaId;
-    }
-
-    public void setAreaId(String areaId) {
-        this.areaId = areaId;
-    }
-
-    public String getAreaCode() {
-        return areaCode;
-    }
-
-    public void setAreaCode(String areaCode) {
-        this.areaCode = areaCode;
-    }
-
-    public String getAreaName() {
-        return areaName;
-    }
-
-    public void setAreaName(String areaName) {
-        this.areaName = areaName;
-    }
-
-    public int getAreaLevel() {
-        return areaLevel;
-    }
-
-    public void setAreaLevel(int areaLevel) {
-        this.areaLevel = areaLevel;
-    }
-
-    public void setAreaInfo(Long areaId, int level, String name) {
-        this.areaId = areaId.toString();
+    public void setAreaInfo(Long areaId, String uuid, String code, String name, int level) {
+        this.area = new Sid(areaId, uuid, code, name);
         this.areaLevel = level;
-        this.areaName = name;
     }
 
     public boolean isAdmin() {

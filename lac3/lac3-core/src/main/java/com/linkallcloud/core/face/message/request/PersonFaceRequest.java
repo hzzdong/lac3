@@ -7,22 +7,22 @@ public class PersonFaceRequest extends IdFaceRequest {
     private String operatorName;// 操作者的名称
     private String operatorLoginName;// 操作者的登录名
 
-    private String orgId;// 操作者所属的组织ID
+    private Long orgId;// 操作者所属的组织ID
     private String orgType;// 操作者所属的组织类型
 
     public PersonFaceRequest() {
         super();
     }
 
-    public PersonFaceRequest(String id, String uuid, String sessionId, String versn) {
+    public PersonFaceRequest(Long id, String uuid, String sessionId, String versn) {
         super(id, uuid, sessionId, versn);
     }
 
-    public String getOrgId() {
+    public Long getOrgId() {
         return orgId;
     }
 
-    public void setOrgId(String orgId) {
+    public void setOrgId(Long orgId) {
         this.orgId = orgId;
     }
 

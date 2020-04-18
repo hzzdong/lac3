@@ -19,12 +19,12 @@ public class StatusFaceRequest extends IdFaceRequest {
         this.status = status;
     }
 
-    public StatusFaceRequest(String id, String uuid, int status) {
+    public StatusFaceRequest(Long id, String uuid, int status) {
         super(id, uuid);
         this.status = status;
     }
 
-    public StatusFaceRequest(String id, String uuid, String token, String versn, int status) {
+    public StatusFaceRequest(Long id, String uuid, String token, String versn, int status) {
         super(id, uuid, token, versn);
         this.status = status;
     }

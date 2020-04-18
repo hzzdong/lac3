@@ -11,9 +11,9 @@ public class WebBusiLog extends BusiLog {
     /**
      * 操作者信息
      ***********************/
-    private String orgId;// 操作者所属的组织ID
+    private Long orgId;// 操作者所属的组织ID
     private String orgType;// 操作者所属的组织类型
-    private String operatorId;// 操作者的id
+    private Long operatorId;// 操作者的id
     private String operatorAccount;// 操作者的登录名
 
     /**
@@ -41,11 +41,11 @@ public class WebBusiLog extends BusiLog {
         super(id);
     }
 
-    public String getOrgId() {
+    public Long getOrgId() {
         return orgId;
     }
 
-    public void setOrgId(String orgId) {
+    public void setOrgId(Long orgId) {
         this.orgId = orgId;
     }
 
@@ -59,18 +59,18 @@ public class WebBusiLog extends BusiLog {
 
     public void setOperator(AppVisitor av) {
         if (av != null) {
-            this.operatorId = av.getId();
+            this.operatorId = av.id();
             this.operatorAccount = av.getLoginName();
-            this.orgId = av.getOrgId();
-            this.orgType = av.getOrgType();
+            this.orgId = av.companyId();//.orgId();
+            this.orgType = av.getType();
         }
     }
 
-    public String getOperatorId() {
+    public Long getOperatorId() {
         return operatorId;
     }
 
-    public void setOperatorId(String operatorId) {
+    public void setOperatorId(Long operatorId) {
         this.operatorId = operatorId;
     }
 

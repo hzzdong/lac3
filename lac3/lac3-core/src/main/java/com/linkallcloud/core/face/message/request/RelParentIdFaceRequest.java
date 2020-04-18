@@ -11,7 +11,7 @@ public class RelParentIdFaceRequest extends ParentIdFaceRequest {
         super();
     }
 
-    public RelParentIdFaceRequest(String parentId, String parentClass, String id, String uuid, Map<String, Long> uuidIds) {
+    public RelParentIdFaceRequest(Long parentId, String parentClass, Long id, String uuid, Map<String, Long> uuidIds) {
         super(parentId, parentClass, id, uuid);
         this.uuidIds = uuidIds;
     }

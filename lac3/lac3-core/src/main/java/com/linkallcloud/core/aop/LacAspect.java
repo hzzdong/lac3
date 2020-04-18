@@ -13,6 +13,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -44,8 +45,7 @@ public abstract class LacAspect {
     /**
      * 获取当前执行的方法
      *
-     * @param joinPoint
-     *            连接点
+     * @param joinPoint 连接点
      * @return 方法
      */
     protected Method getMethod(JoinPoint joinPoint) {
@@ -68,7 +68,7 @@ public abstract class LacAspect {
 
     /**
      * 处理TID，根据@Tid注解或者参数名字为"tid",或者类型是Trace
-     * 
+     *
      * @param joinPoint
      * @param method
      * @param ifNullGenerateTid
@@ -119,7 +119,7 @@ public abstract class LacAspect {
 
     /**
      * Thymeleaf 模板
-     * 
+     *
      * @param web
      * @param template
      * @param joinPoint
@@ -128,7 +128,7 @@ public abstract class LacAspect {
      * @return
      */
     protected String dealStringTtemplate(boolean web, String template, ProceedingJoinPoint joinPoint, Method method,
-            Map<String, Object> values) {
+                                         Map<String, Object> values) {
         String[] parameterNames = parameterNameDiscovere.getParameterNames(method);
         Object[] args = joinPoint.getArgs();
         if (parameterNames == null || parameterNames.length == 0 || args == null || args.length == 0) {
@@ -175,7 +175,7 @@ public abstract class LacAspect {
 
     /**
      * 处理新增日志描述信息
-     * 
+     *
      * @param insert
      * @param tid
      * @param visitor
@@ -184,7 +184,7 @@ public abstract class LacAspect {
      * @return
      */
     private String dealWebInsertOrUpdateLogDesc(boolean insert, String tid, AppVisitor visitor, Object[] methodArgs,
-            DomainDescription dd) {
+                                                DomainDescription dd) {
         StringBuffer descBuffer = new StringBuffer();
         descBuffer.append("用户(").append(visitor == null ? "" : visitor.getLoginName()).append(")")
                 .append(insert ? "新增了 " : "修改了 ").append(dd.getShowName());
@@ -199,6 +199,13 @@ public abstract class LacAspect {
                 if (domainMirror.is(dd.getDomainClass())) {
                     domain = (IDomain) arg;
                     break;
+                } else if (domainMirror.is(ObjectFaceRequest.class)) {
+                    Object data = ((ObjectFaceRequest<?>) arg).getData();
+                    if (data instanceof IDomain) {
+                        domain = (IDomain) data;
+                        domainMirror = Mirror.me(domain);
+                        break;
+                    }
                 }
             }
 
@@ -224,14 +231,14 @@ public abstract class LacAspect {
 
     /**
      * 处理新增日志描述信息
-     * 
+     *
      * @param tid
      * @param methodArgs
      * @param dd
      * @return
      */
     private String dealServiceInsertOrUpdateLogDesc(boolean insert, String tid, Object[] methodArgs,
-            DomainDescription dd) {
+                                                    DomainDescription dd) {
         StringBuffer descBuffer = new StringBuffer();
         descBuffer.append(insert ? "新增 " : "修改 ").append(dd.getShowName());
 
@@ -245,6 +252,13 @@ public abstract class LacAspect {
                 if (domainMirror.is(dd.getDomainClass())) {
                     domain = (IDomain) arg;
                     break;
+                } else if (domainMirror.is(ObjectFaceRequest.class)) {
+                    Object data = ((ObjectFaceRequest<?>) arg).getData();
+                    if (data instanceof IDomain) {
+                        domain = (IDomain) data;
+                        domainMirror = Mirror.me(domain);
+                        break;
+                    }
                 }
             }
 
@@ -270,7 +284,7 @@ public abstract class LacAspect {
 
     /**
      * 从service中得到domain的showname
-     * 
+     *
      * @param joinPoint
      * @return
      */
@@ -313,7 +327,7 @@ public abstract class LacAspect {
 
     /**
      * 得到模块名称定义
-     * 
+     *
      * @param cl
      * @return
      */

@@ -527,4 +527,36 @@ public class Trees {
         return field;
 
     }
+
+    public static int checked(Tree tree, Long[] checkedIds) {
+        int checkCount = 0;
+        if (tree != null && checkedIds != null && checkedIds.length > 0) {
+            for (Long checkedId : checkedIds) {
+                boolean hasCheched = Trees.checked(tree, checkedId);
+                if (hasCheched) {
+                    checkCount++;
+                }
+            }
+        }
+        return checkCount;
+    }
+
+    public static boolean checked(Tree tree, Long checkedId) {
+        if (tree != null && checkedId != null) {
+            if (tree.getId().equals(checkedId.toString())) {
+                tree.setChecked(true);
+                return true;
+            }
+            if (tree.getChildren() != null && tree.getChildren().size() > 0) {
+                for (Tree item : tree.getChildren()) {
+                    boolean hasCheched = Trees.checked(item, checkedId);
+                    if (hasCheched) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 }

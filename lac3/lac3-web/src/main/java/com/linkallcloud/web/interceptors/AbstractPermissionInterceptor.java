@@ -120,7 +120,7 @@ public abstract class AbstractPermissionInterceptor extends HandlerInterceptorAd
                                                 HttpServletResponse response) throws IOException {
         String uri = request.getRequestURI().substring(request.getContextPath().length());
         uri = fitRui(uri);
-        Map<String, String[]> allUriRescodeMap = loadAppUriRescodeMap(null, Long.parseLong(suser.getAppId()));
+        Map<String, String[]> allUriRescodeMap = loadAppUriRescodeMap(null, suser.appId());
         if (allUriRescodeMap != null && allUriRescodeMap.containsKey(uri)) {
             String[] rescodes = allUriRescodeMap.get(uri);
             if (rescodes == null || rescodes.length <= 0) {

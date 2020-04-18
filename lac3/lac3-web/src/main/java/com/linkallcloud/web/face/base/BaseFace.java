@@ -3,7 +3,6 @@ package com.linkallcloud.web.face.base;
 import com.linkallcloud.core.busilog.annotation.WebLog;
 import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.dto.AppVisitor;
-import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BizException;
 import com.linkallcloud.core.exception.Exceptions;
@@ -18,7 +17,6 @@ import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.query.Query;
 import com.linkallcloud.core.query.WebQuery;
 import com.linkallcloud.core.query.rule.Equal;
-import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.web.utils.Controllers;
@@ -56,10 +54,10 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
     @RequestMapping(value = "/fetch", method = RequestMethod.POST)
     public @ResponseBody
     Object fetchById(IdFaceRequest faceReq, Trace t, SessionUser su) {
-        if (Strings.isBlank(faceReq.getId()) || Strings.isBlank(faceReq.getUuid())) {
+        if (faceReq.getId() == null || Strings.isBlank(faceReq.getUuid())) {
             throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误");
         }
-        T entity = doFetch(t, Long.parseLong(faceReq.getId()), faceReq.getUuid(), su);
+        T entity = doFetch(t, faceReq.getId(), faceReq.getUuid(), su);
         return convert(t, "fetch", faceReq, entity);
     }
 
@@ -118,10 +116,10 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
         if (!checkReferer(true)) {
             return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
-        if (Strings.isBlank(faceReq.getId()) || Strings.isBlank(faceReq.getUuid())) {
+        if (faceReq.getId() == null || Strings.isBlank(faceReq.getUuid())) {
             throw new BizException(Exceptions.CODE_ERROR_DELETE, "参数错误");
         }
-        return doDelete(t, Long.parseLong(faceReq.getId()), faceReq.getUuid(), su);
+        return doDelete(t, faceReq.getId(), faceReq.getUuid(), su);
     }
 
     protected Boolean doDelete(Trace t, Long id, String uuid, SessionUser su) {
@@ -138,10 +136,10 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
         if (!checkReferer(true)) {
             return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
-        if (Strings.isBlank(sfr.getId()) || Strings.isBlank(sfr.getUuid())) {
+        if (sfr.getId() == null || Strings.isBlank(sfr.getUuid())) {
             throw new BizException(Exceptions.CODE_ERROR_UPDATE, "参数错误");
         }
-        return doChangeStatus(t, sfr.getStatus(), Long.parseLong(sfr.getId()), sfr.getUuid(), su);
+        return doChangeStatus(t, sfr.getStatus(), sfr.getId(), sfr.getUuid(), su);
     }
 
     protected Boolean doChangeStatus(Trace t, int status, Long id, String uuid, SessionUser su) {
@@ -241,7 +239,7 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
                 page.addRule(new Equal("areaId", 0L));
             } else {
                 page.addRule(new Equal("level", av.getAreaLevel()));
-                page.addRule(new Equal("areaId", Long.parseLong(av.getAreaId())));
+                page.addRule(new Equal("areaId", av.areaId()));
             }
         }
     }
@@ -252,14 +250,14 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
      * @param page
      * @param suser
      */
-    public void addAreaCnd2Page(Page<T> page, ISessionUser suser) {
+    public void addAreaCnd2Page(Page<T> page, SessionUser suser) {
         if (suser != null) {
-            if (suser.getAreaId() == null) {
+            if (suser.getArea() == null) {
                 page.addRule(new Equal("level", 0));
                 page.addRule(new Equal("areaId", 0L));
             } else {
                 page.addRule(new Equal("level", suser.getAreaLevel()));
-                page.addRule(new Equal("areaId", Long.parseLong(suser.getAreaId())));
+                page.addRule(new Equal("areaId", suser.areaId()));
             }
         }
     }

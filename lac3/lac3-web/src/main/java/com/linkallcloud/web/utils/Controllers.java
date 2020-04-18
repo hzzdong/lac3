@@ -32,36 +32,36 @@ public class Controllers {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     }
 
-    public static ISessionUser getSessionUser() {
+    public static SessionUser getSessionUser() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getRequest();
         return Controllers.getSessionUser(request);
     }
 
-    public static ISessionUser getSessionUser(String appCode) {
+    public static SessionUser getSessionUser(String appCode) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getRequest();
         return Controllers.getSessionUser(appCode, request);
     }
 
-    public static ISessionUser getSessionUser(HttpServletRequest request) {
+    public static SessionUser getSessionUser(HttpServletRequest request) {
         if (request != null) {
             HttpSession session = request.getSession();
             if (session != null) {
                 String appCode = (String) session.getAttribute(Controllers.CURRENT_APP_KEY);
                 if (!Strings.isBlank(appCode)) {
-                    return (ISessionUser) session.getAttribute(appCode + ISessionUser.SESSION_USER_KEY);
+                    return (SessionUser) session.getAttribute(appCode + ISessionUser.SESSION_USER_KEY);
                 }
             }
         }
         return null;
     }
 
-    public static ISessionUser getSessionUser(String appCode, HttpServletRequest request) {
+    public static SessionUser getSessionUser(String appCode, HttpServletRequest request) {
         if (request != null && !Strings.isBlank(appCode)) {
             HttpSession session = request.getSession();
             if (session != null) {
-                return (ISessionUser) session.getAttribute(appCode + ISessionUser.SESSION_USER_KEY);
+                return (SessionUser) session.getAttribute(appCode + ISessionUser.SESSION_USER_KEY);
             }
         }
         return null;
@@ -107,21 +107,18 @@ public class Controllers {
 
     public static AppVisitor getAppVisitor(ISessionUser su) {
         if (su != null) {
-            AppVisitor av = new AppVisitor(su.getCompanyId(), su.getCompanyName(), su.getOrgId(), su.getOrgName(),
-                    su.getOrgType(), su.getId(), su.getName(), su.getLoginName(), su.getUserType(),
-                    getHttpRequest().getRemoteHost(), 0);
-            av.setUuid(su.getUuid());
-            av.setPhone(su.getPhone());
-
-            av.setAreaId(su.getAreaId());
+            AppVisitor av = new AppVisitor();
+            av.setCompanyId(su.getCompany());
+            av.setOrgId(su.getOrg());
+            av.setAreaId(su.getArea());
             av.setAreaLevel(su.getAreaLevel());
-            av.setAreaName(su.getAreaName());
-
-            av.setAppId(su.getAppId());
-            av.setAppUuid(su.getAppUuid());
-            av.setAppName(su.getAppName());
-
+            av.setAppId(su.getApp());
+            av.setId(su.getSid());
+            av.setLoginName(su.getLoginName());
+            av.setType(su.getUserType());
+            av.setPhone(su.getPhone());
             av.setAdmin(su.isAdmin());
+            av.setIp(getHttpRequest().getRemoteHost());
 
             // Client client = getClientInfoFromCache(su.getLoginName());
             // if (client != null) {
@@ -165,7 +162,7 @@ public class Controllers {
                 LocalDateTime end = Date8.stringToLocalDateTime(srcArray[7]);
                 if (end.isAfter(LocalDateTime.now())) {
                     SessionUser su = new SessionUser();
-                    su.setInfo(srcArray[0], srcArray[1], srcArray[2], srcArray[3], srcArray[4], srcArray[5]);
+                    su.setInfo(srcArray[0], srcArray[1], srcArray[2], null, Long.parseLong(srcArray[3]), Long.parseLong(srcArray[4]), null, srcArray[5]);
                     return su;
                 } else {
                     throw new BaseException("100001", "token超时。");

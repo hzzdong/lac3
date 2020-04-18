@@ -2,6 +2,7 @@ package com.linkallcloud.core.domain;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.linkallcloud.core.dto.Sid;
 import com.linkallcloud.core.dto.born.DefaultDtoBorning;
 import com.linkallcloud.core.dto.born.DtoBorning;
 import com.linkallcloud.core.dto.born.DtoBorns;
@@ -271,6 +272,10 @@ public abstract class Domain implements IDomain {
     @Override
     public String toString() {
         return JSON.toJSONString(this);
+    }
+
+    public Sid sid() {
+        return new Sid(this.getId(), this.getUuid());
     }
 
 }

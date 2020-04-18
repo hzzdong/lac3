@@ -11,7 +11,7 @@ public class RelFaceRequest extends IdFaceRequest {
         super();
     }
 
-    public RelFaceRequest(String id, String uuid, Map<String, Long> uuidIds) {
+    public RelFaceRequest(Long id, String uuid, Map<String, Long> uuidIds) {
         super(id, uuid);
         this.uuidIds = uuidIds;
     }

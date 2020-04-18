@@ -7,6 +7,7 @@ import com.linkallcloud.core.busilog.annotation.WebLog;
 import com.linkallcloud.core.domain.IDomain;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
 import com.linkallcloud.core.laclog.WebBusiLog;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.lang.Stopwatch;
@@ -114,32 +115,42 @@ public abstract class BusiWebLogAspect<T extends WebBusiLog, TS extends IWebBusi
      * @return save4NewTag ,是否save方法，若是的话1：新增；2：更新，其它0
      */
     private int getSaveMethodTag(ProceedingJoinPoint joinPoint, Method method) {
-        int save4NewTag = 0;
         DomainDescription dd = getDomainDescription(joinPoint);
         if (dd != null && method.getName().startsWith("save")) {
-            IDomain domain = null;
-            Mirror domainMirror = null;
+            Mirror<?> domainMirror = null;
             for (Object arg : joinPoint.getArgs()) {
                 domainMirror = Mirror.me(arg);
                 if (domainMirror.is(dd.getDomainClass())) {
-                    domain = (IDomain) arg;
-                    if (domain != null) {
-                        Object fieldValue = domainMirror.getValue(domain, "id");
-                        if (fieldValue == null) {
-                            save4NewTag = 1;
-                        } else if (fieldValue.getClass().equals(Long.class)) {
-                            Long id = (Long) fieldValue;
-                            if (id.longValue() <= 0) {
-                                save4NewTag = 1;
-                            } else {
-                                save4NewTag = 2;
-                            }
-                        } else {
-                            save4NewTag = 2;
-                        }
+                    return getDomainSaveTage((IDomain)arg, domainMirror);
+                } else if(domainMirror.is(ObjectFaceRequest.class)) {
+                    Object data = ((ObjectFaceRequest<?>)arg).getData();
+                    if(data instanceof IDomain) {
+                        return getDomainSaveTage((IDomain)data, null);
                     }
-                    break;
                 }
+            }
+        }
+        return 0;
+    }
+
+    private int getDomainSaveTage(IDomain domain, Mirror<?> domainMirror) {
+        int save4NewTag = 0;
+        if (domain != null) {
+            if(domainMirror == null) {
+                domainMirror = Mirror.me(domain);
+            }
+            Object fieldValue = domainMirror.getValue(domain, "id");
+            if (fieldValue == null) {
+                save4NewTag = 1;
+            } else if (fieldValue.getClass().equals(Long.class)) {
+                Long id = (Long) fieldValue;
+                if (id.longValue() <= 0) {
+                    save4NewTag = 1;
+                } else {
+                    save4NewTag = 2;
+                }
+            } else {
+                save4NewTag = 2;
             }
         }
         return save4NewTag;

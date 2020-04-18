@@ -3,7 +3,7 @@ package com.linkallcloud.core.face.message.request;
 public class ParentIdFaceRequest extends IdFaceRequest {
     private static final long serialVersionUID = 2891217131827346766L;
 
-    private String parentId;
+    private Long parentId;
     private String parentUuid;
     private String parentClass;
 
@@ -11,17 +11,17 @@ public class ParentIdFaceRequest extends IdFaceRequest {
         super();
     }
 
-    public ParentIdFaceRequest(String parentId, String parentClass, String id, String uuid) {
+    public ParentIdFaceRequest(Long parentId, String parentClass, Long id, String uuid) {
         super(id, uuid);
         this.parentId = parentId;
         this.parentClass = parentClass;
     }
 
-    public String getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(String parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 

@@ -24,17 +24,17 @@ public abstract class LoginRequestProcessor extends RequestProcessor<FaceMessage
         if (faceAnno.login()) {// 需要登录校验
             if (request instanceof FaceRequest) {
                 FaceRequest req = (FaceRequest) request;
-                ISessionUser suser = getSessionUserByFaceRequest(req, hsr);
+                SessionUser suser = getSessionUserByFaceRequest(req, hsr);
                 if (suser == null) {
                     throw new BaseException("400008", "此方法需要登录校验，所以请求参数必须包含令牌信息。");
                 } else {
                     if (request instanceof LoginFaceRequest) {
                         LoginFaceRequest lreq = (LoginFaceRequest) request;
                         lreq.setUserType(suser.getUserType());
-                        lreq.setUserName(suser.getName());
-                        lreq.setUserId(Long.parseLong(suser.getId()));
-                        lreq.setCompanyId(Long.parseLong(suser.getCompanyId()));
-                        lreq.setCompanyName(suser.getCompanyName());
+                        lreq.setUserName(suser.name());
+                        lreq.setUserId(suser.id());
+                        lreq.setCompanyId(suser.companyId());
+                        lreq.setCompanyName(suser.companyName());
                     }
                 }
                 return suser;
@@ -57,11 +57,11 @@ public abstract class LoginRequestProcessor extends RequestProcessor<FaceMessage
      * @return
      * @throws BizException
      */
-    protected ISessionUser getSessionUserByFaceRequest(FaceRequest fr, HttpServletRequest hsr) throws BizException {
+    protected SessionUser getSessionUserByFaceRequest(FaceRequest fr, HttpServletRequest hsr) throws BizException {
         if (Strings.isBlank(fr.getAppCode())) {
             throw new BizException("e.face.login", "FaceRequest对象中缺少appCode参数");
         }
-        ISessionUser suser = Controllers.getSessionUser(fr.getAppCode());
+        SessionUser suser = Controllers.getSessionUser(fr.getAppCode());
         if (suser == null) {
             String token = getLacToken(fr, hsr);
             if (!Strings.isBlank(token)) {
@@ -82,7 +82,7 @@ public abstract class LoginRequestProcessor extends RequestProcessor<FaceMessage
      * @return
      * @throws BizException
      */
-    protected ISessionUser getSessionUserByToken(String token) throws BizException {
+    protected SessionUser getSessionUserByToken(String token) throws BizException {
         if (!Strings.isBlank(token)) {
             try {
                 SessionUser user = Controllers.checkToken(token);
