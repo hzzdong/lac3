@@ -453,6 +453,7 @@ public class Castors {
         defaultCastorList.add(Timestamp2SqlTime.class);
         defaultCastorList.add(Timestamp2String.class);
         defaultCastorList.add(String2DateFormat.class);
+        defaultCastorList.add(String2DateRange.class);
     }
 
     private static Castors one = new Castors();

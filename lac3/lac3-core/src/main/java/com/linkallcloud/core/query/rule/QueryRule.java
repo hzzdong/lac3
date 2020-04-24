@@ -1,14 +1,13 @@
 package com.linkallcloud.core.query.rule;
 
-import com.linkallcloud.core.castor.Castors;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.query.Expression;
 import com.linkallcloud.core.query.Operator;
 import com.linkallcloud.core.query.QueryHelper;
 import com.linkallcloud.core.query.rule.desc.IRuleDescriptor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class QueryRule implements Expression {
     private static final long serialVersionUID = -4551477168517876211L;

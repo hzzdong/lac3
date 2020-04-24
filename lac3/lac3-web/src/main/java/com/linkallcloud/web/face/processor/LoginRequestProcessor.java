@@ -26,7 +26,7 @@ public abstract class LoginRequestProcessor extends RequestProcessor<FaceMessage
                 FaceRequest req = (FaceRequest) request;
                 SessionUser suser = getSessionUserByFaceRequest(req, hsr);
                 if (suser == null) {
-                    throw new BaseException("400008", "此方法需要登录校验，所以请求参数必须包含令牌信息。");
+                    throw new BaseException("e.face.login", "此方法需要登录校验，所以请求参数必须包含令牌信息。");
                 } else {
                     if (request instanceof LoginFaceRequest) {
                         LoginFaceRequest lreq = (LoginFaceRequest) request;
@@ -39,7 +39,7 @@ public abstract class LoginRequestProcessor extends RequestProcessor<FaceMessage
                 }
                 return suser;
             } else {
-                throw new BaseException("400008", "此方法需要登录校验，所以请求参数必须包含令牌信息。");
+                throw new BaseException("e.face.login", "此方法需要登录校验，所以请求参数必须包含令牌信息。");
             }
         }
         return null;

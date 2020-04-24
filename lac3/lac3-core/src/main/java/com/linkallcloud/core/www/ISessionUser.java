@@ -1,9 +1,9 @@
 package com.linkallcloud.core.www;
 
-import com.linkallcloud.core.dto.Sid;
-
 import java.io.Serializable;
 import java.util.Date;
+
+import com.linkallcloud.core.dto.Sid;
 
 public interface ISessionUser extends Serializable {
 	
@@ -47,5 +47,8 @@ public interface ISessionUser extends Serializable {
     Sid getArea();
     int getAreaLevel();
     Sid getApp();
+    
+    Integer getLoginMode();
+    ISessionUser getSrcUser();
 
 }

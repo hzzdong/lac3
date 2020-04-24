@@ -1,5 +1,16 @@
 package com.linkallcloud.web.busilog;
 
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.HashMap;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import com.alibaba.fastjson.JSON;
 import com.linkallcloud.core.aop.DomainDescription;
 import com.linkallcloud.core.aop.LacAspect;
@@ -14,16 +25,8 @@ import com.linkallcloud.core.lang.Stopwatch;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.manager.IWebBusiLogManager;
 import com.linkallcloud.core.www.utils.WebUtils;
+import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.web.utils.Controllers;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.HashMap;
 
 public abstract class BusiWebLogAspect<T extends WebBusiLog, TS extends IWebBusiLogManager<T>>
         extends LacAspect {
@@ -67,12 +70,14 @@ public abstract class BusiWebLogAspect<T extends WebBusiLog, TS extends IWebBusi
 
         if (!Strings.isBlank(logAnnot.desc())) {// 用户自定义
             AppVisitor visitor = Controllers.getAppVisitor();
+            SessionUser su = Controllers.getSessionUser();
             operatelog.setOperateDesc(
                     dealStringTtemplate(true, logAnnot.desc(), joinPoint, method, new HashMap<String, Object>() {
                         private static final long serialVersionUID = 1L;
 
                         {
                             put("tid", tid);
+                            put("su", su);
                             put("visitor", visitor);
                             put("saveTag", 0);
                         }
@@ -160,6 +165,7 @@ public abstract class BusiWebLogAspect<T extends WebBusiLog, TS extends IWebBusi
                               WebLog logAnnot, Throwable e) {
         Class<?> clzz = joinPoint.getTarget().getClass();
         if (clzz.getAnnotation(Controller.class) != null) {
+        	SessionUser su = Controllers.getSessionUser();
             AppVisitor visitor = Controllers.getAppVisitor();
 
             /* busi */
@@ -171,6 +177,7 @@ public abstract class BusiWebLogAspect<T extends WebBusiLog, TS extends IWebBusi
 
                             {
                                 put("tid", tid);
+                                put("su", su);
                                 put("visitor", visitor);
                                 put("saveTag", operatelog.getSaveTag());
                             }
@@ -192,7 +199,7 @@ public abstract class BusiWebLogAspect<T extends WebBusiLog, TS extends IWebBusi
             }
 
             /* web */
-            operatelog.setOperator(visitor);
+            operatelog.setOperator(su);
             HttpServletRequest request =
                     ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             operatelog.setIp(WebUtils.getIpAddress(request));
