@@ -30,7 +30,6 @@ public class DefaultDtoBorning implements DtoBorning {
      * @param args
      * @return
      */
-    @SuppressWarnings("unchecked")
     private IDomain matchArgs(Object[] args) {
         if (null == args || args.length <= 0) {
             return null;

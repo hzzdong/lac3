@@ -101,7 +101,7 @@ public abstract class CompareRule extends QueryRule {
             return compare(destValue);
         } else {
             Object v = Castors.me().castTo(destValue, this.getValue().getClass());
-            return compare(destValue);
+            return compare(v);
         }
     }
 

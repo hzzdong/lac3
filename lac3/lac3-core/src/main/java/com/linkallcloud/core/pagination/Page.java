@@ -140,7 +140,8 @@ public class Page<E> extends Query {
         this.data.addAll(d);
     }
 
-    public void addData(Object d) {
+    @SuppressWarnings("unchecked")
+	public void addData(Object d) {
         if (d == null) {
             return;
         }

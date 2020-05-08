@@ -47,7 +47,8 @@ public abstract class RequestProcessor<T> implements IRequestProcessor {
         }
     }
 
-    protected Class<? extends IDomain> getTClass(ProceedingJoinPoint joinPoint) {
+    @SuppressWarnings("unchecked")
+	protected Class<? extends IDomain> getTClass(ProceedingJoinPoint joinPoint) {
         Class<?> clzz = joinPoint.getTarget().getClass();
         Mirror<?> cmirror = Mirror.me(clzz);
         Class<? extends IDomain> domainClass = null;

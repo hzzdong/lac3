@@ -16,7 +16,8 @@ public class LacRedisTemplate<T> {
 
     protected StringRedisTemplate stringRedisTemplate;
 
-    public LacRedisTemplate() {
+    @SuppressWarnings("unchecked")
+	public LacRedisTemplate() {
         try {
             mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
         } catch (Throwable e) {

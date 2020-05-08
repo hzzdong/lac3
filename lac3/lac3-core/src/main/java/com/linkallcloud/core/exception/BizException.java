@@ -1,8 +1,9 @@
 package com.linkallcloud.core.exception;
 
 public class BizException extends BaseRuntimeException {
+	private static final long serialVersionUID = 8717233923694051277L;
 
-    public BizException() {
+	public BizException() {
         super();
     }
 

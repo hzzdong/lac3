@@ -292,7 +292,8 @@ public abstract class BaseActivity<T extends Domain, D extends IDao<T>> implemen
         }
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public <X> Page<X> queryPage(Trace t, Page<X> page) {
         page.checkPageParameters();
         try {

@@ -12,7 +12,8 @@ public class BizExceptionFilter<T extends BizException> implements ThrowsAdvice 
 
     protected Mirror<T> mirror;
 
-    public BizExceptionFilter() {
+    @SuppressWarnings("unchecked")
+	public BizExceptionFilter() {
         try {
             mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
         } catch (Throwable e) {
@@ -22,7 +23,8 @@ public class BizExceptionFilter<T extends BizException> implements ThrowsAdvice 
         }
     }
 
-    public void afterThrowing(Throwable e) throws Throwable {
+    @SuppressWarnings("unchecked")
+	public void afterThrowing(Throwable e) throws Throwable {
         //业务异常时直接抛出
         if (mirror.getType().isAssignableFrom(e.getClass())) {
             throw (T) e;

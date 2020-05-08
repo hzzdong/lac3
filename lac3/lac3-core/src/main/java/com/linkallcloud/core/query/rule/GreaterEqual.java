@@ -44,7 +44,8 @@ public class GreaterEqual extends CompareRule {
         return ">=";
     }
 
-    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
     protected boolean compare(Object destValue) {
         if (destValue instanceof Comparable && this.getValue() instanceof Comparable) {
             return ((Comparable) destValue).compareTo((Comparable) this.getValue()) >= 0;

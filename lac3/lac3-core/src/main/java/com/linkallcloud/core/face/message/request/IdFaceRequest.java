@@ -5,6 +5,7 @@ public class IdFaceRequest extends LoginFaceRequest {
 
     private Long id;
     private String uuid;
+    private String type;
 
     public IdFaceRequest() {
         super();
@@ -45,5 +46,13 @@ public class IdFaceRequest extends LoginFaceRequest {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 }

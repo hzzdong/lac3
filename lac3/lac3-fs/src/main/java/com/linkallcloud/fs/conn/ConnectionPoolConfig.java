@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
  * 连接池配置
  * 
  */
+@SuppressWarnings("rawtypes")
 @Component
 public class ConnectionPoolConfig extends GenericKeyedObjectPoolConfig {
 

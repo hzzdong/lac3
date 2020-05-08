@@ -65,7 +65,6 @@ public class WebClassesResourceLocation extends ResourceLocation {
         }
     }
     
-    @SuppressWarnings("unchecked")
     public void getResources(String base, List<String> list) {
         Set<String> paths = sc.getResourcePaths(base);
         if (paths == null)

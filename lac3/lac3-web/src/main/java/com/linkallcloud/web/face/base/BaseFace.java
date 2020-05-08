@@ -53,7 +53,7 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
     @Face(simple = true)
     @RequestMapping(value = "/fetch", method = RequestMethod.POST)
     public @ResponseBody
-    Object fetchById(IdFaceRequest faceReq, Trace t, SessionUser su) {
+    Object fetch(IdFaceRequest faceReq, Trace t, SessionUser su) {
         if (faceReq.getId() == null || Strings.isBlank(faceReq.getUuid())) {
             throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误");
         }

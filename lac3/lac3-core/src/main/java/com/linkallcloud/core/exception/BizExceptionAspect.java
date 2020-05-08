@@ -17,7 +17,8 @@ public class BizExceptionAspect<T extends BizException> {
 
     protected Mirror<T> mirror;
 
-    public BizExceptionAspect() {
+    @SuppressWarnings("unchecked")
+	public BizExceptionAspect() {
         try {
             mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
         } catch (Throwable e) {
@@ -45,7 +46,8 @@ public class BizExceptionAspect<T extends BizException> {
         }
     }
 
-    protected T wrapeBizException(Throwable e) {
+    @SuppressWarnings("unchecked")
+	protected T wrapeBizException(Throwable e) {
         if (e == null) {
             return mirror.born(Exceptions.CODE_ERROR_UNKNOW, "未知错误，请联系管理员。");
         }

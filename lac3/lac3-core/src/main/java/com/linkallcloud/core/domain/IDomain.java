@@ -9,6 +9,9 @@ public interface IDomain extends Serializable {
 	 * 状态
 	 */
 	public static final int STATUS_NORMAL = 0;// 0:正常
+	public static final int STATUS_LOCKED = 1;// 1:锁定/禁用
+	public static final int STATUS_QUOTE = 7;// 引用/兼职
+	public static final int STATUS_CANCEL = 8;// 注销/离职
 	public static final int STATUS_DELETE = 9;// 删除
 
 	Long getId();

@@ -68,7 +68,6 @@ public class Scans {
      * <p/>
      * 调用一次就可以了
      */
-	@SuppressWarnings("unchecked")
     public Scans init(final ServletContext sc) {
 	    Stopwatch sw = Stopwatch.begin();
         // 获取classes文件夹的路径, 优先级为125

@@ -1,7 +1,5 @@
 package com.linkallcloud.core.domain;
 
-import java.io.Serializable;
-
 import com.linkallcloud.core.dto.Tree;
 
 public abstract class TreeDomain extends Domain  {

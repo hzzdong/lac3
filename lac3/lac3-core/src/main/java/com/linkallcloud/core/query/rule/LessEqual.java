@@ -44,6 +44,7 @@ public class LessEqual extends CompareRule {
 		return "<=";
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected boolean compare(Object destValue) {
 		if (destValue instanceof Comparable && this.getValue() instanceof Comparable) {

@@ -1,6 +1,5 @@
 package com.linkallcloud.core.dto;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 

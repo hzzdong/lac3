@@ -7,8 +7,6 @@ import java.util.List;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.query.Query.GroupOperator;
-import com.linkallcloud.core.query.rule.CompareRule;
-import com.linkallcloud.core.query.rule.QueryRule;
 import com.linkallcloud.core.query.rule.desc.StringRuleDescriptor;
 
 public class WebQuery implements Serializable {

@@ -3,8 +3,9 @@ package com.linkallcloud.core.dto;
 import java.io.Serializable;
 
 public class NameValue implements Serializable {
-
-    private String key;
+	private static final long serialVersionUID = 5211738622552875471L;
+	
+	private String key;
     private String value;
     private String title;
 

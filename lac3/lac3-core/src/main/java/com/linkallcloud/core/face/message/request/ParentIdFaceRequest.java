@@ -1,43 +1,53 @@
 package com.linkallcloud.core.face.message.request;
 
 public class ParentIdFaceRequest extends IdFaceRequest {
-    private static final long serialVersionUID = 2891217131827346766L;
+	private static final long serialVersionUID = 2891217131827346766L;
 
-    private Long parentId;
-    private String parentUuid;
-    private String parentClass;
+	private Long parentId;
+	private String parentUuid;
+	private String parentClass;
 
-    public ParentIdFaceRequest() {
-        super();
-    }
+	private String remark;
 
-    public ParentIdFaceRequest(Long parentId, String parentClass, Long id, String uuid) {
-        super(id, uuid);
-        this.parentId = parentId;
-        this.parentClass = parentClass;
-    }
+	public ParentIdFaceRequest() {
+		super();
+	}
 
-    public Long getParentId() {
-        return parentId;
-    }
+	public ParentIdFaceRequest(Long parentId, String parentClass, Long id, String uuid) {
+		super(id, uuid);
+		this.parentId = parentId;
+		this.parentClass = parentClass;
+	}
 
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
+	public Long getParentId() {
+		return parentId;
+	}
 
-    public String getParentUuid() {
-        return parentUuid;
-    }
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
+	}
 
-    public void setParentUuid(String parentUuid) {
-        this.parentUuid = parentUuid;
-    }
+	public String getParentUuid() {
+		return parentUuid;
+	}
 
-    public String getParentClass() {
-        return parentClass;
-    }
+	public void setParentUuid(String parentUuid) {
+		this.parentUuid = parentUuid;
+	}
 
-    public void setParentClass(String parentClass) {
-        this.parentClass = parentClass;
-    }
+	public String getParentClass() {
+		return parentClass;
+	}
+
+	public void setParentClass(String parentClass) {
+		this.parentClass = parentClass;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 }
