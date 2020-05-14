@@ -44,7 +44,7 @@ public abstract class BaseTreeActivity<T extends TreeDomain, D extends ITreeDao<
         }
 
         List<T> list = dao().find(t, query);
-        Tree root = Trees.vroot("根节点");//new Tree(null, null, "根节点");
+        Tree root = Trees.root0("根节点");//new Tree(null, null, "根节点");
         // Trees.assembleTree(root, new CopyOnWriteArrayList<T>(list));
         Trees.assembleDomain2Tree(root, list);
         return root;

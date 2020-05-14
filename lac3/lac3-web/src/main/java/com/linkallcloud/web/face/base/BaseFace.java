@@ -110,16 +110,16 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
 
     @Face(simple = true)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @WebLog(db = true, desc = "用户([(${visitor.name})])删除了[(${domainShowName})], TID:[(${tid})]")
+    @WebLog(db = true, desc = "用户([(${su.sid.name})])删除了[(${domainShowName})],ID([(${fr.id})]), TID:[(${tid})]")
     public @ResponseBody
-    Object delete(IdFaceRequest faceReq, Trace t, SessionUser su) {
+    Object delete(IdFaceRequest fr, Trace t, SessionUser su) {
         if (!checkReferer(true)) {
             return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
-        if (faceReq.getId() == null || Strings.isBlank(faceReq.getUuid())) {
+        if (fr.getId() == null || Strings.isBlank(fr.getUuid())) {
             throw new BizException(Exceptions.CODE_ERROR_DELETE, "参数错误");
         }
-        return doDelete(t, faceReq.getId(), faceReq.getUuid(), su);
+        return doDelete(t, fr.getId(), fr.getUuid(), su);
     }
 
     protected Boolean doDelete(Trace t, Long id, String uuid, SessionUser su) {
@@ -129,17 +129,18 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
         return manager().delete(t, id, uuid);
     }
 
+    @WebLog(db = true, desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})],ID([(${fr.id})])的状态为([(${fr.status})]), TID:[(${tid})]")
     @Face(simple = true)
     @RequestMapping(value = "/changeStatus", method = RequestMethod.POST)
     public @ResponseBody
-    Object changeStatus(StatusFaceRequest sfr, Trace t, SessionUser su) {
+    Object changeStatus(StatusFaceRequest fr, Trace t, SessionUser su) {
         if (!checkReferer(true)) {
             return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
-        if (sfr.getId() == null || Strings.isBlank(sfr.getUuid())) {
+        if (fr.getId() == null || Strings.isBlank(fr.getUuid())) {
             throw new BizException(Exceptions.CODE_ERROR_UPDATE, "参数错误");
         }
-        return doChangeStatus(t, sfr.getStatus(), sfr.getId(), sfr.getUuid(), su);
+        return doChangeStatus(t, fr.getStatus(), fr.getId(), fr.getUuid(), su);
     }
 
     protected Boolean doChangeStatus(Trace t, int status, Long id, String uuid, SessionUser su) {

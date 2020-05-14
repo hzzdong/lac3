@@ -1,11 +1,15 @@
 package com.linkallcloud.web.face.base;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.linkallcloud.core.domain.TreeDomain;
 import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.dto.Tree;
 import com.linkallcloud.core.exception.BizException;
 import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
@@ -18,6 +22,17 @@ public abstract class BaseTreeFace<T extends TreeDomain, S extends ITreeManager<
 
 	public BaseTreeFace() {
 		super();
+	}
+
+	@Face(simple = true)
+	@RequestMapping(value = "/loadTree", method = RequestMethod.POST)
+	public @ResponseBody Object loadTree(IdFaceRequest fr, Trace t, SessionUser su) {
+		return doLoadTree(t, fr, su);
+	}
+
+	public List<Tree> doLoadTree(Trace t, IdFaceRequest fr, SessionUser su) {
+		Tree root = manager().getTree(t, false);
+		return Arrays.asList(root);
 	}
 
 	@Face(simple = true)
