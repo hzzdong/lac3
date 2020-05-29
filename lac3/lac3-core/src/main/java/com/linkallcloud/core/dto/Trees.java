@@ -575,4 +575,30 @@ public class Trees {
 		return false;
 	}
 
+	public static List<String> getIds(List<Tree> items) {
+		List<String> ids = new ArrayList<String>();
+		if (items != null && !items.isEmpty()) {
+			for (Tree item : items) {
+				ids.add(item.getId());
+			}
+		}
+		return ids;
+	}
+
+	public static List<Long> getLongIds(List<Tree> items, boolean plus) {
+		List<Long> ids = new ArrayList<Long>();
+		if (items != null && !items.isEmpty()) {
+			for (Tree item : items) {
+				String id = item.getId();
+				if (plus) {
+					if (id.startsWith("-")) {
+						id = id.substring(1);
+					}
+				}
+				ids.add(Long.parseLong(id));
+			}
+		}
+		return ids;
+	}
+
 }
