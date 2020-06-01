@@ -601,4 +601,49 @@ public class Trees {
 		return ids;
 	}
 
+	public static List<String> getIds(Tree tree) {
+		List<String> ids = new ArrayList<String>();
+		if (tree != null) {
+			parseIds(tree, ids);
+		}
+		return ids;
+	}
+
+	public static void parseIds(Tree tree, List<String> ids) {
+		if (ids != null && tree != null) {
+			ids.add(tree.getId());
+			if (tree.getChildren() != null && !tree.getChildren().isEmpty()) {
+				for (Tree child : tree.getChildren()) {
+					parseIds(child, ids);
+				}
+			}
+		}
+	}
+	
+	public static List<Long> getLongIds(Tree tree, boolean plus) {
+		List<Long> ids = new ArrayList<Long>();
+		if (tree != null) {
+			parseLongIds(tree, ids, plus);
+		}
+		return ids;
+	}
+	
+	public static void parseLongIds(Tree tree, List<Long> ids, boolean plus) {
+		if (ids != null && tree != null) {
+			String id = tree.getId();
+			if (plus) {
+				if (id.startsWith("-")) {
+					id = id.substring(1);
+				}
+			}
+			ids.add(Long.parseLong(id));
+			
+			if (tree.getChildren() != null && !tree.getChildren().isEmpty()) {
+				for (Tree child : tree.getChildren()) {
+					parseLongIds(child, ids, plus);
+				}
+			}
+		}
+	}
+
 }
