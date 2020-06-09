@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -48,7 +47,7 @@ public class Trees {
 	public static List<Tree> tree2List(Tree tree) {
 		List<Tree> result = new ArrayList<Tree>();
 		if (tree != null) {
-			tree2List(result, tree);
+			tree2List(tree, result);
 		}
 		if (result.size() > 0) {
 			for (Tree item : result) {
@@ -58,11 +57,11 @@ public class Trees {
 		return result;
 	}
 
-	private static void tree2List(List<Tree> result, Tree tree) {
+	private static void tree2List(Tree tree, List<Tree> result) {
 		result.add(tree);
 		if (tree.getChildren() != null && !tree.getChildren().isEmpty()) {
 			for (Tree item : tree.getChildren()) {
-				tree2List(result, item);
+				tree2List(item, result);
 			}
 		}
 
@@ -70,11 +69,13 @@ public class Trees {
 
 	public static Map<String, Tree> tree2Map(Tree tree) {
 		Map<String, Tree> result = new HashMap<>();
-		assembleTree2Map(result, tree);
+		if (tree != null) {
+			assembleTree2Map(tree, result);
+		}
 		return result;
 	}
 
-	private static void assembleTree2Map(Map<String, Tree> result, Tree tree) {
+	private static void assembleTree2Map(Tree tree, Map<String, Tree> result) {
 		if (tree == null) {
 			return;
 		}
@@ -85,7 +86,7 @@ public class Trees {
 
 		if (tree.getChildren() != null && !tree.getChildren().isEmpty()) {
 			for (Tree item : tree.getChildren()) {
-				assembleTree2Map(result, item);
+				assembleTree2Map(item, result);
 			}
 		}
 
@@ -97,16 +98,16 @@ public class Trees {
 	 * @param parent
 	 * @param nodeList
 	 */
-	public static <T extends TreeDomain> void assembleDirectTreeNode(Tree parent, List<T> nodeList, String idPreFix) {
+	public static <T extends TreeDomain> void assembleDirectDomain(Tree parent, List<T> children, String idPreFix) {
 		if (parent == null) {
 			parent = Trees.root0("虚拟根节点");// new Tree("0", null, "虚拟根节点");
 		}
 
-		if (nodeList == null || nodeList.isEmpty()) {
+		if (children == null || children.isEmpty()) {
 			return;
 		}
 
-		for (TreeDomain node : nodeList) {
+		for (TreeDomain node : children) {
 			Tree item = node.toTreeNode();
 			item.setpId(parent.getId());
 			if (!Strings.isBlank(idPreFix)) {
@@ -116,51 +117,19 @@ public class Trees {
 		}
 	}
 
-	/**
-	 * 把children挂到parent下，并把parent加入children中。
-	 *
-	 * @param children
-	 * @param parent
-	 */
-	public static List<Tree> assembleChildren2Parent(List<Tree> children, Tree parent) {
-		if (children == null) {
-			children = new ArrayList<Tree>();
-		} else {
-			Iterator<Tree> itr = children.iterator();
-			while (itr.hasNext()) {
-				Tree node = itr.next();
-				if (Strings.isBlank(node.getpId()) || node.getpId().equals("0")) {
-					node.setpId(parent.getId());
-				}
-			}
-		}
-		children.add(parent);
-		return children;
-	}
-
-	/**
-	 * 把nodeList挂成rootId的直接子节点
-	 *
-	 * @param rootId
-	 * @param nodeList
-	 * @param idPreFix
-	 * @return
-	 */
-	public static <T extends TreeDomain> List<Tree> assembleDirectTreeNodeList(String rootId, List<T> nodeList,
+	public static <T extends TreeDomain> List<Tree> assembleDirectDomain(String rootId, List<T> domains,
 			String idPreFix) {
-		if (nodeList == null || nodeList.isEmpty()) {
-			return null;
-		}
 		List<Tree> result = new ArrayList<Tree>();
-		for (TreeDomain node : nodeList) {
-			Tree item = node.toTreeNode();
-			item.setpId(rootId);
-			if (!Strings.isBlank(idPreFix)) {
-				item.setId(idPreFix + item.getId());
+		if (domains != null && !domains.isEmpty()) {
+			for (T domain : domains) {
+				Tree item = domain.toTreeNode();
+				item.setpId(rootId);
+				if (!Strings.isBlank(idPreFix)) {
+					item.setId(idPreFix + item.getId());
+				}
+				result.add(item);
 			}
-			result.add(item);
 		}
-
 		return result;
 	}
 
@@ -619,7 +588,7 @@ public class Trees {
 			}
 		}
 	}
-	
+
 	public static List<Long> getLongIds(Tree tree, boolean plus) {
 		List<Long> ids = new ArrayList<Long>();
 		if (tree != null) {
@@ -627,7 +596,7 @@ public class Trees {
 		}
 		return ids;
 	}
-	
+
 	public static void parseLongIds(Tree tree, List<Long> ids, boolean plus) {
 		if (ids != null && tree != null) {
 			String id = tree.getId();
@@ -637,7 +606,7 @@ public class Trees {
 				}
 			}
 			ids.add(Long.parseLong(id));
-			
+
 			if (tree.getChildren() != null && !tree.getChildren().isEmpty()) {
 				for (Tree child : tree.getChildren()) {
 					parseLongIds(child, ids, plus);
@@ -645,5 +614,16 @@ public class Trees {
 			}
 		}
 	}
+
+//	public static List<Tree> cast2TreeNodes(List<TreeDomain> domains) {
+//		List<Tree> nodes = new ArrayList<Tree>();
+//		if(domains!=null && !domains.isEmpty()) {
+//			for(TreeDomain domain: domains) {
+//				Tree node = domain.toTreeNode();
+//				nodes.add(node);
+//			}
+//		}
+//		return nodes;
+//	}
 
 }

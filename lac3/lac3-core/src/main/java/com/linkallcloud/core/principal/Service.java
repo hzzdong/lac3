@@ -20,5 +20,12 @@ public interface Service {
      * @return code
      */
     String getCode();
+    
+    /**
+     * app clazz,0：运维，1：客户
+     * 
+     * @return
+     */
+    int getClazz();
 
 }

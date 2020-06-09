@@ -25,6 +25,11 @@ public interface Principal extends Serializable {
      * Site account loginname
      */
     String getSiteId();
+    
+    /*
+     * Site app clazz,0：运维，1：客户
+     */
+    int getSiteClazz();
 
     /*
      * Account mapping type
