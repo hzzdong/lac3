@@ -1,22 +1,29 @@
 package com.linkallcloud.core.www.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.linkallcloud.core.lang.Strings;
-import com.linkallcloud.core.util.IConstants;
-import com.linkallcloud.core.www.UrlPattern;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.method.HandlerMethod;
-
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.URLDecoder;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.HandlerMethod;
+
+import com.alibaba.fastjson.JSON;
+import com.linkallcloud.core.lang.Strings;
+import com.linkallcloud.core.util.IConstants;
+import com.linkallcloud.core.www.UrlPattern;
 
 public class WebUtils {
 
@@ -498,5 +505,34 @@ public class WebUtils {
         }
         return false;
     }
+    
+    public static void sendAppClazzCookie(int appClazz, HttpServletRequest request, HttpServletResponse response) {
+		Integer seted = getAppClazzFromCookie(request);
+		if (seted == null || seted.intValue() != appClazz) {
+			Cookie acc = new Cookie("APP_CLAZZ_ID", appClazz + "");
+			if (request.isSecure()) {
+				acc.setSecure(true);
+			}
+			acc.setMaxAge(-1);
+			acc.setPath(request.getContextPath());
+			response.addCookie(acc);
+		}
+	}
+
+    public static Integer getAppClazzFromCookie(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (int i = 0; i < cookies.length; i++) {
+				if (cookies[i].getName().equals("APP_CLAZZ_ID")) {
+					String appClazzCookie = cookies[i].getValue();
+					if (Strings.isBlank(appClazzCookie)) {
+						continue;
+					}
+					return Integer.parseInt(appClazzCookie);
+				}
+			}
+		}
+		return null;
+	}
 
 }

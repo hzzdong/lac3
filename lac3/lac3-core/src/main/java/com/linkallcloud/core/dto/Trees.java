@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -91,6 +92,28 @@ public class Trees {
 		}
 
 	}
+	
+	/**
+     * 把children挂到parent下，并把parent加入children中。
+     *
+     * @param children
+     * @param parent
+     */
+    public static List<Tree> assembleChildren2Parent(List<Tree> children, Tree parent) {
+        if (children == null) {
+            children = new ArrayList<Tree>();
+        } else {
+            Iterator<Tree> itr = children.iterator();
+            while (itr.hasNext()) {
+                Tree node = itr.next();
+                if (Strings.isBlank(node.getpId()) || node.getpId().equals("0")) {
+                    node.setpId(parent.getId());
+                }
+            }
+        }
+        children.add(parent);
+        return children;
+    }
 
 	/**
 	 * 把nodeList中的根节点作为直接子节点挂到parent上

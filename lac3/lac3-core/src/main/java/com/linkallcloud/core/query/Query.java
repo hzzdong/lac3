@@ -1,16 +1,23 @@
 package com.linkallcloud.core.query;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import com.alibaba.fastjson.annotation.JSONField;
 import com.linkallcloud.core.castor.Castors;
 import com.linkallcloud.core.lang.Strings;
-import com.linkallcloud.core.query.rule.*;
+import com.linkallcloud.core.query.rule.CompareRule;
+import com.linkallcloud.core.query.rule.ExpRule;
+import com.linkallcloud.core.query.rule.In;
+import com.linkallcloud.core.query.rule.IsNotNull;
+import com.linkallcloud.core.query.rule.IsNull;
+import com.linkallcloud.core.query.rule.QueryRule;
+import com.linkallcloud.core.query.rule.QueryRuleFactory;
 import com.linkallcloud.core.query.rule.desc.IRuleDescriptor;
 import com.linkallcloud.core.util.IConstants;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Query implements Expression {
 	private static final long serialVersionUID = 4771222508112466306L;
@@ -248,6 +255,29 @@ public class Query implements Expression {
 		if (getGroups() != null && !getGroups().isEmpty()) {
 			for (Query group : getGroups()) {
 				group.resetRule4Field(fieldName, value);
+			}
+		}
+	}
+
+	/**
+	 * 删除名称是fieldName的rule
+	 * 
+	 * @param fieldName
+	 */
+	public void delRule4Field(String fieldName) {
+		if (getRules() != null && !getRules().isEmpty()) {
+			Iterator<QueryRule> it = getRules().iterator();
+			while (it.hasNext()) {
+				QueryRule rd = it.next();
+				if (rd.getField().equals(fieldName)) {
+					it.remove();
+					return;
+				}
+			}
+		}
+		if (getGroups() != null && !getGroups().isEmpty()) {
+			for (Query group : getGroups()) {
+				group.delRule4Field(fieldName);
 			}
 		}
 	}
