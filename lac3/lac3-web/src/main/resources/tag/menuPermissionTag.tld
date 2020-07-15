@@ -1,0 +1,20 @@
+<taglib>
+  <tlib-version>1.0</tlib-version>
+  <jsp-version>2.0</jsp-version>
+  <short-name>MenuPermissionTag TLD</short-name>
+  <tag>
+    <name>hasPermission</name>
+    <tag-class>com.linkallcloud.permission.menu.MenuPermissionTag</tag-class>
+	<body-content>JSP</body-content>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>rule</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+    </attribute>
+  </tag>
+</taglib>

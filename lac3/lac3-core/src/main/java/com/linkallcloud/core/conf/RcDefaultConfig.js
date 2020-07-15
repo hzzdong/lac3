@@ -1,0 +1,14 @@
+//默认配置
+{
+	"EL":{
+		"custom":[
+			"com.linkallcloud.el.opt.custom.Max",
+			"com.linkallcloud.el.opt.custom.Min",
+			"com.linkallcloud.el.opt.custom.Trim",
+			"com.linkallcloud.el.opt.custom.MakeUUID",
+			"com.linkallcloud.el.opt.custom.DoBase64",
+			"com.linkallcloud.el.opt.custom.DoURLEncoder",
+			"com.linkallcloud.el.opt.custom.TimeNow",
+			"com.linkallcloud.el.opt.custom.ByMake"
+		]}
+}
