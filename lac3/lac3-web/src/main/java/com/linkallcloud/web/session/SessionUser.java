@@ -15,8 +15,8 @@ public class SessionUser implements ISessionUser {
 	private Integer loginMode;// 登录模式，normal:普通模式,proxy:代维模式
 	private SessionUser srcUser;
 
-	private Sid company;
-	private Sid org;// 操作者所属的组织ID
+	private Sid company;// 当前登录的company
+	private Sid org;// 当前登录的org
 
 	private Sid area; // 所在区域
 	private int areaLevel; // 所在区域level
@@ -41,6 +41,8 @@ public class SessionUser implements ISessionUser {
 	private String[] menuPermissions;
 	private Long[] orgPermissions;
 	private Long[] areaPermissions;
+
+	private List<Sid> myOrgs;// 所在机构+兼职机构列表
 
 	private String orgDataSource;// 数据源标识，用于多数据库情况
 
@@ -395,5 +397,13 @@ public class SessionUser implements ISessionUser {
 	public void proxyTo(SessionUser destUser) {
 		destUser.loginMode = LoginMode.Proxy.getCode();
 		destUser.srcUser = this;
+	}
+
+	public List<Sid> getMyOrgs() {
+		return myOrgs;
+	}
+
+	public void setMyOrgs(List<Sid> myOrgs) {
+		this.myOrgs = myOrgs;
 	}
 }
