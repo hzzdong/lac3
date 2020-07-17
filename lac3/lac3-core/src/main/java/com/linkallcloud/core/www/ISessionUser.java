@@ -1,26 +1,12 @@
 package com.linkallcloud.core.www;
 
-import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.linkallcloud.core.dto.Sid;
 
-public interface ISessionUser extends Serializable {
+public interface ISessionUser extends ISimpleSessionUser {
 	
-	static String SESSION_USER_KEY = "_LAC_SESSION_USER_KEY_";
-
-    Sid getSid();
-    void setSid(Sid id);
-
-    String getLoginName();
-    void setLoginName(String loginName);
-    
-    boolean isAdmin();
-    void setAdmin(boolean admin);
-
-    String getUserType();
-    void setUserType(String userType);
-
     String getNickName();
     void setNickName(String nickName);
 
@@ -41,14 +27,10 @@ public interface ISessionUser extends Serializable {
 
     String getLoginWay();
     void setLoginWay(String way);
-
-    Sid getCompany();
-    Sid getOrg();
+    
     Sid getArea();
     int getAreaLevel();
-    Sid getApp();
     
-    Integer getLoginMode();
-    ISessionUser getSrcUser();
+    List<Sid> getMyOrgs();
 
 }

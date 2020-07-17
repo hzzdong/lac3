@@ -21,6 +21,7 @@ import com.linkallcloud.core.util.HibernateValidator;
 import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.web.session.LacToken;
 import com.linkallcloud.web.session.SessionUser;
+import com.linkallcloud.web.session.SimpleSessionUser;
 
 public class Controllers {
 	public static String CURRENT_APP_KEY = "_LAC_CURRENT_APP_KEY_";
@@ -199,12 +200,12 @@ public class Controllers {
 	 * @param validPeriod 有效时长，单位：分钟。<=0表示长期有效(默认7天)
 	 * @return
 	 */
-	public static String createToken(SessionUser suser, int validPeriod) {
+	public static String createToken(SimpleSessionUser suser, int validPeriod) {
 		LacToken tokenObj = new LacToken(suser, validPeriod);
 		return tokenObj.token(encKey, signKey);
 	}
 
-	public static SessionUser checkToken(String token) throws BaseException {
+	public static SimpleSessionUser checkToken(String token) throws BaseException {
 		return LacToken.check(token, encKey, signKey);
 	}
 

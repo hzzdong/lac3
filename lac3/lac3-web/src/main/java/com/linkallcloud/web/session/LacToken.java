@@ -12,7 +12,7 @@ import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.util.Date8;
 import com.linkallcloud.sh.Encrypts;
 
-public class LacToken extends SessionUser {
+public class LacToken extends SimpleSessionUser {
 	private static final long serialVersionUID = -496108462462094172L;
 
 	private String vtime;// 有效期截止时间
@@ -21,11 +21,16 @@ public class LacToken extends SessionUser {
 		super();
 	}
 
-	public LacToken(SessionUser user) {
+	public LacToken(SimpleSessionUser user) {
 		super();
 		if (user != null) {
 			try {
 				BeanUtils.copyProperties(user, this);
+				if (user.getSrcUser() != null) {
+					SimpleSessionUser srcUser = new SimpleSessionUser();
+					BeanUtils.copyProperties(user.getSrcUser(), srcUser);
+					this.setSrcUser(srcUser);
+				}
 			} catch (Throwable e) {
 				// log.warn("Fail to copy properties!", e);
 			}
@@ -37,7 +42,7 @@ public class LacToken extends SessionUser {
 	 * @param user
 	 * @param validPeriod 有效时长，单位：分钟。<=0表示长期有效(默认7天)
 	 */
-	public LacToken(SessionUser user, int validPeriod) {
+	public LacToken(SimpleSessionUser user, int validPeriod) {
 		this(user);
 		LocalDateTime now = LocalDateTime.now();
 		if (validPeriod <= 0) {
@@ -47,13 +52,15 @@ public class LacToken extends SessionUser {
 		this.vtime = Date8.formatLocalDateTime(end);
 	}
 
-	public LacToken(Long id, String uuid, String loginName, String name, String userType, Long companyId,
-			String companyUuid, String companyName, Long orgId, String orgUuid, String orgName) {
-		super(id, uuid, loginName, name, userType, companyId, companyUuid, companyName, orgId, orgUuid, orgName);
-	}
-
 	public LacToken(Long id, String uuid, String loginName, String name, String userType) {
 		super(id, uuid, loginName, name, userType);
+	}
+
+	public LacToken(Long id, String uuid, String loginName, String name, String userType, Long companyId,
+			String companyUuid, String companyCode, String companyName, Long orgId, String orgUuid, String orgCode,
+			String orgName) {
+		super(id, uuid, loginName, name, userType, companyId, companyUuid, companyCode, companyName, orgId, orgUuid,
+				orgCode, orgName);
 	}
 
 	public String getVtime() {
@@ -73,8 +80,8 @@ public class LacToken extends SessionUser {
 		}
 	}
 
-	public SessionUser toSessionUser() {
-		SessionUser user = new SessionUser();
+	public SimpleSessionUser toSessionUser() {
+		SimpleSessionUser user = new SimpleSessionUser();
 		try {
 			BeanUtils.copyProperties(this, user);
 		} catch (Throwable e) {
@@ -110,7 +117,7 @@ public class LacToken extends SessionUser {
 		return null;
 	}
 
-	public static SessionUser check(String token, String encKey, String signKey) throws BizException {
+	public static SimpleSessionUser check(String token, String encKey, String signKey) throws BizException {
 		if (Strings.isBlank(token)) {
 			throw new BizException("100002", "token验证失败。");
 		}
