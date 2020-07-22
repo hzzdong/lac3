@@ -32,8 +32,8 @@ public interface IDomain extends Serializable {
 	// PK getUpdateUserId();
 	// void setUpdateUserId(PK updateUserId);
 
-	int getStatus();
-	void setStatus(int status);
+	Integer getStatus();
+	void setStatus(Integer status);
 	boolean isValid();
 
 	String generateUuid();
