@@ -1,6 +1,6 @@
 package com.linkallcloud.web.controller;
 
-import com.linkallcloud.core.busilog.annotation.WebLog;
+import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Result;
@@ -80,9 +80,9 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
 
     @RequestMapping(value = "/main", method = RequestMethod.GET)
     public String main(@RequestParam(value = "prepare", required = false) boolean prepare,
-                       @RequestParam(value = "parentId", required = false) Long parentId,
-                       @RequestParam(value = "parentClass", required = false) String parentClass, Trace t, ModelMap modelMap,
-                       AppVisitor av) {
+            @RequestParam(value = "parentId", required = false) Long parentId,
+            @RequestParam(value = "parentClass", required = false) String parentClass, Trace t, ModelMap modelMap,
+            AppVisitor av) {
         return doMain(prepare, parentId, parentClass, t, modelMap, av);
     }
 
@@ -96,15 +96,14 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
      * @return
      */
     protected String doMain(boolean prepare, Long parentId, String parentClass, Trace t, ModelMap modelMap,
-                            AppVisitor av) {
+            AppVisitor av) {
         modelMap.put("parentId", parentId);
         modelMap.put("parentClass", parentClass);
         return getMainPage();
     }
 
     @RequestMapping(value = "/page", method = RequestMethod.POST)
-    public @ResponseBody
-    Result<Object> page(@RequestBody WebPage webPage, Trace t, AppVisitor av) {
+    public @ResponseBody Result<Object> page(@RequestBody WebPage webPage, Trace t, AppVisitor av) {
         Page<T> page = doFindPage(webPage, t, av);
         return new Result<Object>(page);
     }
@@ -116,8 +115,8 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
     }
 
     @RequestMapping(value = "/view", method = RequestMethod.GET)
-    public String view(@RequestParam(value = "id") Long id, @RequestParam(value = "uuid") String uuid, ModelMap modelMap,
-                       Trace t, AppVisitor av) {
+    public String view(@RequestParam(value = "id") Long id, @RequestParam(value = "uuid") String uuid,
+            ModelMap modelMap, Trace t, AppVisitor av) {
         return doView(id, uuid, modelMap, t, av);
     }
 
@@ -128,7 +127,8 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
     }
 
     /**
-     * @param prepare     true:初始化entity放入ModelMap，false:不处理
+     * @param prepare
+     *            true:初始化entity放入ModelMap，false:不处理
      * @param parentId
      * @param parentClass
      * @param t
@@ -138,14 +138,14 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
      */
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String add(@RequestParam(value = "prepare", required = false) boolean prepare,
-                      @RequestParam(value = "parentId", required = false) Long parentId,
-                      @RequestParam(value = "parentClass", required = false) String parentClass, Trace t, ModelMap modelMap,
-                      AppVisitor av) {
+            @RequestParam(value = "parentId", required = false) Long parentId,
+            @RequestParam(value = "parentClass", required = false) String parentClass, Trace t, ModelMap modelMap,
+            AppVisitor av) {
         return doAdd(prepare, parentId, parentClass, t, modelMap, av);
     }
 
     protected String doAdd(boolean prepare, Long parentId, String parentClass, Trace t, ModelMap modelMap,
-                           AppVisitor av) {
+            AppVisitor av) {
         modelMap.put("parentId", parentId);
         modelMap.put("parentClass", parentClass);
         if (prepare) {
@@ -157,15 +157,15 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public String edit(@RequestParam(value = "prepare", required = false) boolean prepare,
-                       @RequestParam(value = "parentId", required = false) Long parentId,
-                       @RequestParam(value = "parentClass", required = false) String parentClass,
-                       @RequestParam(value = "id") Long id, @RequestParam(value = "uuid") String uuid, Trace t, ModelMap modelMap,
-                       AppVisitor av) {
+            @RequestParam(value = "parentId", required = false) Long parentId,
+            @RequestParam(value = "parentClass", required = false) String parentClass,
+            @RequestParam(value = "id") Long id, @RequestParam(value = "uuid") String uuid, Trace t, ModelMap modelMap,
+            AppVisitor av) {
         return doEdit(prepare, parentId, parentClass, id, uuid, t, modelMap, av);
     }
 
-    protected String doEdit(boolean prepare, Long parentId,
-                            String parentClass, Long id, String uuid, Trace t, ModelMap modelMap, AppVisitor av) {
+    protected String doEdit(boolean prepare, Long parentId, String parentClass, Long id, String uuid, Trace t,
+            ModelMap modelMap, AppVisitor av) {
         modelMap.put("id", id);
         modelMap.put("uuid", uuid);
         modelMap.put("parentId", parentId);
@@ -185,11 +185,10 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
     }
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public @ResponseBody
-    Result<Object> get(@RequestParam(value = "parentId", required = false) Long parentId,
-                       @RequestParam(value = "parentClass", required = false) String parentClass,
-                       @RequestParam(value = "id", required = false) Long id,
-                       @RequestParam(value = "uuid", required = false) String uuid, Trace t, AppVisitor av) {
+    public @ResponseBody Result<Object> get(@RequestParam(value = "parentId", required = false) Long parentId,
+            @RequestParam(value = "parentClass", required = false) String parentClass,
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "uuid", required = false) String uuid, Trace t, AppVisitor av) {
         T domain = doGet(parentId, parentClass, id, uuid, t, av);
         return new Result<Object>(domain);
     }
@@ -204,9 +203,9 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    @WebLog(db = true)
-    public @ResponseBody
-    Result<Object> save(@RequestBody @Valid T entity, Trace t, AppVisitor av) {
+    // @LacLog(db = true)
+    @LacLog()
+    public @ResponseBody Result<Object> save(@RequestBody @Valid T entity, Trace t, AppVisitor av) {
         if (!checkReferer(true)) {
             return new Result<Object>(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
@@ -225,11 +224,11 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
      * @param uuid
      * @return
      */
-    @WebLog(db = true, desc = "用户([(${visitor.name})])删除了[(${domainShowName})]([(${id})]), TID:[(${t.tid})]")
+    // @LacLog(db = true, desc = "用户([(${visitor.name})])删除了[(${domainShowName})]([(${id})]), TID:[(${t.tid})]")
+    @LacLog(desc = "用户([(${visitor.name})])删除了[(${domainShowName})]([(${id})]), TID:[(${t.tid})]")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public @ResponseBody
-    Result<Object> delete(@RequestParam(value = "id") Long id,
-                          @RequestParam(value = "uuid") String uuid, Trace t, AppVisitor av) {
+    public @ResponseBody Result<Object> delete(@RequestParam(value = "id") Long id,
+            @RequestParam(value = "uuid") String uuid, Trace t, AppVisitor av) {
         if (!checkReferer(true)) {
             return new Result<Object>(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
@@ -247,10 +246,10 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
      * @param uuidIds
      * @return
      */
-    @WebLog(db = true, desc = "用户([(${visitor.name})])删除了[(${domainShowName})]([(${uuidIds})]), TID:[(${t.tid})]")
+    @LacLog(desc = "用户([(${visitor.name})])删除了[(${domainShowName})]([(${uuidIds})]), TID:[(${t.tid})]")
+    // @LacLog(db = true, desc = "用户([(${visitor.name})])删除了[(${domainShowName})]([(${uuidIds})]), TID:[(${t.tid})]")
     @RequestMapping(value = "deletes", method = RequestMethod.POST)
-    public @ResponseBody
-    Result<Object> deletes(@RequestBody Map<String, Long> uuidIds, Trace t, AppVisitor av) {
+    public @ResponseBody Result<Object> deletes(@RequestBody Map<String, Long> uuidIds, Trace t, AppVisitor av) {
         if (!checkReferer(true)) {
             return new Result<Object>(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
@@ -264,7 +263,7 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
 
     @RequestMapping(value = "/select", method = RequestMethod.GET)
     public String select(@RequestBody List<StringRuleDescriptor> cnds,
-                         @RequestParam(value = "multi", required = false) boolean multi, ModelMap modelMap, AppVisitor av) {
+            @RequestParam(value = "multi", required = false) boolean multi, ModelMap modelMap, AppVisitor av) {
         return doSelect(cnds, multi, modelMap, av);
     }
 
@@ -275,8 +274,7 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
     }
 
     @RequestMapping(value = "/page4Select", method = RequestMethod.GET)
-    public @ResponseBody
-    Result<Object> page4Select(@RequestBody WebPage webPage, Trace t, AppVisitor av) {
+    public @ResponseBody Result<Object> page4Select(@RequestBody WebPage webPage, Trace t, AppVisitor av) {
         Page<T> page = doPage4Select(webPage, t, av);
         return new Result<Object>(page);
     }
@@ -287,12 +285,12 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
         return manager().findPage4Select(t, page);
     }
 
-    @WebLog(db = true,
-            desc = "用户([(${visitor.name})])更改[(${domainShowName})]([(${id})])的状态为([(${status})]), TID:[(${t.tid})]")
+    @LacLog(desc = "用户([(${visitor.name})])更改[(${domainShowName})]([(${id})])的状态为([(${status})]), TID:[(${t.tid})]")
+    // @LacLog(db = true,
+    // desc = "用户([(${visitor.name})])更改[(${domainShowName})]([(${id})])的状态为([(${status})]), TID:[(${t.tid})]")
     @RequestMapping(value = "/changeStatus", method = RequestMethod.POST)
-    public @ResponseBody
-    Result<Object> changeStatus(@RequestParam(value = "status") int status,
-                                @RequestParam(value = "id") Long id, @RequestParam(value = "uuid") String uuid, Trace t) {
+    public @ResponseBody Result<Object> changeStatus(@RequestParam(value = "status") int status,
+            @RequestParam(value = "id") Long id, @RequestParam(value = "uuid") String uuid, Trace t) {
         if (!checkReferer(true)) {
             return new Result<Object>(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
@@ -304,10 +302,12 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
         return manager().updateStatus(t, status, id, uuid);
     }
 
-    @WebLog(db = true, desc = "用户([(${visitor.name})])更改了[(${domainShowName})]([(${uuidIds})])的状态为([(${status})]), TID:[(${t.tid})]")
+    @LacLog(desc = "用户([(${visitor.name})])更改了[(${domainShowName})]([(${uuidIds})])的状态为([(${status})]), TID:[(${t.tid})]")
+    // @LacLog(db = true,
+    // desc = "用户([(${visitor.name})])更改了[(${domainShowName})]([(${uuidIds})])的状态为([(${status})]), TID:[(${t.tid})]")
     @RequestMapping(value = "/changeStatuss", method = RequestMethod.POST)
-    public @ResponseBody
-    Result<Object> changeStatuss(@RequestParam(value = "status") int status, @RequestBody Map<String, Long> uuidIds, Trace t) {
+    public @ResponseBody Result<Object> changeStatuss(@RequestParam(value = "status") int status,
+            @RequestBody Map<String, Long> uuidIds, Trace t) {
         if (!checkReferer(true)) {
             return new Result<Object>(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
@@ -357,10 +357,10 @@ public abstract class BaseController<T extends Domain, S extends IManager<T>> {
             sb.append(scheme).append("://").append(Controllers.getRequestServerName(request));
             if (referer != null && !referer.equals("")) {
                 String server = String.valueOf(sb);
-                //if (referer.lastIndexOf(server) != 0) {
+                // if (referer.lastIndexOf(server) != 0) {
                 if (!referer.startsWith(server)) {
                     log.warnf("Referer（%s）检查失败，Server（%s）。", referer, server);
-                    return false; //验证失败
+                    return false; // 验证失败
                 }
             }
         } else {

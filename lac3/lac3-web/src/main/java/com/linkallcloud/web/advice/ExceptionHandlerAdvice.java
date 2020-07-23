@@ -84,6 +84,21 @@ public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception e, HttpServletRequest request) {
+         log.errorf("uri={} | errorInfo={}", request.getRequestURI(), e.getMessage());
+
+        // BusiLog busiLog = LacAspect.logMessageThreadLocal.get();
+        // System.out.println(busiLog.getError() == e);
+        log.error("Exception", e);
+
+        Map<String, Object> result = Exceptions.makeErrorMap(e);
+        if (WebUtils.isAjax(request)) {
+            return new ModelAndView(new FastJsonJsonView(), result);
+        }
+        return new ModelAndView("page/system/error", result);
+    }
+
+    @ExceptionHandler(Throwable.class)
+    public ModelAndView handleException(Throwable e, HttpServletRequest request) {
         log.errorf("uri={} | errorInfo={}", request.getRequestURI(), e.getMessage());
         log.error("Exception", e);
 

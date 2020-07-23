@@ -12,7 +12,7 @@ import com.linkallcloud.core.exception.Exceptions;
 import com.linkallcloud.core.face.message.request.FaceRequest;
 import com.linkallcloud.core.face.message.request.IdFaceRequest;
 import com.linkallcloud.core.face.message.request.PageFaceRequest;
-import com.linkallcloud.core.laclog.WebBusiLog;
+import com.linkallcloud.core.laclog.LacBusiLog;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.log.Log;
@@ -22,7 +22,7 @@ import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.session.SessionUser;
 
-public abstract class BaseWebLogFace<T extends WebBusiLog, S extends IWebBusiLogManager<T>> {
+public abstract class BaseWebLogFace<T extends LacBusiLog, S extends IWebBusiLogManager<T>> {
 	protected final Log log = Logs.get();
 
     protected Mirror<T> mirror;

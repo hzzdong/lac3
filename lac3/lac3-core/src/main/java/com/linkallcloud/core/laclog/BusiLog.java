@@ -1,17 +1,19 @@
 package com.linkallcloud.core.laclog;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.linkallcloud.core.domain.Domain;
-
 import java.util.Date;
 
-public abstract class BusiLog extends Domain {
+import com.alibaba.fastjson.annotation.JSONField;
+
+public class BusiLog extends BaseLog {
     private static final long serialVersionUID = -6428103666648336600L;
 
     /**
      * 前后台统一TID
      */
     private String tid;// 前后台统一TID
+    
+    private String logLevel;
+
 
     /**
      * 操作内容
@@ -33,16 +35,15 @@ public abstract class BusiLog extends Domain {
      ***********************/
     private String className;// 类
     private String methodName;// 方法
-    //private Object[] methodParameters;// 参数
+    // private Object[] methodParameters;// 参数
     private String methodParameters;// 参数
     private Object methodResult;// 方法执行返回的结果
-    private Throwable error;// 方法自行失败的错误
-
 
     /**
      * 非持久化参数
      */
-    private int saveTag = 0;//是否save方法，若是的话1：新增；2：更新，其它0
+    @JSONField(serialize = false, deserialize = false)
+    private int saveTag = 0;// 是否save方法，若是的话1：新增；2：更新，其它0
 
     public BusiLog() {
         super();
@@ -136,13 +137,13 @@ public abstract class BusiLog extends Domain {
         this.methodName = methodName;
     }
 
-//	public Object[] getMethodParameters() {
-//		return methodParameters;
-//	}
-//
-//	public void setMethodParameters(Object[] methodParameters) {
-//		this.methodParameters = methodParameters;
-//	}
+    // public Object[] getMethodParameters() {
+    // return methodParameters;
+    // }
+    //
+    // public void setMethodParameters(Object[] methodParameters) {
+    // this.methodParameters = methodParameters;
+    // }
 
     public String getMethodParameters() {
         return methodParameters;
@@ -160,12 +161,12 @@ public abstract class BusiLog extends Domain {
         this.methodResult = methodResult;
     }
 
-    public Throwable getError() {
-        return error;
+    public String getLogLevel() {
+        return logLevel;
     }
 
-    public void setError(Throwable error) {
-        this.error = error;
+    public void setLogLevel(String logLevel) {
+        this.logLevel = logLevel;
     }
 
 }

@@ -1,6 +1,6 @@
 package com.linkallcloud.core.manager;
 
-import com.linkallcloud.core.laclog.WebBusiLog;
+import com.linkallcloud.core.laclog.LacBusiLog;
 
-public interface IWebBusiLogManager<T extends WebBusiLog> extends IManager<T> {
+public interface IWebBusiLogManager<T extends LacBusiLog> extends IManager<T> {
 }

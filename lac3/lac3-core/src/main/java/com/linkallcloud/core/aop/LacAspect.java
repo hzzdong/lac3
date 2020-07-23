@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,13 +15,16 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
+import com.linkallcloud.core.laclog.BusiLog;
+
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.stereotype.Controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.ttl.TransmittableThreadLocal;
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.castor.Castors;
 import com.linkallcloud.core.domain.IDomain;
@@ -37,15 +41,41 @@ import com.linkallcloud.core.trans.Tid;
 
 public abstract class LacAspect {
 
+    public static TransmittableThreadLocal<BusiLog> logMessageThreadLocal = new TransmittableThreadLocal<>();
+
     protected Log log = Logs.get();
 
     protected static LocalVariableTableParameterNameDiscoverer parameterNameDiscovere =
             new LocalVariableTableParameterNameDiscoverer();
 
+    protected BusiLog dealThreadLocalBaseLog(JoinPoint joinPoint, Method method) {
+        BusiLog busiLog = logMessageThreadLocal.get();
+        if (busiLog == null) {
+            busiLog = new BusiLog();
+            Class<?> clzz = joinPoint.getTarget().getClass();
+            busiLog.setClassName(clzz.getName());
+            String tid = dealTid(joinPoint, method, true);
+            busiLog.setTid(tid);
+            busiLog.setMethodName(joinPoint.getSignature().getName());
+
+            try {
+                Object[] ob = getValidateArgs(joinPoint);
+                busiLog.setMethodParameters(JSON.toJSONString(ob));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            busiLog.setOperateTime(new Date());
+            logMessageThreadLocal.set(busiLog);
+        }
+        return busiLog;
+    }
+
     /**
      * 获取当前执行的方法
      *
-     * @param joinPoint 连接点
+     * @param joinPoint
+     *            连接点
      * @return 方法
      */
     protected Method getMethod(JoinPoint joinPoint) {
@@ -74,7 +104,7 @@ public abstract class LacAspect {
      * @param ifNullGenerateTid
      * @return
      */
-    protected String dealTid(ProceedingJoinPoint joinPoint, Method method, boolean ifNullGenerateTid) {
+    protected String dealTid(JoinPoint joinPoint, Method method, boolean ifNullGenerateTid) {
         String[] parameterNames = parameterNameDiscovere.getParameterNames(method);
         Object[] args = joinPoint.getArgs();
 
@@ -127,8 +157,8 @@ public abstract class LacAspect {
      * @param values
      * @return
      */
-    protected String dealStringTtemplate(boolean web, String template, ProceedingJoinPoint joinPoint, Method method,
-                                         Map<String, Object> values) {
+    protected String dealStringTtemplate(boolean web, String template, JoinPoint joinPoint, Method method,
+            Map<String, Object> values) {
         String[] parameterNames = parameterNameDiscovere.getParameterNames(method);
         Object[] args = joinPoint.getArgs();
         if (parameterNames == null || parameterNames.length == 0 || args == null || args.length == 0) {
@@ -151,7 +181,8 @@ public abstract class LacAspect {
         } else {
             DomainDescription dd = getDomainDescription(joinPoint);
             if (web) {
-                // 用户([(${visitor.name})])[# th:if=\"${entity.id!=null && entity.id>0}\"]修改了[/][# th:if=\"${entity.id==null || entity.id==0}\"]新增了[/]菜单([(${entity.name})]), TID:[(${tid})]
+                // 用户([(${visitor.name})])[# th:if=\"${entity.id!=null && entity.id>0}\"]修改了[/][#
+                // th:if=\"${entity.id==null || entity.id==0}\"]新增了[/]菜单([(${entity.name})]), TID:[(${tid})]
                 int saveTag = (int) values.get("saveTag");
                 if (saveTag == 1) {
                     return dealWebInsertOrUpdateLogDesc(true, (String) values.get("tid"),
@@ -184,7 +215,7 @@ public abstract class LacAspect {
      * @return
      */
     private String dealWebInsertOrUpdateLogDesc(boolean insert, String tid, AppVisitor visitor, Object[] methodArgs,
-                                                DomainDescription dd) {
+            DomainDescription dd) {
         StringBuffer descBuffer = new StringBuffer();
         descBuffer.append("用户(").append(visitor == null ? "" : visitor.getLoginName()).append(")")
                 .append(insert ? "新增了 " : "修改了 ").append(dd.getShowName());
@@ -238,7 +269,7 @@ public abstract class LacAspect {
      * @return
      */
     private String dealServiceInsertOrUpdateLogDesc(boolean insert, String tid, Object[] methodArgs,
-                                                    DomainDescription dd) {
+            DomainDescription dd) {
         StringBuffer descBuffer = new StringBuffer();
         descBuffer.append(insert ? "新增 " : "修改 ").append(dd.getShowName());
 
@@ -289,7 +320,7 @@ public abstract class LacAspect {
      * @return
      */
     @SuppressWarnings("unchecked")
-    protected DomainDescription getDomainDescription(ProceedingJoinPoint joinPoint) {
+    protected DomainDescription getDomainDescription(JoinPoint joinPoint) {
         Class<?> clzz = joinPoint.getTarget().getClass();
         Mirror<?> cmirror = Mirror.me(clzz);
         Class<? extends IDomain> domainClass = null;
@@ -341,7 +372,7 @@ public abstract class LacAspect {
         return null;
     }
 
-    protected Object[] getValidateArgs(ProceedingJoinPoint joinPoint) {
+    protected Object[] getValidateArgs(JoinPoint joinPoint) {
         List<Object> vargs = new ArrayList<Object>();
         if (joinPoint.getArgs() != null && joinPoint.getArgs().length > 0) {
             for (Object arg : joinPoint.getArgs()) {

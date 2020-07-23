@@ -3,7 +3,7 @@ package com.linkallcloud.web.controller;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.laclog.WebBusiLog;
+import com.linkallcloud.core.laclog.LacBusiLog;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.log.Log;
 import com.linkallcloud.core.log.Logs;
@@ -13,7 +13,7 @@ import com.linkallcloud.core.pagination.WebPage;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-public abstract class BaseFullWebBusiLogController<T extends WebBusiLog, S extends IWebBusiLogManager<T>> {
+public abstract class BaseFullWebBusiLogController<T extends LacBusiLog, S extends IWebBusiLogManager<T>> {
 
     private Log log = Logs.get();
 

@@ -1,6 +1,6 @@
 package com.linkallcloud.web.face.base;
 
-import com.linkallcloud.core.busilog.annotation.WebLog;
+import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Trace;
@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map.Entry;
 
 public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
     protected final Log log = Logs.get();
@@ -52,8 +53,7 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
 
     @Face(simple = true)
     @RequestMapping(value = "/fetch", method = RequestMethod.POST)
-    public @ResponseBody
-    Object fetch(IdFaceRequest faceReq, Trace t, SessionUser su) {
+    public @ResponseBody Object fetch(IdFaceRequest faceReq, Trace t, SessionUser su) {
         if (faceReq.getId() == null || Strings.isBlank(faceReq.getUuid())) {
             throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误");
         }
@@ -63,8 +63,7 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
 
     @Face(simple = true)
     @RequestMapping(value = "/find", method = RequestMethod.POST)
-    public @ResponseBody
-    Object find(ListFaceRequest faceReq, Trace t, SessionUser su) {
+    public @ResponseBody Object find(ListFaceRequest faceReq, Trace t, SessionUser su) {
         List<T> entities = doFind(t, faceReq.getQuery(), su);
         return converts(t, "find", faceReq, entities);
     }
@@ -77,7 +76,6 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
         return manager().find(t, q);
     }
 
-
     protected T doFetch(Trace t, Long id, String uuid, SessionUser su) {
         if (id == null || Strings.isBlank(uuid)) {
             throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误");
@@ -85,11 +83,11 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
         return manager().fetchByIdUuid(t, id, uuid);
     }
 
-    @WebLog(db = true)
+    // @LacLog(db = true)
+    @LacLog()
     @Face(simple = true)
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public @ResponseBody
-    Object save(ObjectFaceRequest<T> fr, Trace t, SessionUser su) {
+    public @ResponseBody Object save(ObjectFaceRequest<T> fr, Trace t, SessionUser su) {
         if (!checkReferer(true)) {
             return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
@@ -110,9 +108,9 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
 
     @Face(simple = true)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @WebLog(db = true, desc = "用户([(${su.sid.name})])删除了[(${domainShowName})],ID([(${fr.id})]), TID:[(${tid})]")
-    public @ResponseBody
-    Object delete(IdFaceRequest fr, Trace t, SessionUser su) {
+    // @LacLog(db = true, desc = "用户([(${su.sid.name})])删除了[(${domainShowName})],ID([(${fr.id})]), TID:[(${tid})]")
+    @LacLog(desc = "用户([(${su.sid.name})])删除了[(${domainShowName})],ID([(${fr.id})]), TID:[(${tid})]")
+    public @ResponseBody Object delete(IdFaceRequest fr, Trace t, SessionUser su) {
         if (!checkReferer(true)) {
             return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
@@ -129,11 +127,12 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
         return manager().delete(t, id, uuid);
     }
 
-    @WebLog(db = true, desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})],ID([(${fr.id})])的状态为([(${fr.status})]), TID:[(${tid})]")
+    @LacLog(desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})],ID([(${fr.id})])的状态为([(${fr.status})]), TID:[(${tid})]")
+    // @LacLog(db = true, desc = "用户([(${su.sid.name})])修改了
+    // [(${domainShowName})],ID([(${fr.id})])的状态为([(${fr.status})]), TID:[(${tid})]")
     @Face(simple = true)
     @RequestMapping(value = "/changeStatus", method = RequestMethod.POST)
-    public @ResponseBody
-    Object changeStatus(StatusFaceRequest fr, Trace t, SessionUser su) {
+    public @ResponseBody Object changeStatus(StatusFaceRequest fr, Trace t, SessionUser su) {
         if (!checkReferer(true)) {
             return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
         }
@@ -152,9 +151,12 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
 
     @Face(simple = true)
     @RequestMapping(value = "/page", method = RequestMethod.POST)
-    public @ResponseBody
-    Object page(PageFaceRequest faceReq, Trace t, SessionUser su) {
+    public @ResponseBody Object page(PageFaceRequest faceReq, Trace t, SessionUser su) {
         Page<T> page = new Page<>(faceReq);
+
+        for (Entry<String, Object> s : page.getCnds().entrySet()) {
+            System.out.println(s.getKey() + " -- " + s.getValue());
+        }
         page = doPage(t, page, su);
         return convert(t, "page", faceReq, page);
     }
@@ -165,8 +167,7 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
 
     @Face(simple = true)
     @RequestMapping(value = "/page4Select", method = RequestMethod.POST)
-    public @ResponseBody
-    Object page4Select(PageFaceRequest faceReq, Trace t, SessionUser su) {
+    public @ResponseBody Object page4Select(PageFaceRequest faceReq, Trace t, SessionUser su) {
         Page<T> page = new Page<>(faceReq);
         page = doPage4Select(t, page, su);
         return convert(t, "page4Select", faceReq, page);
@@ -215,10 +216,10 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
             sb.append(scheme).append("://").append(Controllers.getRequestServerName(request));
             if (referer != null && !referer.equals("")) {
                 String server = String.valueOf(sb);
-                //if (referer.lastIndexOf(server) != 0) {
+                // if (referer.lastIndexOf(server) != 0) {
                 if (!referer.startsWith(server)) {
                     log.warnf("Referer（%s）检查失败，Server（%s）。", referer, server);
-                    return false; //验证失败
+                    return false; // 验证失败
                 }
             }
         } else {

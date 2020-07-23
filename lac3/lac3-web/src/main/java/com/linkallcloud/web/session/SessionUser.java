@@ -5,69 +5,48 @@ import java.util.Date;
 import java.util.List;
 
 import com.linkallcloud.core.dto.Sid;
-import com.linkallcloud.core.enums.LoginMode;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.www.ISessionUser;
 
-public class SessionUser implements ISessionUser {
+public class SessionUser extends SimpleSessionUser implements ISessionUser {
 	private static final long serialVersionUID = -1668176164184665560L;
-
-	private Integer loginMode;// 登录模式，normal:普通模式,proxy:代维模式
-	private SessionUser srcUser;
-
-	private Sid company;
-	private Sid org;// 操作者所属的组织ID
 
 	private Sid area; // 所在区域
 	private int areaLevel; // 所在区域level
 
-	private Sid sid;
-	private String loginName;
-	private String nickName;
-	private String userType;// 用户类型
-	private boolean admin;// 是否管理员
 	private String sex;
 	private Date birthday;
 	private String ico;// 头像
-	private String remark;// 备注
 	private String phone;
+	private String nickName;
+	private String remark;// 备注
 
 	private String loginWay;// 登录途径
 
 	private List<Object> extendFields;
 
 	// 以下是等到到具体某app相关权限信息
-	private Sid app;// 当前登录的app
 	private String[] menuPermissions;
 	private Long[] orgPermissions;
 	private Long[] areaPermissions;
 
+	private List<Sid> myOrgs;// 所在机构+兼职机构列表
+
 	private String orgDataSource;// 数据源标识，用于多数据库情况
 
 	public SessionUser() {
+		super();
 	}
 
 	public SessionUser(Long id, String uuid, String loginName, String name, String userType) {
-		this.sid = new Sid(id, uuid, loginName, name);
-		this.loginName = loginName;
-		this.userType = userType;
+		super(id, uuid, loginName, name, userType);
 	}
 
 	public SessionUser(Long id, String uuid, String loginName, String name, String userType, Long companyId,
-			String companyUuid, String companyName, Long orgId, String orgUuid, String orgName) {
-		this(id, uuid, loginName, name, userType);
-		this.company = new Sid(companyId, companyUuid, companyName);
-		this.org = new Sid(orgId, orgUuid, orgName);
-	}
-
-	public void setInfo(String userType, String loginName, String userName, String userUuid, Long userId,
-			Long companyId, String companyUuid, String companyName) {
-		this.userType = userType;
-		this.loginName = loginName;
-		if (this.sid == null) {
-			this.sid = new Sid(userId, userUuid, userName);
-		}
-		this.company = new Sid(companyId, companyUuid, companyName);
+			String companyUuid, String companyCode, String companyName, Long orgId, String orgUuid, String orgCode,
+			String orgName) {
+		super(id, uuid, loginName, name, userType, companyId, companyUuid, companyCode, companyName, orgId, orgUuid,
+				orgCode, orgName);
 	}
 
 	public List<Object> getExtendFields() {
@@ -85,56 +64,10 @@ public class SessionUser implements ISessionUser {
 		this.extendFields.add(fieldObj);
 	}
 
-	public void setAppInfo(Long appId, String appUuid, String appCode, String appName) {
-		this.app = new Sid(appId, appUuid, appCode, appName);
-	}
-
 	public void setPermissions(String[] menuPermissions, Long[] orgPermissions, Long[] areaPermissions) {
 		this.menuPermissions = menuPermissions;
 		this.orgPermissions = orgPermissions;
 		this.areaPermissions = areaPermissions;
-	}
-
-	@Override
-	public Sid getCompany() {
-		return company;
-	}
-
-	public Long companyId() {
-		return company == null ? null : company.getId();
-	}
-
-	public String companyUuid() {
-		return company == null ? null : company.getUuid();
-	}
-
-	public String companyName() {
-		return company == null ? null : company.getName();
-	}
-
-	public void setCompany(Sid company) {
-		this.company = company;
-	}
-
-	@Override
-	public Sid getOrg() {
-		return org;
-	}
-
-	public Long orgId() {
-		return org == null ? null : org.getId();
-	}
-
-	public String orgUuid() {
-		return org == null ? null : org.getUuid();
-	}
-
-	public String orgName() {
-		return org == null ? null : org.getName();
-	}
-
-	public void setOrg(Sid org) {
-		this.org = org;
 	}
 
 	@Override
@@ -172,38 +105,6 @@ public class SessionUser implements ISessionUser {
 	}
 
 	@Override
-	public Sid getSid() {
-		return sid;
-	}
-
-	public Long id() {
-		return sid == null ? null : sid.getId();
-	}
-
-	public String uuid() {
-		return sid == null ? null : sid.getUuid();
-	}
-
-	public String name() {
-		return sid == null ? null : sid.getName();
-	}
-
-	@Override
-	public void setSid(Sid id) {
-		this.sid = id;
-	}
-
-	@Override
-	public String getLoginName() {
-		return loginName;
-	}
-
-	@Override
-	public void setLoginName(String loginName) {
-		this.loginName = loginName;
-	}
-
-	@Override
 	public String getNickName() {
 		return nickName;
 	}
@@ -211,16 +112,6 @@ public class SessionUser implements ISessionUser {
 	@Override
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
-	}
-
-	@Override
-	public String getUserType() {
-		return userType;
-	}
-
-	@Override
-	public void setUserType(String userType) {
-		this.userType = userType;
 	}
 
 	@Override
@@ -283,31 +174,6 @@ public class SessionUser implements ISessionUser {
 		this.loginWay = loginWay;
 	}
 
-	@Override
-	public Sid getApp() {
-		return app;
-	}
-
-	public Long appId() {
-		return app == null ? null : app.getId();
-	}
-
-	public String appUuid() {
-		return app == null ? null : app.getUuid();
-	}
-
-	public String appCode() {
-		return app == null ? null : app.getCode();
-	}
-
-	public String appName() {
-		return app == null ? null : app.getName();
-	}
-
-	public void setApp(Sid app) {
-		this.app = app;
-	}
-
 	public String[] getMenuPermissions() {
 		return menuPermissions;
 	}
@@ -350,14 +216,6 @@ public class SessionUser implements ISessionUser {
 		this.areaLevel = level;
 	}
 
-	public boolean isAdmin() {
-		return admin || this.getLoginName().equals("superadmin");
-	}
-
-	public void setAdmin(boolean admin) {
-		this.admin = admin;
-	}
-
 	public String getOrgDataSource() {
 		return orgDataSource;
 	}
@@ -367,33 +225,11 @@ public class SessionUser implements ISessionUser {
 	}
 
 	@Override
-	public Integer getLoginMode() {
-		LoginMode mode = LoginMode.get(loginMode);
-		if (mode != null) {
-			return mode.getCode();
-		}
-		return LoginMode.Normal.getCode();
+	public List<Sid> getMyOrgs() {
+		return myOrgs;
 	}
 
-	public void setLoginMode(Integer loginMode) {
-		this.loginMode = loginMode;
-	}
-
-	public SessionUser getSrcUser() {
-		return srcUser;
-	}
-
-	public void setSrcUser(SessionUser srcUser) {
-		this.srcUser = srcUser;
-	}
-
-	public void proxyFrom(SessionUser srcUser) {
-		this.loginMode = LoginMode.Proxy.getCode();
-		this.srcUser = srcUser;
-	}
-
-	public void proxyTo(SessionUser destUser) {
-		destUser.loginMode = LoginMode.Proxy.getCode();
-		destUser.srcUser = this;
+	public void setMyOrgs(List<Sid> myOrgs) {
+		this.myOrgs = myOrgs;
 	}
 }
