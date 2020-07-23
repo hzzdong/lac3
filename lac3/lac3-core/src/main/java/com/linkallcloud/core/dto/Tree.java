@@ -112,6 +112,10 @@ public class Tree implements Serializable {
                     return 0;
                 }
             });
+            
+            for(Tree child: this.children) {
+            	child.sort();
+            }
         }
     }
 

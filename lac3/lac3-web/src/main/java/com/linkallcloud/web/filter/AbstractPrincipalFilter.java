@@ -16,6 +16,7 @@ import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.principal.AccountMapping;
 import com.linkallcloud.core.principal.Principal;
 import com.linkallcloud.web.session.SessionUser;
+import com.linkallcloud.web.session.SimpleSessionUser;
 import com.linkallcloud.web.utils.Controllers;
 
 public abstract class AbstractPrincipalFilter extends LacCommonFilter {
@@ -82,7 +83,7 @@ public abstract class AbstractPrincipalFilter extends LacCommonFilter {
 	 */
 	private String getLacToken(HttpServletRequest request) {
 		String token = request.getParameter("token");
-		log.info("################  paream token:" + token);
+		log.debug("################  paream token:" + token);
 
 		if (Strings.isBlank(token) || "undefined".equals(token) || "null".equals(token)) {
 			token = request.getHeader("token");
@@ -92,7 +93,7 @@ public abstract class AbstractPrincipalFilter extends LacCommonFilter {
 				}
 			} catch (UnsupportedEncodingException e1) {
 			}
-			log.info("################ header token:" + token);
+			log.debug("################ header token:" + token);
 		}
 
 		if (!Strings.isBlank(token) && !"undefined".equals(token) && !"null".equals(token)) {
@@ -130,9 +131,9 @@ public abstract class AbstractPrincipalFilter extends LacCommonFilter {
 	protected SessionUser getSessionUserByToken(String token) throws BizException {
 		if (!Strings.isBlank(token)) {
 			try {
-				SessionUser user = Controllers.checkToken(token);
+				SimpleSessionUser user = Controllers.checkToken(token);
 				if (user != null) {
-					return user;
+					return getSessionUserBySimpleSessionUser(user);
 				}
 			} catch (Throwable e) {
 			}
@@ -164,6 +165,7 @@ public abstract class AbstractPrincipalFilter extends LacCommonFilter {
 	 * @return
 	 */
 	protected abstract SessionUser getUserByLoginName(int appClazz, String loginName);
+	protected abstract SessionUser getSessionUserBySimpleSessionUser(SimpleSessionUser simpleSessionUser);
 
 	/**
 	 * 根据ssoPrincipal得到用户site的loginName

@@ -10,7 +10,7 @@ import com.linkallcloud.core.face.message.response.BlankFaceResponse;
 import com.linkallcloud.core.face.message.response.ObjectFaceResponse;
 import com.linkallcloud.core.lang.Strings;
 
-public class SimpleJsonProcessor extends LoginRequestProcessor {
+public abstract class SimpleJsonProcessor extends LoginRequestProcessor {
 
     @Override
     protected FaceMessage doConvert2RealRequest(String content, Type type, Face faceAnno)

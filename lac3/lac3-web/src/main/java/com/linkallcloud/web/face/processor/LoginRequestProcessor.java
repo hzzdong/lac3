@@ -17,6 +17,7 @@ import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.www.ISessionUser;
 import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.session.SessionUser;
+import com.linkallcloud.web.session.SimpleSessionUser;
 import com.linkallcloud.web.utils.Controllers;
 
 public abstract class LoginRequestProcessor extends RequestProcessor<FaceMessage> {
@@ -88,15 +89,17 @@ public abstract class LoginRequestProcessor extends RequestProcessor<FaceMessage
 	protected SessionUser getSessionUserByToken(String token) throws BizException {
 		if (!Strings.isBlank(token)) {
 			try {
-				SessionUser user = Controllers.checkToken(token);
+				SimpleSessionUser user = Controllers.checkToken(token);
 				if (user != null) {
-					return user;
+					return getSessionUserBySimpleSessionUser(user);
 				}
 			} catch (Throwable e) {
 			}
 		}
 		throw new BizException("e.face.login", "根据token加载用户SessionUser发生错误：" + token);
 	}
+	
+	protected abstract SessionUser getSessionUserBySimpleSessionUser(SimpleSessionUser simpleSessionUser);
 
 	protected String getLacToken(FaceRequest fr, HttpServletRequest hsr) {
 		String token = fr.getToken();
