@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.linkallcloud</groupId>
 		<artifactId>lac3</artifactId>
-		<version>0.5.0</version>
+		<version>0.5.6</version>
 	</parent>
 
 	<artifactId>lac3-web</artifactId>
@@ -23,8 +23,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
@@ -35,6 +35,11 @@
 		<dependency>
 			<groupId>com.linkallcloud</groupId>
 			<artifactId>lac3-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.linkallcloud</groupId>
+			<artifactId>lac-log-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
