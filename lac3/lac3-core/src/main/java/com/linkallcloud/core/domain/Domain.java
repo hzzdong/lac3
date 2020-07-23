@@ -36,7 +36,7 @@ public abstract class Domain implements IDomain {
 	protected Date updateTime; // 更新时间
 	// protected PK updateUserId;// 更新者id
 
-	protected int status; // 状态
+	protected Integer status; // 状态
 
 	public Domain() {
 		super();
@@ -235,12 +235,12 @@ public abstract class Domain implements IDomain {
 	}
 
 	@Override
-	public int getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
 	@Override
-	public void setStatus(int status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 

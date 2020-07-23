@@ -14,7 +14,7 @@ import com.linkallcloud.core.security.MsgSignObject;
 
 import java.lang.reflect.Type;
 
-public class PackageJsonProcessor extends PackageRequestProcessor {
+public abstract class PackageJsonProcessor extends PackageRequestProcessor {
 
     public PackageJsonProcessor() {
         super();
