@@ -71,8 +71,8 @@ public class RocketmqAppender extends AppenderBase<ILoggingEvent> {
             RocketmqProducerClient.init(producer);
         } catch (Exception e) {
             addError("Log MQ 启动失败:", e);
-            RuntimeException ee = new RuntimeException("Log MQ 启动失败");
-            throw ee;
+            // RuntimeException ee = new RuntimeException("Log MQ 启动失败");
+            // throw ee;
         }
     }
 
