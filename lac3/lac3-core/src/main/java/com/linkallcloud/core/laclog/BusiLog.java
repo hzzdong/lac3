@@ -1,172 +1,160 @@
 package com.linkallcloud.core.laclog;
 
-import java.util.Date;
-
-import com.alibaba.fastjson.annotation.JSONField;
+import com.linkallcloud.core.enums.LoginMode;
+import com.linkallcloud.core.www.ISessionUser;
 
 public class BusiLog extends BaseLog {
-    private static final long serialVersionUID = -6428103666648336600L;
+	private static final long serialVersionUID = -6428103666648336600L;
 
-    /**
-     * 前后台统一TID
-     */
-    private String tid;// 前后台统一TID
-    
-    private String logLevel;
+	private int logMode;
+	/**
+	 * 操作者信息
+	 ***********************/
+	private Long orgId;// 操作者所属的组织ID
+	private String orgType;// 操作者所属的组织类型
+	private Long operatorId;// 操作者的id
+	private String operatorAccount;// 操作者的登录名
 
+	/**
+	 * 操作终端信息
+	 ***********************/
+	private String ip;// 操作者的登陆ip
+	private String url;// url
+	private Boolean mobile;// 是否移动设备
+	private String mobileBrand;// 手机品牌信息
+	private String os;// 操作系统
+	private String osVersion;// 操作系统版本
+	private String browser;// 浏览器
+	private String browserVersion;// 浏览器版本
+	private String ua;// navigator.userAgent
 
-    /**
-     * 操作内容
-     ***********************/
-    private String module;// 操作的模块
-    private String operateDesc;// 操作描述
+	public BusiLog() {
+		super();
+	}
 
-    /**
-     * 操作执行情况
-     ***********************/
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
-    protected Date operateTime; // 操作时间
-    private Long costTime;// 操作花费时间
-    private int operateResult;// 操作结果:成功/失败
-    private String errorMessage;// 失败的error信息
+	public int getLogMode() {
+		return logMode;
+	}
 
-    /**
-     * 系统参数，若持久化到数据库，建议不要保存这些信息
-     ***********************/
-    private String className;// 类
-    private String methodName;// 方法
-    // private Object[] methodParameters;// 参数
-    private String methodParameters;// 参数
-    private Object methodResult;// 方法执行返回的结果
+	public void setLogMode(int logMode) {
+		this.logMode = logMode;
+	}
 
-    /**
-     * 非持久化参数
-     */
-    @JSONField(serialize = false, deserialize = false)
-    private int saveTag = 0;// 是否save方法，若是的话1：新增；2：更新，其它0
+	public Long getOrgId() {
+		return orgId;
+	}
 
-    public BusiLog() {
-        super();
-    }
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
 
-    public BusiLog(Long id, String uuid) {
-        super(id, uuid);
-    }
+	public String getOrgType() {
+		return orgType;
+	}
 
-    public BusiLog(Long id) {
-        super(id);
-    }
+	public void setOrgType(String orgType) {
+		this.orgType = orgType;
+	}
 
-    public int getSaveTag() {
-        return saveTag;
-    }
+	public Long getOperatorId() {
+		return operatorId;
+	}
 
-    public void setSaveTag(int saveTag) {
-        this.saveTag = saveTag;
-    }
+	public void setOperatorId(Long operatorId) {
+		this.operatorId = operatorId;
+	}
 
-    public String getTid() {
-        return tid;
-    }
+	public void setOperator(ISessionUser su) {
+		if (su != null) {
+			this.operatorId = su.getSid().getId();
+			if (LoginMode.Proxy.getCode().equals(su.getLoginMode()) && su.getSrcUser() != null) {
+				this.operatorAccount = su.getSrcUser().getLoginName() + " 代 " + su.getLoginName();
+			} else {
+				this.operatorAccount = su.getLoginName();
+			}
+			this.orgId = su.getCompany().getId();// .orgId();
+			this.orgType = su.getUserType();
+		}
+	}
 
-    public void setTid(String tid) {
-        this.tid = tid;
-    }
+	public String getOperatorAccount() {
+		return operatorAccount;
+	}
 
-    public String getModule() {
-        return module;
-    }
+	public void setOperatorAccount(String operatorAccount) {
+		this.operatorAccount = operatorAccount;
+	}
 
-    public void setModule(String module) {
-        this.module = module;
-    }
+	public String getIp() {
+		return ip;
+	}
 
-    public String getOperateDesc() {
-        return operateDesc;
-    }
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
 
-    public void setOperateDesc(String operateDesc) {
-        this.operateDesc = operateDesc;
-    }
+	public String getUrl() {
+		return url;
+	}
 
-    public Date getOperateTime() {
-        return operateTime;
-    }
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-    public void setOperateTime(Date operateTime) {
-        this.operateTime = operateTime;
-    }
+	public Boolean getMobile() {
+		return mobile;
+	}
 
-    public Long getCostTime() {
-        return costTime;
-    }
+	public void setMobile(Boolean mobile) {
+		this.mobile = mobile;
+	}
 
-    public void setCostTime(Long costTime) {
-        this.costTime = costTime;
-    }
+	public String getMobileBrand() {
+		return mobileBrand;
+	}
 
-    public int getOperateResult() {
-        return operateResult;
-    }
+	public void setMobileBrand(String mobileBrand) {
+		this.mobileBrand = mobileBrand;
+	}
 
-    public void setOperateResult(int operateResult) {
-        this.operateResult = operateResult;
-    }
+	public String getOs() {
+		return os;
+	}
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+	public void setOs(String os) {
+		this.os = os;
+	}
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
+	public String getOsVersion() {
+		return osVersion;
+	}
 
-    public String getClassName() {
-        return className;
-    }
+	public void setOsVersion(String osVersion) {
+		this.osVersion = osVersion;
+	}
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
+	public String getBrowser() {
+		return browser;
+	}
 
-    public String getMethodName() {
-        return methodName;
-    }
+	public void setBrowser(String browser) {
+		this.browser = browser;
+	}
 
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
-    }
+	public String getBrowserVersion() {
+		return browserVersion;
+	}
 
-    // public Object[] getMethodParameters() {
-    // return methodParameters;
-    // }
-    //
-    // public void setMethodParameters(Object[] methodParameters) {
-    // this.methodParameters = methodParameters;
-    // }
+	public void setBrowserVersion(String browserVersion) {
+		this.browserVersion = browserVersion;
+	}
 
-    public String getMethodParameters() {
-        return methodParameters;
-    }
+	public String getUa() {
+		return ua;
+	}
 
-    public void setMethodParameters(String methodParameters) {
-        this.methodParameters = methodParameters;
-    }
-
-    public Object getMethodResult() {
-        return methodResult;
-    }
-
-    public void setMethodResult(Object methodResult) {
-        this.methodResult = methodResult;
-    }
-
-    public String getLogLevel() {
-        return logLevel;
-    }
-
-    public void setLogLevel(String logLevel) {
-        this.logLevel = logLevel;
-    }
+	public void setUa(String ua) {
+		this.ua = ua;
+	}
 
 }

@@ -14,42 +14,41 @@ import com.linkallcloud.core.busilog.LacLogAspect;
 import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.busilog.enums.LogMode;
 import com.linkallcloud.core.dto.AppVisitor;
-import com.linkallcloud.core.laclog.LacBusiLog;
-import com.linkallcloud.core.lang.Strings;
+import com.linkallcloud.core.laclog.BusiLog;
 import com.linkallcloud.core.www.utils.WebUtils;
 import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.web.utils.Controllers;
 
-public abstract class BusiWebLogAspect<T extends LacBusiLog> extends LacLogAspect<T> {
+public abstract class BusiWebLogAspect<T extends BusiLog> extends LacLogAspect<T> {
 
-    @Override
-    protected void subclassDealLogs(T operatelog, JoinPoint joinPoint, Class<?> clzz, Method method, LacLog logAnnot) {
-       
-        operatelog.setLogMode(LogMode.WEB.getCode());
-        if (clzz.getAnnotation(Controller.class) != null) {
-            SessionUser su = Controllers.getSessionUser();
-            AppVisitor visitor = Controllers.getAppVisitor();
+	@Override
+	protected void subclassDealLogs(T operatelog, JoinPoint joinPoint, Class<?> clzz, Method method, LacLog logAnnot) {
 
-            /* busi */
-            if (logAnnot != null && Strings.isBlank(logAnnot.desc())) {// 用户没有定义，自动处理
-                operatelog.setOperateDesc(
-                        dealStringTtemplate(true, null, joinPoint, method, new HashMap<String, Object>() {
-                            private static final long serialVersionUID = 1L;
-                            {
-                                put("tid", operatelog.getTid());
-                                put("su", su);
-                                put("visitor", visitor);
-                                put("saveTag", operatelog.getSaveTag());
-                            }
-                        }));
-            }
+		operatelog.setLogMode(LogMode.WEB.getCode());
+		if (clzz.getAnnotation(Controller.class) != null) {
+			SessionUser su = Controllers.getSessionUser();
+			AppVisitor visitor = Controllers.getAppVisitor();
 
-            operatelog.setOperator(su);
-            HttpServletRequest request =
-                    ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-            operatelog.setIp(WebUtils.getIpAddress(request));
-            operatelog.setUrl(request.getRequestURI());
-        }
-    }
+			/* busi */
+			if (logAnnot != null) {
+				operatelog.setOperateDesc(
+						dealStringTtemplate(true, logAnnot.desc(), joinPoint, method, new HashMap<String, Object>() {
+							private static final long serialVersionUID = 1L;
+							{
+								put("tid", operatelog.getTid());
+								put("su", su);
+								put("visitor", visitor);
+								put("saveTag", operatelog.getSaveTag());
+							}
+						}));
+			}
+
+			operatelog.setOperator(su);
+			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+					.getRequest();
+			operatelog.setIp(WebUtils.getIpAddress(request));
+			operatelog.setUrl(request.getRequestURI());
+		}
+	}
 
 }

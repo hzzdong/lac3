@@ -6,15 +6,18 @@ import java.util.Date;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 
+import com.linkallcloud.core.aop.DomainDescription;
 import com.linkallcloud.core.aop.LacAspect;
 import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.busilog.util.LogExceptionStackTrace;
+import com.linkallcloud.core.domain.IDomain;
+import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
 import com.linkallcloud.core.laclog.BusiLog;
-import com.linkallcloud.core.laclog.LacBusiLog;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.lang.Stopwatch;
+import com.linkallcloud.core.lang.Strings;
 
-public abstract class LacLogAspect<T extends LacBusiLog> extends LacAspect {
+public abstract class LacLogAspect<T extends BusiLog> extends LacAspect {
     protected Mirror<T> logMirror;
 
     @SuppressWarnings("unchecked")
@@ -105,6 +108,10 @@ public abstract class LacLogAspect<T extends LacBusiLog> extends LacAspect {
             operatelog.setErrorMessage(errorMessage);
         }
         operatelog.setError(e);
+        
+        if(logAnnot!=null && Strings.isBlank(logAnnot.desc())) {// 用户没有定义，后续尝试自动处理
+			operatelog.setSaveTag(getSaveMethodTag(joinPoint, method));
+		}
 
         subclassDealLogs(operatelog, joinPoint, clzz, method, logAnnot);
 
@@ -121,6 +128,55 @@ public abstract class LacLogAspect<T extends LacBusiLog> extends LacAspect {
         } catch (Throwable er) {
             log.error(er.getMessage(), er);
         }
+    }
+    
+    /**
+     * 得到save方法是否是新增还是更新的标志
+     *
+     * @param joinPoint
+     * @param method
+     * @return save4NewTag ,是否save方法，若是的话1：新增；2：更新，其它0
+     */
+    private int getSaveMethodTag(ProceedingJoinPoint joinPoint, Method method) {
+        DomainDescription dd = getDomainDescription(joinPoint);
+        if (dd != null && method.getName().startsWith("save")) {
+            Mirror<?> domainMirror = null;
+            for (Object arg : joinPoint.getArgs()) {
+                domainMirror = Mirror.me(arg);
+                if (domainMirror.is(dd.getDomainClass())) {
+                    return getDomainSaveTage((IDomain)arg, domainMirror);
+                } else if(domainMirror.is(ObjectFaceRequest.class)) {
+                    Object data = ((ObjectFaceRequest<?>)arg).getData();
+                    if(data instanceof IDomain) {
+                        return getDomainSaveTage((IDomain)data, null);
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    private int getDomainSaveTage(IDomain domain, Mirror<?> domainMirror) {
+        int save4NewTag = 0;
+        if (domain != null) {
+            if(domainMirror == null) {
+                domainMirror = Mirror.me(domain);
+            }
+            Object fieldValue = domainMirror.getValue(domain, "id");
+            if (fieldValue == null) {
+                save4NewTag = 1;
+            } else if (fieldValue.getClass().equals(Long.class)) {
+                Long id = (Long) fieldValue;
+                if (id.longValue() <= 0) {
+                    save4NewTag = 1;
+                } else {
+                    save4NewTag = 2;
+                }
+            } else {
+                save4NewTag = 2;
+            }
+        }
+        return save4NewTag;
     }
 
 }

@@ -1,26 +1,31 @@
 package com.linkallcloud.web.controller;
 
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Result;
 import com.linkallcloud.core.dto.Trace;
-import com.linkallcloud.core.laclog.LacBusiLog;
+import com.linkallcloud.core.laclog.BusiLog;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.log.Log;
 import com.linkallcloud.core.log.Logs;
-import com.linkallcloud.core.manager.IWebBusiLogManager;
+import com.linkallcloud.core.manager.ILacLogManager;
 import com.linkallcloud.core.pagination.Page;
 import com.linkallcloud.core.pagination.WebPage;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
 
-public abstract class BaseFullWebBusiLogController<T extends LacBusiLog, S extends IWebBusiLogManager<T>> {
+public abstract class BaseLacLogController<T extends BusiLog, S extends ILacLogManager<T>> {
 
     private Log log = Logs.get();
 
     protected Mirror<T> mirror;
 
     @SuppressWarnings("unchecked")
-    public BaseFullWebBusiLogController() {
+    public BaseLacLogController() {
         super();
         try {
             mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
@@ -88,7 +93,7 @@ public abstract class BaseFullWebBusiLogController<T extends LacBusiLog, S exten
     }
 
     protected T doGet(Trace t, Long id, String uuid) {
-        T entity = manager().fetchByIdUuid(t, id, uuid);
+        T entity = manager().fetchById(t, id);
         return entity;
     }
 

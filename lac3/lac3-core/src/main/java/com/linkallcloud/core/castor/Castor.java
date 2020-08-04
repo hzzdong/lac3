@@ -65,7 +65,7 @@ public abstract class Castor<FROM, TO> {
             throws FailToCastObjectException {
         Collection<?> coll = null;
         try {
-            coll = (Collection<Object>) toType.newInstance();
+            coll = (Collection<Object>) toType.getDeclaredConstructor().newInstance();
         }
         catch (Exception e) {
             if (Modifier.isAbstract(toType.getModifiers())) {

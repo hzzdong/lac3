@@ -2,12 +2,12 @@ package com.linkallcloud.core.busilog.util;
 
 import java.util.Date;
 
-import com.linkallcloud.core.laclog.LacBusiLog;
+import com.linkallcloud.core.laclog.BusiLog;
 
 public class TraceLogMessageFactory<T> {
 
-    public static LacBusiLog getLogMessage(String appName, String appType, String message, long time) {
-        LacBusiLog logMessage = new LacBusiLog();
+    public static BusiLog getLogMessage(String appName, String appType, String message, long time) {
+    	BusiLog logMessage = new BusiLog();
         logMessage.setAppName(appName);
         logMessage.setAppType(appType);
         logMessage.setErrorMessage(message);

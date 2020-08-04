@@ -4,7 +4,7 @@ import org.slf4j.helpers.MessageFormatter;
 
 import com.linkallcloud.core.busilog.util.LogExceptionStackTrace;
 import com.linkallcloud.core.busilog.util.TraceLogMessageFactory;
-import com.linkallcloud.core.laclog.LacBusiLog;
+import com.linkallcloud.core.laclog.BusiLog;
 import com.linkallcloud.log.core.constant.LogMessageConstant;
 
 import ch.qos.logback.classic.Level;
@@ -13,9 +13,9 @@ import ch.qos.logback.classic.spi.ThrowableProxy;
 
 public class LogMessageUtil {
 
-    public static LacBusiLog getLogMessage(final String appName, String appType, final ILoggingEvent iLoggingEvent) {
+    public static BusiLog getLogMessage(final String appName, String appType, final ILoggingEvent iLoggingEvent) {
         String formattedMessage = getMessage(iLoggingEvent);
-        LacBusiLog logMessage =
+        BusiLog logMessage =
                 TraceLogMessageFactory.getLogMessage(appName, appType, formattedMessage, iLoggingEvent.getTimeStamp());
         logMessage.setClassName(iLoggingEvent.getLoggerName());
         StackTraceElement atackTraceElement = iLoggingEvent.getCallerData()[0];
