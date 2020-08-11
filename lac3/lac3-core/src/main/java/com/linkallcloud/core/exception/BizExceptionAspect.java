@@ -39,8 +39,10 @@ public class BizExceptionAspect<T extends BizException> {
                 if (uteThrow == null) {
                     uteThrow = ute.getCause();
                 }
+                log.debug(uteThrow);
                 throw wrapeBizException(uteThrow);
             } else {
+                log.debug(t);
                 throw wrapeBizException(t);
             }
         }
