@@ -92,28 +92,28 @@ public class Trees {
 		}
 
 	}
-	
+
 	/**
-     * 把children挂到parent下，并把parent加入children中。
-     *
-     * @param children
-     * @param parent
-     */
-    public static List<Tree> assembleChildren2Parent(List<Tree> children, Tree parent) {
-        if (children == null) {
-            children = new ArrayList<Tree>();
-        } else {
-            Iterator<Tree> itr = children.iterator();
-            while (itr.hasNext()) {
-                Tree node = itr.next();
-                if (Strings.isBlank(node.getpId()) || node.getpId().equals("0")) {
-                    node.setpId(parent.getId());
-                }
-            }
-        }
-        children.add(parent);
-        return children;
-    }
+	 * 把children挂到parent下，并把parent加入children中。
+	 *
+	 * @param children
+	 * @param parent
+	 */
+	public static List<Tree> assembleChildren2Parent(List<Tree> children, Tree parent) {
+		if (children == null) {
+			children = new ArrayList<Tree>();
+		} else {
+			Iterator<Tree> itr = children.iterator();
+			while (itr.hasNext()) {
+				Tree node = itr.next();
+				if (Strings.isBlank(node.getpId()) || node.getpId().equals("0")) {
+					node.setpId(parent.getId());
+				}
+			}
+		}
+		children.add(parent);
+		return children;
+	}
 
 	/**
 	 * 把nodeList中的根节点作为直接子节点挂到parent上
@@ -332,6 +332,22 @@ public class Trees {
 	public static List<Tree> assembleTrees2List(Tree root, CopyOnWriteArrayList<Tree> nodes) {
 		Trees.assembleTree(root, nodes, -1);
 		return Trees.tree2List(root);
+	}
+
+	/**
+	 * 从nodeList中找出唯一根节点root，若不唯一则创建一个虚拟根节点root，然后把其它节点按树形挂载到root下，返回root
+	 *
+	 * @param nodes
+	 */
+	public static <T extends TreeDomain> Tree assembleTree4Domains(List<T> domains) {
+		List<Tree> nodes = new ArrayList<Tree>();
+		if (domains != null && !domains.isEmpty()) {
+			for (T domain : domains) {
+				Tree item = domain.toTreeNode();
+				nodes.add(item);
+			}
+		}
+		return Trees.assembleTree(nodes);
 	}
 
 	/**
@@ -648,5 +664,167 @@ public class Trees {
 //		}
 //		return nodes;
 //	}
+
+	/**
+	 * 克隆树节点
+	 * 
+	 * @param node
+	 * @return
+	 */
+	public static Tree clone(Tree node) {
+		Tree result = new Tree(node.getId(), node.getUuid(), node.getpId(), node.getName(), node.getGovCode(),
+				node.getType(), node.getStatus());
+		result.setFullName(node.getFullName());
+		result.setOpen(node.getOpen());
+		result.setChecked(node.getChecked());
+		result.setNocheck(node.getNocheck());
+		result.setChkDisabled(result.getChkDisabled());
+		result.setIcon(node.getIcon());
+		result.setIconOpen(node.getIconOpen());
+		result.setIconClose(node.getIconClose());
+		result.setIconSkin(node.getIconSkin());
+		result.setLevel(node.getLevel());
+		result.setSort(node.getSort());
+		result.setRemark(node.getRemark());
+		result.setTitle(node.getTitle());
+		result.setValue(node.getValue());
+		if (node.getAttributes() != null && !node.getAttributes().isEmpty()) {
+			for (String key : node.getAttributes().keySet()) {
+				result.addAttribute(key, node.getAttributes().get(key));
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 克隆整棵树
+	 * 
+	 * @param node
+	 * @return
+	 */
+	public static Tree cloneTree(Tree node) {
+		Tree result = Trees.clone(node);
+		deepClone(result, node.getChildren());
+		return result;
+	}
+
+	private static void deepClone(Tree parent, List<Tree> children) {
+		if (children != null && !children.isEmpty()) {
+			for (Tree cnode : children) {
+				Tree child = Trees.clone(cnode);
+				parent.addChild(child);
+				deepClone(child, cnode.getChildren());
+			}
+		}
+	}
+
+	/**
+	 * 克隆整棵树中type与根节点相同的节点
+	 * 
+	 * @param node
+	 * @return
+	 */
+	public static Tree cloneTreeType(Tree node) {
+		Tree result = Trees.clone(node);
+		deepCloneType(result, node.getChildren());
+		return result;
+	}
+
+	private static void deepCloneType(Tree parent, List<Tree> children) {
+		if (children != null && !children.isEmpty()) {
+			for (Tree cnode : children) {
+				if (cnode.getType().equals(parent.getType())) {
+					Tree child = Trees.clone(cnode);
+					parent.addChild(child);
+					deepCloneType(child, cnode.getChildren());
+				}
+			}
+		}
+	}
+
+	/**
+	 * 从orgTree中过滤得到某type的子树。同一层级节点type不唯一，返回第一个节点。
+	 * 
+	 * @param tree
+	 * @param type
+	 * @param virtual 若找不到是否挂一个虚拟节点
+	 * @return
+	 */
+	public static Tree orgTreeTypeFilter(Tree orgTree, int type, boolean virtual) {
+		Tree typeTree = null;
+		if (orgTree != null && orgTree.getChildren() != null && !orgTree.getChildren().isEmpty()) {
+			// 优先从部门中找
+			typeTree = orgTreeTypeFilterDepartments(orgTree, type);
+
+			// 部门中无此类型，从所有子节点中找
+			if (typeTree == null) {
+				String stype = type + "";
+				for (Tree child : orgTree.getChildren()) {
+					if (child.getType().equals(stype)) {
+						typeTree = Trees.cloneTreeType(child);
+						break;
+					}
+				}
+			}
+
+			// 找不到，挂虚拟节点
+			if (typeTree == null && virtual == true) {
+				typeTree = Trees.vroot(orgTree.getName());
+			}
+
+			if (typeTree != null) {
+				// 过滤挂载下级
+				for (Tree child : orgTree.getChildren()) {
+					if ("Company".equals(child.getAttribute("alias"))) {
+						if (!typeTree.getId().equals(child.getId())) {
+							Tree childTypeTree = orgTreeTypeFilter(child, type, false);
+							if (childTypeTree != null) {
+								typeTree.addChild(childTypeTree);
+							}
+						}
+					}
+				}
+			}
+		}
+		return (Trees.isVirtual(typeTree) && (typeTree.getChildren() == null || typeTree.getChildren().isEmpty()))
+				? null
+				: typeTree;
+	}
+
+	/**
+	 * 从部门中找机构类型为type的机构
+	 * 
+	 * @param orgTree
+	 * @param type
+	 * @return
+	 */
+	private static Tree orgTreeTypeFilterDepartments(Tree orgTree, int type) {
+		Tree typeTree = null;
+		if (orgTree != null && orgTree.getChildren() != null && !orgTree.getChildren().isEmpty()) {
+			String stype = type + "";
+
+			// 优先从部门中找
+			for (Tree child : orgTree.getChildren()) {
+				if (!"Company".equals(child.getAttribute("alias"))) {
+					if (child.getType().equals(stype)) {
+						typeTree = Trees.cloneTreeType(child);
+						break;
+					}
+				}
+			}
+
+			if (typeTree == null) {
+				for (Tree child : orgTree.getChildren()) {
+					if (!"Company".equals(child.getAttribute("alias"))) {
+						typeTree = orgTreeTypeFilterDepartments(child, type);
+						if (typeTree != null) {
+							return typeTree;
+						}
+					}
+				}
+			}
+		}
+		return typeTree;
+	}
 
 }

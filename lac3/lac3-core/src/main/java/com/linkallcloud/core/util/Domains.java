@@ -407,12 +407,25 @@ public class Domains {
 	}
 
 	public static String convertCompanyType(String companyType) {
-		if ("Yw".equals(companyType)) {
-			return "YwCompany";
-		} else if ("Kh".equals(companyType)) {
-			return "KhCompany";
+		if (!Strings.isBlank(companyType)) {
+			if (companyType.startsWith("Yw")) {
+				return "YwCompany";
+			} else if (companyType.startsWith("Kh")) {
+				return "KhCompany";
+			}
 		}
 		return companyType;
+	}
+
+	public static String convertDepartmentType(String depType) {
+		if (!Strings.isBlank(depType)) {
+			if (depType.startsWith("Yw")) {
+				return "YwDepartment";
+			} else if (depType.startsWith("Kh")) {
+				return "KhDepartment";
+			}
+		}
+		return depType;
 	}
 
 	public static boolean compareCompanyType(String type1, String type2) {
@@ -425,6 +438,23 @@ public class Domains {
 					return true;
 				} else if (("Kh".equals(type1) || "KhCompany".equals(type1))
 						&& ("Kh".equals(type2) || "KhCompany".equals(type2))) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public static boolean compareDepartmentType(String type1, String type2) {
+		if (!Strings.isBlank(type1) && !Strings.isBlank(type2)) {
+			if (type1.equals(type2)) {
+				return true;
+			} else {
+				if (("Yw".equals(type1) || "YwDepartment".equals(type1))
+						&& ("Yw".equals(type2) || "YwDepartment".equals(type2))) {
+					return true;
+				} else if (("Kh".equals(type1) || "KhDepartment".equals(type1))
+						&& ("Kh".equals(type2) || "KhDepartment".equals(type2))) {
 					return true;
 				}
 			}

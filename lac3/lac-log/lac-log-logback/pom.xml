@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.linkallcloud</groupId>
 		<artifactId>lac-log</artifactId>
-		<version>0.6.3</version>
+		<version>0.6.6</version>
 	</parent> 
 
 	<artifactId>lac-log-logback</artifactId>
