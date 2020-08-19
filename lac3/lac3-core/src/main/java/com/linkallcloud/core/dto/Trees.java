@@ -743,6 +743,109 @@ public class Trees {
 	}
 
 	/**
+	 * 从tree中过滤得到types节点类型的子树。
+	 * 
+	 * @param tree
+	 * @param types
+	 * @param include true:包含，false:不包含
+	 * @return
+	 */
+	public static Tree treeFilter(Tree tree, String[] types, boolean include) {
+		if (types == null || types.length <= 0) {
+			return include ? null : tree;
+		}
+
+		boolean match = matchTypes(tree.getType(), types, include);
+		if (tree.getChildren() == null || tree.getChildren().isEmpty()) {
+			return match ? Trees.clone(tree) : null;
+		} else {
+			Tree typeTree = Trees.clone(tree);
+			if (!match) {
+				typeTree.setStatus(-1);// 标记为临时
+			}
+
+			for (Tree child : tree.getChildren()) {
+				Tree typeChildTree = treeFilter(child, types, include);
+				if (status4Tree(typeChildTree, -1)) {
+					typeTree.addChild(typeChildTree);
+				}
+			}
+
+			return status4Tree(typeTree, -1) ? typeTree : null;
+		}
+	}
+
+	/**
+	 * 判断tree是否存在status为非notStatus的节点
+	 * 
+	 * @param tree
+	 * @param notStatus
+	 * @return
+	 */
+	private static boolean status4Tree(Tree tree, int notStatus) {
+		if (tree != null) {
+			if (tree.getStatus() != notStatus) {
+				return true;
+			} else {
+				if (tree.getChildren() == null || tree.getChildren().isEmpty()) {
+					return false;
+				} else {
+					for (Tree child : tree.getChildren()) {
+						boolean childstatus = status4Tree(child, notStatus);
+						if (childstatus) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	private static boolean matchTypes(String thisType, String[] types, boolean include) {
+		if (types != null && types.length > 0) {
+			if (include) {
+				for (String type : types) {
+					if (thisType.equals(type)) {
+						return true;
+					}
+				}
+				return false;
+			} else {
+				for (String type : types) {
+					if (thisType.equals(type)) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 从orgTree中过滤得到某type的子树（每一层级挂成父子关系）。
+	 * 
+	 * @param orgTree
+	 * @param orgTypes
+	 * @return
+	 */
+	public static Tree orgTreeTypeFilter(Tree orgTree, int[] orgTypes) {
+		if (orgTypes != null && orgTypes.length > 0) {
+			Tree typedTree = Trees.vroot(orgTree.getName());
+			for (int type : orgTypes) {
+				Tree typeNode = Trees.orgTreeTypeFilter(orgTree, type, true);
+				if (typeNode != null) {
+					typedTree.addChild(typeNode);
+				}
+			}
+			return typedTree;
+		} else {
+			return orgTree;
+		}
+	}
+
+	/**
 	 * 从orgTree中过滤得到某type的子树。同一层级节点type不唯一，返回第一个节点。
 	 * 
 	 * @param tree
