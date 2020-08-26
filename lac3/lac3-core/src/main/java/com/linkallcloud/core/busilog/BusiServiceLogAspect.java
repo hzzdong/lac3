@@ -21,7 +21,7 @@ public abstract class BusiServiceLogAspect<T extends BusiLog> extends LacLogAspe
 		operatelog.setLogMode(LogMode.SERVICE.getCode());
 		if (cmirror.isOf(IService.class)) {
 
-			if (logAnnot != null && !Strings.isBlank(logAnnot.desc())) {// 用户没有定义，自动处理
+			if (logAnnot != null) {// 用户没有定义，自动处理
 				operatelog.setOperateDesc(
 						dealStringTtemplate(false, logAnnot.desc(), joinPoint, method, new HashMap<String, Object>() {
 							private static final long serialVersionUID = 1L;
@@ -29,6 +29,10 @@ public abstract class BusiServiceLogAspect<T extends BusiLog> extends LacLogAspe
 								put("tid", operatelog.getTid());
 							}
 						}));
+			}
+			
+			if(Strings.isBlank(operatelog.getOperateDesc())) {
+				operatelog.setOperateDesc("日志信息");
 			}
 
 			String clientIP = RpcContext.getContext().getRemoteHost();

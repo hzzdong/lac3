@@ -15,6 +15,7 @@ import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.busilog.enums.LogMode;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.laclog.BusiLog;
+import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.www.utils.WebUtils;
 import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.web.utils.Controllers;
@@ -37,10 +38,15 @@ public abstract class BusiWebLogAspect<T extends BusiLog> extends LacLogAspect<T
 							{
 								put("tid", operatelog.getTid());
 								put("su", su);
+								put("user", su);
 								put("visitor", visitor);
 								put("saveTag", operatelog.getSaveTag());
 							}
 						}));
+			}
+			
+			if(Strings.isBlank(operatelog.getOperateDesc())) {
+				operatelog.setOperateDesc("日志信息");
 			}
 
 			operatelog.setOperator(su);

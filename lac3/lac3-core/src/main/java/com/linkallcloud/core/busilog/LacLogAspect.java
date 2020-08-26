@@ -6,6 +6,8 @@ import java.util.Date;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.ttl.TransmittableThreadLocal;
 import com.linkallcloud.core.aop.DomainDescription;
 import com.linkallcloud.core.aop.LacAspect;
 import com.linkallcloud.core.busilog.annotation.LacLog;
@@ -18,6 +20,7 @@ import com.linkallcloud.core.lang.Stopwatch;
 import com.linkallcloud.core.lang.Strings;
 
 public abstract class LacLogAspect<T extends BusiLog> extends LacAspect {
+	public static TransmittableThreadLocal<BusiLog> logMessageThreadLocal = new TransmittableThreadLocal<>();
     protected Mirror<T> logMirror;
 
     @SuppressWarnings("unchecked")
@@ -36,6 +39,31 @@ public abstract class LacLogAspect<T extends BusiLog> extends LacAspect {
 
     protected abstract void subclassDealLogs(T operatelog, JoinPoint joinPoint, Class<?> clzz, Method method,
             LacLog logAnnot);
+    
+    @SuppressWarnings("unchecked")
+	protected T getBusiLog(JoinPoint joinPoint, Method method) {
+        T busiLog = (T) logMessageThreadLocal.get();
+        if (busiLog == null) {
+            busiLog = logMirror.born();
+            Class<?> clzz = joinPoint.getTarget().getClass();
+            busiLog.setClassName(clzz.getName());
+//            String tid = dealTid(joinPoint, method, true);
+//            busiLog.setTid(tid);
+            busiLog.setMethodName(joinPoint.getSignature().getName());
+
+            try {
+                Object[] ob = getValidateArgs(joinPoint);
+                busiLog.setMethodParameters(JSON.toJSONString(ob));
+            } catch (Exception e) {
+                log.error(e.getMessage(),e);
+            }
+            logMessageThreadLocal.set(busiLog);
+        }
+        busiLog.setId(null);
+        busiLog.setUuid(busiLog.generateUuid());
+        busiLog.setOperateTime(new Date());
+        return busiLog;
+    }
 
     /**
      * 保存系统操作日志
@@ -48,8 +76,7 @@ public abstract class LacLogAspect<T extends BusiLog> extends LacAspect {
      */
     protected Object autoLog(ProceedingJoinPoint joinPoint) throws Throwable {
         Method method = getMethod(joinPoint);
-        BusiLog busiLog = dealThreadLocalBaseLog(joinPoint, method);
-        T operatelog = null;
+        T operatelog = getBusiLog(joinPoint, method);
         Stopwatch sw = Stopwatch.begin();
         Object result = "";
 
@@ -60,15 +87,11 @@ public abstract class LacLogAspect<T extends BusiLog> extends LacAspect {
                 return joinPoint.proceed();
             } catch (Throwable e) {
                 sw.stop();
-                operatelog = logMirror.born();
-                org.springframework.beans.BeanUtils.copyProperties(busiLog, operatelog);
+                operatelog.setOperateDesc("出错啦");
                 autoDealLogs(operatelog, sw.getDuration(), joinPoint, method, logAnnot, e);
                 throw e;
             }
         } else {
-            operatelog = logMirror.born();
-            org.springframework.beans.BeanUtils.copyProperties(busiLog, operatelog);
-
             try {
                 sw.start();
                 result = joinPoint.proceed();

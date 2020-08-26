@@ -5,7 +5,7 @@ import org.apache.rocketmq.acl.common.SessionCredentials;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 
 import com.alibaba.fastjson.JSON;
-import com.linkallcloud.core.aop.LacAspect;
+import com.linkallcloud.core.busilog.LacLogAspect;
 import com.linkallcloud.core.busilog.enums.LogMode;
 import com.linkallcloud.core.laclog.BusiLog;
 import com.linkallcloud.log.core.constant.LogMessageConstant;
@@ -32,7 +32,7 @@ public class RocketmqAppender extends AppenderBase<ILoggingEvent> {
 		try {
 			if (event.getLevel().equals(Level.ERROR)) {
 				ThrowableProxy throwableProxy = (ThrowableProxy) event.getThrowableProxy();
-				BusiLog log = LacAspect.logMessageThreadLocal.get();
+				BusiLog log = LacLogAspect.logMessageThreadLocal.get();
 				if (log != null && throwableProxy != null && throwableProxy.getThrowable().equals(log.getError())) {
 					return;
 				}

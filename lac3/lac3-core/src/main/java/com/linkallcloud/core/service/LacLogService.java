@@ -20,6 +20,9 @@ public abstract class LacLogService<T extends BusiLog, A extends ILacLogActivity
 	@Transactional(readOnly = false)
 	@Override
 	public Long insert(Trace t, T entity) {
+		if (entity.getErrorMessage() != null && entity.getErrorMessage().length() > 512) {
+			entity.setErrorMessage(entity.getErrorMessage().substring(0, 512));
+		}
 		return activity().insert(t, entity);
 	}
 

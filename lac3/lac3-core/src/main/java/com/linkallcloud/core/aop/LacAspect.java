@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,23 +13,19 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
-import com.linkallcloud.core.laclog.BusiLog;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.stereotype.Controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.ttl.TransmittableThreadLocal;
 import com.linkallcloud.core.busilog.annotation.Module;
 import com.linkallcloud.core.castor.Castors;
 import com.linkallcloud.core.domain.IDomain;
 import com.linkallcloud.core.domain.annotation.ShowName;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Trace;
+import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.lang.Strings;
 import com.linkallcloud.core.log.Log;
@@ -41,35 +36,10 @@ import com.linkallcloud.core.trans.Tid;
 
 public abstract class LacAspect {
 
-    public static TransmittableThreadLocal<BusiLog> logMessageThreadLocal = new TransmittableThreadLocal<>();
-
     protected Log log = Logs.get();
 
     protected static LocalVariableTableParameterNameDiscoverer parameterNameDiscovere =
             new LocalVariableTableParameterNameDiscoverer();
-
-    protected BusiLog dealThreadLocalBaseLog(JoinPoint joinPoint, Method method) {
-        BusiLog busiLog = logMessageThreadLocal.get();
-        if (busiLog == null) {
-            busiLog = new BusiLog();
-            Class<?> clzz = joinPoint.getTarget().getClass();
-            busiLog.setClassName(clzz.getName());
-            String tid = dealTid(joinPoint, method, true);
-            busiLog.setTid(tid);
-            busiLog.setMethodName(joinPoint.getSignature().getName());
-
-            try {
-                Object[] ob = getValidateArgs(joinPoint);
-                busiLog.setMethodParameters(JSON.toJSONString(ob));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            busiLog.setOperateTime(new Date());
-            logMessageThreadLocal.set(busiLog);
-        }
-        return busiLog;
-    }
 
     /**
      * 获取当前执行的方法
