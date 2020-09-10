@@ -27,7 +27,7 @@ public interface Expression extends Serializable {
 	 * @param where
 	 */
 	void toSmartHqlQuery(QueryHelper where);
-	
-	//String toString();
+
+	// String toString();
 
 }

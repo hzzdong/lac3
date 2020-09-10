@@ -17,6 +17,7 @@ import com.linkallcloud.core.query.rule.IsNull;
 import com.linkallcloud.core.query.rule.QueryRule;
 import com.linkallcloud.core.query.rule.QueryRuleFactory;
 import com.linkallcloud.core.query.rule.desc.IRuleDescriptor;
+import com.linkallcloud.core.util.Beans;
 import com.linkallcloud.core.util.IConstants;
 
 public class Query implements Expression {
@@ -485,6 +486,67 @@ public class Query implements Expression {
 				}
 			}
 		}
+	}
+
+	/**
+	 * 解析参数args是否满足本Query规则
+	 *
+	 * @param args
+	 * @return
+	 */
+	public boolean parse(Map<String, Object> args) {
+		if (args == null) {
+			args = new HashMap<String, Object>();
+		}
+
+		boolean thisRulesOk = true;
+		if (this.getRules() != null && !this.getRules().isEmpty()) {
+			for (QueryRule rule : this.getRules()) {
+				Object destValue = args.get(rule.getField());
+				if (!rule.parse(destValue)) {
+					thisRulesOk = false;
+					break;
+				}
+			}
+		}
+
+		if (this.getGroups() == null || this.getGroups().isEmpty()) {
+			return thisRulesOk;
+		} else {
+			if (GroupOperator.OR.equals(this.getGroupOp())) {
+				if (thisRulesOk) {
+					return true;
+				} else {
+					for (Query group : this.getGroups()) {
+						if (group.parse(args)) {
+							return true;
+						}
+					}
+					return false;
+				}
+			} else {
+				if (thisRulesOk == false) {
+					return false;
+				} else {
+					for (Query group : this.getGroups()) {
+						if (!group.parse(args)) {
+							return false;
+						}
+					}
+					return true;
+				}
+			}
+		}
+	}
+
+	/**
+	 * 解析参数obj是否满足本Query规则
+	 *
+	 * @param obj
+	 * @return
+	 */
+	public boolean parse(Object obj) {
+		return parse(Beans.beanToMap(obj));
 	}
 
 }
