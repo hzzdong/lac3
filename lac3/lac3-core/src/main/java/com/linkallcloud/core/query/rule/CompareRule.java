@@ -97,6 +97,12 @@ public abstract class CompareRule extends QueryRule {
      */
     @Override
     public boolean parse(Object destValue) {
+        if (this.getValue() == null && destValue == null) {
+            return true;
+        }
+        if ((this.getValue() == null && destValue != null) || this.getValue() != null && destValue == null) {
+            return false;
+        }
         if (this.getValue().getClass().equals(destValue.getClass())) {
             return compare(destValue);
         } else {
