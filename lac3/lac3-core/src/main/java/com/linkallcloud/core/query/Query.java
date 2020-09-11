@@ -501,17 +501,17 @@ public class Query implements Expression {
         boolean thisRulesOk = true;
         if (this.getRules() != null && !this.getRules().isEmpty()) {
             for (QueryRule rule : this.getRules()) {
-                boolean exis = args.containsKey(rule.getField());
-                if (exis) {
-                    Object destValue = args.get(rule.getField());
-                    if (!rule.parse(destValue)) {
-                        thisRulesOk = false;
-                        break;
-                    }
-                } else {
+                // boolean exis = args.containsKey(rule.getField());
+                // if (exis) {
+                Object destValue = args.get(rule.getField());
+                if (!rule.parse(destValue)) {
                     thisRulesOk = false;
                     break;
                 }
+                // } else {
+                // thisRulesOk = false;
+                // break;
+                // }
             }
         }
 
