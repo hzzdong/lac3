@@ -1,12 +1,29 @@
 package com.linkallcloud.web.face.base;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.linkallcloud.core.busilog.annotation.LacLog;
 import com.linkallcloud.core.domain.Domain;
 import com.linkallcloud.core.dto.AppVisitor;
 import com.linkallcloud.core.dto.Trace;
 import com.linkallcloud.core.exception.BizException;
 import com.linkallcloud.core.exception.Exceptions;
-import com.linkallcloud.core.face.message.request.*;
+import com.linkallcloud.core.face.message.request.FaceRequest;
+import com.linkallcloud.core.face.message.request.IdFaceRequest;
+import com.linkallcloud.core.face.message.request.ListFaceRequest;
+import com.linkallcloud.core.face.message.request.ObjectFaceRequest;
+import com.linkallcloud.core.face.message.request.PageFaceRequest;
+import com.linkallcloud.core.face.message.request.SidFaceRequest;
+import com.linkallcloud.core.face.message.request.StatusFaceRequest;
+import com.linkallcloud.core.face.message.request.StatussFaceRequest;
 import com.linkallcloud.core.face.message.response.ErrorFaceResponse;
 import com.linkallcloud.core.lang.Mirror;
 import com.linkallcloud.core.lang.Strings;
@@ -20,13 +37,6 @@ import com.linkallcloud.core.query.rule.Equal;
 import com.linkallcloud.web.face.annotation.Face;
 import com.linkallcloud.web.session.SessionUser;
 import com.linkallcloud.web.utils.Controllers;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map.Entry;
 
 public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
     protected final Log log = Logs.get();
@@ -106,9 +116,9 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
         }
     }
 
+    // @LacLog(db = true, desc = "用户([(${su.sid.name})])删除了[(${domainShowName})],ID([(${fr.id})]), TID:[(${tid})]")
     @Face(simple = true)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    // @LacLog(db = true, desc = "用户([(${su.sid.name})])删除了[(${domainShowName})],ID([(${fr.id})]), TID:[(${tid})]")
     @LacLog(desc = "用户([(${su.sid.name})])删除了[(${domainShowName})],ID([(${fr.id})]), TID:[(${tid})]")
     public @ResponseBody Object delete(IdFaceRequest fr, Trace t, SessionUser su) {
         if (!checkReferer(true)) {
@@ -126,10 +136,29 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
         }
         return manager().delete(t, id, uuid);
     }
+    
+    @Face(simple = true)
+    @RequestMapping(value = "/deletes", method = RequestMethod.POST)
+    @LacLog(desc = "用户([(${su.sid.name})])删除了[(${domainShowName})],ID([(${fr.id})]), TID:[(${tid})]")
+    public @ResponseBody Object deletes(SidFaceRequest fr, Trace t, SessionUser su) {
+        if (!checkReferer(true)) {
+            return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
+        }
+        if (fr.getUuidIds() == null || fr.getUuidIds().isEmpty()) {
+            throw new BizException(Exceptions.CODE_ERROR_DELETE, "参数错误");
+        }
+        return doDeletes(t, fr.getUuidIds(), su);
+    }
 
+    protected Boolean doDeletes(Trace t, Map<String, Long> uuidIds, SessionUser su) {
+        if (uuidIds == null || uuidIds.isEmpty()) {
+            throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误");
+        }
+        return manager().deletes(t, uuidIds);
+    }
+
+    // @LacLog(db = true, desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})],ID([(${fr.id})])的状态为([(${fr.status})]), TID:[(${tid})]")
     @LacLog(desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})],ID([(${fr.id})])的状态为([(${fr.status})]), TID:[(${tid})]")
-    // @LacLog(db = true, desc = "用户([(${su.sid.name})])修改了
-    // [(${domainShowName})],ID([(${fr.id})])的状态为([(${fr.status})]), TID:[(${tid})]")
     @Face(simple = true)
     @RequestMapping(value = "/changeStatus", method = RequestMethod.POST)
     public @ResponseBody Object changeStatus(StatusFaceRequest fr, Trace t, SessionUser su) {
@@ -148,6 +177,26 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
         }
         return manager().updateStatus(t, status, id, uuid);
     }
+    
+    @LacLog(desc = "用户([(${su.sid.name})])修改了 [(${domainShowName})],IDS([(${fr.uuidIds})])的状态为([(${fr.status})]), TID:[(${tid})]")
+    @Face(simple = true)
+    @RequestMapping(value = "/changeStatuss", method = RequestMethod.POST)
+    public @ResponseBody Object changeStatuss(StatussFaceRequest fr, Trace t, SessionUser su) {
+        if (!checkReferer(true)) {
+            return new ErrorFaceResponse(Exceptions.CODE_ERROR_AUTH_PERMISSION, "Referer验证未通过");
+        }
+        if (fr.getUuidIds() == null || fr.getUuidIds().isEmpty()) {
+            throw new BizException(Exceptions.CODE_ERROR_UPDATE, "参数错误");
+        }
+        return doChangeStatuss(t, fr.getStatus(), fr.getUuidIds(), su);
+    }
+
+    protected Boolean doChangeStatuss(Trace t, int status, Map<String, Long> uuidIds, SessionUser su) {
+        if (uuidIds == null || uuidIds.isEmpty()) {
+            throw new BizException(Exceptions.CODE_ERROR_PARAMETER, "参数错误");
+        }
+        return manager().updates(t, status, uuidIds);
+    }
 
     @Face(simple = true)
     @RequestMapping(value = "/page", method = RequestMethod.POST)
@@ -155,7 +204,7 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
         Page<T> page = new Page<>(faceReq);
 
         for (Entry<String, Object> s : page.getCnds().entrySet()) {
-            System.out.println(s.getKey() + " -- " + s.getValue());
+            log.debug(s.getKey() + " -- " + s.getValue());
         }
         page = doPage(t, page, su);
         return convert(t, "page", faceReq, page);

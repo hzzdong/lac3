@@ -35,6 +35,18 @@ public abstract class BaseTreeFace<T extends TreeDomain, S extends ITreeManager<
 		return Arrays.asList(root);
 	}
 
+	@Override
+	protected T doFetch(Trace t, Long id, String uuid, SessionUser su) {
+		T entity = super.doFetch(t, id, uuid, su);
+		if (entity.getParentId() != null && entity.getParentId().longValue() > 0) {
+            T parent = manager().fetchById(t, entity.getParentId());
+            if (parent != null) {
+                entity.setParentName(parent.getName());
+            }
+        }
+		return entity;
+	}
+
 	@Face(simple = true)
 	@RequestMapping(value = "/fetchParent", method = RequestMethod.POST)
 	public @ResponseBody Object fetchParent(IdFaceRequest faceReq, Trace t, SessionUser su) {
