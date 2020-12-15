@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.linkallcloud</groupId>
 	<artifactId>lac3</artifactId>
-	<version>0.8.2</version>
+	<version>0.8.4</version>
 	<packaging>pom</packaging>
 
 	<distributionManagement>
@@ -49,7 +49,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>11</java.version>
+		<java.version>1.8</java.version>
 
 		<thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
 		<dubbo.version>2.7.7</dubbo.version>
@@ -400,6 +400,14 @@
 				<artifactId>javax.servlet-api</artifactId>
 				<version>${servlet.version}</version>
 				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun</groupId>
+				<artifactId>tools</artifactId>
+				<version>1.8.0_181</version>
+				<scope>system</scope>
+				<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
 			</dependency>
 
 		</dependencies>

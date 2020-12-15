@@ -2,7 +2,6 @@ package com.linkallcloud.web.face.base;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -202,10 +201,6 @@ public abstract class BaseFace<T extends Domain, S extends IManager<T>> {
     @RequestMapping(value = "/page", method = RequestMethod.POST)
     public @ResponseBody Object page(PageFaceRequest faceReq, Trace t, SessionUser su) {
         Page<T> page = new Page<>(faceReq);
-
-        for (Entry<String, Object> s : page.getCnds().entrySet()) {
-            log.debug(s.getKey() + " -- " + s.getValue());
-        }
         page = doPage(t, page, su);
         return convert(t, "page", faceReq, page);
     }

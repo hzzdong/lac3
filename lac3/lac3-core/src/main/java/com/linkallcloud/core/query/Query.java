@@ -141,7 +141,7 @@ public class Query implements Expression {
      */
     @JSONField(serialize = false)
     public Map<String, Object> getCnds() {
-        if (this.cachedParams != null) {
+        if (this.cachedParams != null && this.cachedParams.size() == this.cndSize()) {
             return this.cachedParams;
         } else {
             Map<String, Object> temp = new HashMap<String, Object>();
@@ -410,6 +410,30 @@ public class Query implements Expression {
             }
             return false;
         }
+    }
+    
+    public int cndSize() {
+        int size = 0;
+        if (this.getRules() != null && this.getRules().size() > 0) {
+            size += this.getRules().size();
+        }
+        if (this.getGroups() != null && this.getGroups().size() > 0) {
+            size += this.getGroups().size();
+        }
+        return size;
+    }
+
+    public int cndTrueSize() {
+        int size = 0;
+        if (this.getRules() != null && this.getRules().size() > 0) {
+            size += this.getRules().size();
+        }
+        if (this.getGroups() != null && this.getGroups().size() > 0) {
+            for (Query g : this.getGroups()) {
+                size += g.cndTrueSize();
+            }
+        }
+        return size;
     }
 
     /*
