@@ -22,10 +22,13 @@ import org.springframework.web.method.HandlerMethod;
 
 import com.alibaba.fastjson.JSON;
 import com.linkallcloud.core.lang.Strings;
+import com.linkallcloud.core.log.Log;
+import com.linkallcloud.core.log.Logs;
 import com.linkallcloud.core.util.IConstants;
 import com.linkallcloud.core.www.UrlPattern;
 
 public class WebUtils {
+	private static final Log log = Logs.get();
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
 
@@ -154,19 +157,19 @@ public class WebUtils {
 			ip = request.getRemoteAddr();
 			if (ip.equals("127.0.0.1") || ip.equals("0:0:0:0:0:0:0:1")) {
 				// 根据网卡取本机配置的IP
-				InetAddress inet = null;
 				try {
-					inet = InetAddress.getLocalHost();
+					InetAddress inet = InetAddress.getLocalHost();
+					ip = inet.getHostAddress();
 				} catch (UnknownHostException e) {
-					e.printStackTrace();
+					log.error(e.getMessage(), e);
 				}
-				ip = inet.getHostAddress();
 			}
 		}
 		// 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
-		if (ip != null && ip.length() > 15) {
-			if (ip.indexOf(",") > 0) {
-				ip = ip.substring(0, ip.indexOf(","));
+		if (ip != null) {
+			int index = ip.indexOf(",");
+			if (index != -1) {
+				ip = ip.substring(0, index);
 			}
 		}
 		return ip;
@@ -367,6 +370,7 @@ public class WebUtils {
 			out = response.getWriter();
 			out.println(JSON.toJSONString(result));// 输出
 		} catch (Exception e) {
+			log.error(e.getMessage(), e);
 		} finally {
 			if (null != out) {
 				out.flush();
