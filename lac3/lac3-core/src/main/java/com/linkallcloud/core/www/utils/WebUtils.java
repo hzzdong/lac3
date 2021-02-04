@@ -571,6 +571,10 @@ public class WebUtils {
 		String url = "http://localhost/approval/ssoauth?redirect=http://localhost/lac3-de-view-approval/page/home.html";
 		String server = WebUtils.parseServerFromUrl(url);
 		System.out.println(server);
+		
+		String url2 = "http://localhost/approval/ssoauth?redirect=http://localhost/lac3-de-view-approval/page/home.html";
+		String server2 = WebUtils.parseServerFromUrl(url2);
+		System.out.println(server2);
 	}
 
 }
