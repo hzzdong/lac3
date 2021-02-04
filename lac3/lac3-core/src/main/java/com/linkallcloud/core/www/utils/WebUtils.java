@@ -246,39 +246,52 @@ public class WebUtils {
 	 * @return Server
 	 */
 	public static String parseServerFromUrl(String url) {
-		if (Strings.isBlank(url) || !url.startsWith(IConstants.HTTP)) {
+		if (Strings.isBlank(url)) {
 			return null;
+		}
+
+		try {
+			url = URLDecoder.decode(url, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+		}
+
+		String tmp = null;
+		if (url.startsWith(IConstants.HTTPS)) {
+			tmp = url.substring(8);
+		} else if (url.startsWith(IConstants.HTTP)) {
+			tmp = url.substring(7);
 		} else {
-			try {
-				url = URLDecoder.decode(url, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-			}
+			tmp = url;
+		}
 
-			String tmp = url.startsWith(IConstants.HTTPS) ? url.substring(IConstants.HTTPS_REQUEST_FREFIX.length())
-					: url.substring(IConstants.HTTP_REQUEST_FREFIX.length());
+		int index1 = tmp.indexOf(IConstants.LEFT_SLASH);// 是否有/
+		int index2 = tmp.indexOf(IConstants.QUESTION_MARK);// 是否有?
 
-			int guessLen = 0;
-			int index = tmp.indexOf(IConstants.QUESTION_MARK);// 是否有?
-			if (index != -1) {
-				guessLen = index;
+		int guessLen = -1;
+		if (index1 != -1 || index2 != -1) {
+			if (index1 == -1) {
+				guessLen = index2;
+			} else if (index2 == -1) {
+				guessLen = index1;
 			} else {
-				int index2 = tmp.indexOf(IConstants.HTTP);// 是否还有http
-				if (index2 != -1) {
-					guessLen = index2;
-				}
-			}
-			if (guessLen != 0) {
-				tmp = tmp.substring(0, guessLen);
-			}
-
-			int idx = tmp.indexOf(IConstants.COLON);// 是否有:
-			if (idx > 0) {
-				return tmp.substring(0, idx);
-			} else {
-				int idx2 = tmp.indexOf(IConstants.LEFT_SLASH);// 是否有/
-				return idx2 > 0 ? tmp.substring(0, idx2) : tmp;
+				guessLen = index1 < index2 ? index1 : index2;
 			}
 		}
+
+		String host = tmp;
+		if (guessLen != -1) {
+			host = tmp.substring(0, guessLen);
+		}
+
+		String server = null;
+		int idx = host.indexOf(IConstants.COLON);// 是否有:
+		if (idx > 0) {
+			server = host.substring(0, idx);
+		} else {
+			server = host;
+		}
+
+		return server;
 	}
 
 	/**
