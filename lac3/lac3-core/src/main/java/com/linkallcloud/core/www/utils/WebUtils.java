@@ -572,9 +572,25 @@ public class WebUtils {
 		String server = WebUtils.parseServerFromUrl(url);
 		System.out.println(server);
 		
-		String url2 = "http://localhost/approval/ssoauth?redirect=http://localhost/lac3-de-view-approval/page/home.html";
+		String url2 = "http://localhost/lac3-de-view-pc/page/home.html#/lac3-de-view-pc/page/Application/main.html";
 		String server2 = WebUtils.parseServerFromUrl(url2);
 		System.out.println(server2);
+		
+		String url3 = "http://47.96.234.18/umyw/#/dashboard";
+		String server3 = WebUtils.parseServerFromUrl(url3);
+		System.out.println(server3);
+		
+		String url4 = "http://edu.mzlink.net/questionnaire?clazz=0";
+		String server4 = WebUtils.parseServerFromUrl(url4);
+		System.out.println(server4);
+		
+		String url5 = "http://www.baidu.com";
+		String server5 = WebUtils.parseServerFromUrl(url5);
+		System.out.println(server5);
+		
+		String url6 = "www.baidu.com?t123";
+		String server6 = WebUtils.parseServerFromUrl(url6);
+		System.out.println(server6);
 	}
 
 }
