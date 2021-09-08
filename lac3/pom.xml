@@ -52,7 +52,7 @@
 		<java.version>1.8</java.version>
 
 		<thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
-		<dubbo.version>2.7.7</dubbo.version>
+		<dubbo.version>2.7.13</dubbo.version>
 		<junit.version>4.12</junit.version>
 		<jedis.version>3.3.0</jedis.version>
 		<mybatis.version>3.5.5</mybatis.version>
